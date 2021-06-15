@@ -8,14 +8,13 @@
 import SwiftUI
 
 
+struct CapsuleButton: View {
 
-struct NextButton: View {
-    
     @Binding var isActive: Bool
     var title: String = "Next"
     var color: Color = Color.Blue
     var action: ()->Void
-    
+
     var body: some View {
         Button(action:{
             if isActive {
@@ -29,77 +28,60 @@ struct NextButton: View {
                     .foregroundColor(isActive ? .white:.black)
                     .padding()
                 Spacer()
-                
+
             }.background(isActive ? color:.gray)
             .clipShape(Capsule())
         }
     }
 }
 
-struct SignupNext<Content: View>: View{
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+struct BackButton: View {
 
-    let title: String = "Next"
-    let color: Color = Color.Blue
-    
-    @Binding var active: Bool
-    let destination: Content
     let signup: Bool
-    
-    init(_ signup: Bool,
-        _ active: Binding<Bool>,
-        _ destination: Content){
-        self._active = active
-        self.destination = destination
-        self.signup = signup
-    }
-    
-    
+    let isTop: Bool
+    var action: ()->Void
+
     var body: some View {
-        
-        if signup {
-            NavigationLink(
-                destination: destination,
-                label: {
-                        
-                        Text(title)
-                            .bold()
-                            .font(.system(size: 20))
-                            .foregroundColor(active ? .DarkBlue:.gray)
-                        
-//                        HStack {
-//                            Spacer()
-//                            Text(title)
-//                                .bold()
-//                                .font(.system(size: 20))
-//                                .foregroundColor(active ? .white:.black)
-//                                .padding()
-//                            Spacer()
-//                        }.background(active ? color:.gray)
-//                        .clipShape(Capsule())
-                }).disabled(!active)
-        } else {
-            Text("")
+        Button(action: action) {
+            Image(systemName: signup ? "chevron.left":"xmark")
+                .padding([.vertical, .trailing])
+                .foregroundColor(isTop ? .white:.DarkBlue)
         }
     }
 }
 
+struct NextButton: View {
+
+    @Binding var next: Bool
+    var isTop: Bool
+
+    var body: some View {
+        Text("Next")
+            .font(.custom("Montserrat-Bold", size: 16))
+            .foregroundColor(isTop ? .white:.DarkBlue)
+    }
+}
+
+
 struct ItemButton: View {
     
     var title: String = "Blendate"
-    var active: Bool
+    var width: CGFloat = 136
+    var active: Bool = false
     var action: ()->Void
     
     var body: some View {
-        Button(action: action){
-            Text(title)
-                .font(.system(size: 18))
-                //                .padding(.vertical, 5)
-                //                .padding(.horizontal)
-                .padding()
-                .foregroundColor(active ? .white:.Blue)
-                .background(active ? Color.Blue:Color.white)
-                .clipShape(Capsule())
-        }
+
+        
+        Button(action: action, label: {
+            ZStack{
+                Capsule()
+                    .fill(active ? Color.Blue:Color.white)
+                    .frame(width: width, height: 45, alignment: .center)
+                Text(title)
+                    .font(.custom("Montserrat-Regular", size: 18))
+                    .foregroundColor(active ? .white:.Blue)
+            }
+        })
     }
 }

@@ -11,96 +11,138 @@ struct WelcomeView: View {
     
     @EnvironmentObject var session: Session
     
-    @State var user: User = User(id: "")
+//    @State var user: User = User(id: "")
     @State private var password: String = ""
     @State private var confirmPass: String = ""
+    @State private var alert = false
+    @State private var showSignup = false
     
+    func emailTapped(){
+//        showSignup = true
+        session.currentView = .onboarding
+    }
+    
+    func loginTapped(){
+        showSignup = true
+    }
     
     func createTapped(){
         
     }
     
+    func facebookTapped(){
+        
+    }
+    
+    func googleTapped(){
+        
+    }
+    
+    func appleTapped(){
+        
+    }
+    
+    
+    var loginCard: some View {
+        VStack(spacing: 40){
+            VStack{
+                TextField("Email", text: $session.user.identifier)
+                Rectangle()
+                    .frame(height: 2)
+                    .foregroundColor(.DarkBlue)
+            }.padding([.top, .horizontal])
+            CapsuleButton(isActive: .constant(true), title: "Create Account", action: createTapped)
+                .padding()
+                .shadow(radius: 15)
+            HStack {
+                Spacer()
+                Text("Or register with")
+                    .foregroundColor(.LightBlue)
+                Spacer()
+            }
+            VStack{
+                HStack {
+                    LoginButton(title: "Facebook", action: facebookTapped)
+                    LoginButton(title: "Google", action: googleTapped)
+                }.padding(.bottom)
+                HStack {
+                    LoginButton(title: "Apple", action: appleTapped)
+                    LoginButton(title: "Email", action: emailTapped)
+                }
+            }.padding()
+        }.background(Color.white)
+        .cornerRadius(16)
+    }
+    
     var body: some View {
-        ZStack {
-            LinearGradient(gradient: Gradient(colors: [Color("Pink"), Color("Blue")]), startPoint: .bottomTrailing, endPoint: .topLeading).edgesIgnoringSafeArea(.all)
-
-            VStack(alignment: .leading, spacing: 30) {
+//        NavigationView {
+            VStack(alignment: .center) {
                 Spacer()
-                VStack(alignment: .leading) {
-                   Text("Sign Up")
-                        .font(.system(size: 28))
-                    Text("Fill the form to continue")
-                        .font(.system(size: 16))
-                }
-                VStack(alignment: .leading, spacing: 15) {
-                    Text("Email")
-                        .font(.system(size: 12))
-                    TextField("Email", text: $user.identifier)
-                    Text("Password")
-                        .font(.system(size: 12))
-                    TextField("Password", text: $password)
-                    Text("Confirm Password")
-                        .font(.system(size: 12))
-                    TextField("Confirm Password", text: $confirmPass)
-                }
-                Spacer()
-                HStack{
-                    Spacer()
-                    Button(action: createTapped){
-                        Text("Create Account")
-                    }
+                Text("Sign Up")
+                    .bold()
+                    .blendFont(32, .white)
+                loginCard
                     .padding()
-                    .background(Color("Blue"))
-                    .clipShape(Capsule())
-                    Spacer()
-                }
+                    .shadow(radius: 10)
+                
                 HStack {
-                    Spacer()
-                    Text("Or register with")
-                        .foregroundColor(.white)
-                    Spacer()
-                }
-                HStack {
-                    Spacer()
-                    Button(action: {}){
-                        Text("Facebook")
-                            .padding()
-                            .background(Color.white)
-                            .clipShape(Capsule())
-                            .foregroundColor(.black)
-                    }
-                    
-                    Button(action: {}){
-                        Text("Google")
-                            .padding()
-                            .background(Color.white)
-                            .clipShape(Capsule())
-                            .foregroundColor(.black)
-                    }
-                    Button(action: {}){
-                        Text("Apple")
-                            .padding()
-                            .background(Color.white)
-                            .clipShape(Capsule())
-                            .foregroundColor(.black)
-                    }
-                    Spacer()
-                }
-                HStack {
-                    Spacer()
                     Text("Have an account?")
-                    Button(action: {}){
-                        Text("Login").foregroundColor(.blue)
-                    }
-                    Spacer()
+                        .foregroundColor(.gray)
+                    Button("Log In") {
+                        loginTapped()
+                    }.foregroundColor(.Blue)
                 }
-            }.foregroundColor(.white).padding()
+                Spacer()
+            }
+            .circleBackground(imageName: "", isTop: true)
+            .alert(isPresented: $alert, content: {
+                Alert(title: Text("Please enter an email address"))
+                
+            })
+//            .sheet(isPresented: $showSignup, content: {
+//                SignupView()
+//            })
+//        }
+    }
+}
+
+
+struct LoginButton: View {
+    let title: String
+    var action: ()->Void
+    
+    var body: some View {
+        Button(action: action){
+            HStack {
+                Group {
+                    switch title {
+                    case "Facebook":
+                        Image("logo_facebook")
+                    case "Google":
+                        Image("logo_google")
+                    case "Apple":
+                        Image(systemName: "applelogo")
+                    case "Email":
+                        Image(systemName: "envelope")
+                    default:
+                        Image(systemName: "envelope")
+                    }
+                }
+                .padding()
+                Text(title)
+                    .padding(.trailing)
+            }
+            .frame(width: 160)
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(Color.gray, lineWidth: 1)
+            )
         }
     }
 }
 
-struct SignupView_Previews: PreviewProvider {
+struct WelcomeView_Previews: PreviewProvider {
     static var previews: some View {
-        WelcomeView()
+        WelcomeView().environmentObject(Session())
     }
 }

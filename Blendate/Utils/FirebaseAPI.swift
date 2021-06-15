@@ -6,3 +6,10 @@
 //
 
 import Foundation
+
+class API {
+    static var User = UserAPI()
+    static var Auth = AuthAPI()
+//    static var Listing = ListingAPI()
+//    static var Chat = ChatAPI()
+}

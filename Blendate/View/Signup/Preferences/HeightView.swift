@@ -10,34 +10,39 @@ import SwiftUI
 
 struct HeightView: View {
     
-    @EnvironmentObject var session: Session
-    
+    @Environment(\.presentationMode) var mode: Binding<PresentationMode>
+    @State var next: Bool = false
     let signup: Bool
-    @State private var next = false
     
-    init(_ signup: Bool = false){
+    @Binding var user: User
+    init(_ signup: Bool = false, _ user: Binding<User>){
+        self._user = user
         self.signup = signup
     }
     
     var body: some View {
         VStack {
-            ImagePlaceHolder()
             GeometryReader { geo in
                 HeightSlider(
-                    height: $session.user.height,
+                    height: $user.height,
                     sliderHeight: geo.size.height
                 )
             }
-            Text(String(session.user.height))
-            if signup {
-                NavigationLink(
-                    destination: ParentView(true),
-                    isActive: $next,
-                    label: {
-                        NextButton(action: {next.toggle()})
-                    })
-            }
+            Text(String(user.height))
         }
+        .navigationBarItems(leading:
+                                BackButton(signup: signup, isTop: true) {
+                                    mode.wrappedValue.dismiss()
+                                },
+                             trailing:
+                                NavigationLink(
+                                    destination: InterestedView(signup, $user),
+                                    isActive: $next,
+                                    label: {
+                                        NextButton(next: $next, isTop: true)
+                                    }
+                                ))//.disabled(session.user.gender == .none))
+        .circleBackground(imageName: "Height", isTop: true)
     }
 }
 
@@ -58,8 +63,7 @@ struct HeightSlider: View {
 struct HeightView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            HeightView(true)
-                .environmentObject(Session())
+            HeightView(true, .constant(Dummy.user))
         }
     }
 }

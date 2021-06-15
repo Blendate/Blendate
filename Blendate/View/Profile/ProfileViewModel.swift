@@ -10,7 +10,7 @@ import SwiftUI
 class ProfileViewModel: ObservableObject {
     
 //    @Published var user: User
-//    @Published var lineup: [User]
+    @Published var lineup: [User] = []
     
     let type: ProfileType
 
@@ -19,5 +19,23 @@ class ProfileViewModel: ObservableObject {
 //        self._user = user
     }
     
+//
+//    func loadInboxMessages() {
+////        self.inboxMessages = []
+//
+//        Api.Chat.getInboxMessages(onSuccess: { (inboxMessages) in
+//            if self.inboxMessages.isEmpty {
+//                self.inboxMessages = inboxMessages
+//            }
+//        }, onError: { (errorMessage) in
+//
+//        }, newInboxMessage: { (inboxMessage) in
+//            if !self.inboxMessages.isEmpty {
+//                self.inboxMessages.append(inboxMessage)
+//            }
+//        }) { (listener) in
+////            Vm.listener = listener
+//        }
+//    }
     
 }
