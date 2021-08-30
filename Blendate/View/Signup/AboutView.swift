@@ -8,18 +8,28 @@
 import SwiftUI
 
 struct AboutView: View {
-    
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
-    
+    @EnvironmentObject var state: AppState
+    @Environment(\.realm) var userRealm
+    @State var next = false
     let signup: Bool
-    @State private var next = false
+    let isTop = true
     
-    @Binding var user: User
-    init(_ signup: Bool = false, _ user: Binding<User>){
-        self._user = user
+    let maxLength: Int = 180
+    
+    @State var bio: String = ""
+    
+//    @Binding var user: AppUser {
+//        didSet {
+//            if user.bio.count > maxLength && oldValue.bio.count <= maxLength {
+//                user.bio = oldValue.bio
+//            }
+//        }
+//    }
+    
+    init(_ signup: Bool = false){
         self.signup = signup
     }
-    
     
     var body: some View {
             VStack{
@@ -37,8 +47,9 @@ struct AboutView: View {
                         .padding(.top,5)
                         .multilineTextAlignment(.center)
                         .frame(width: getRect().width * 0.6, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                }
-                TextEditor(text: $user.bio)
+                }.padding(.bottom, 30)
+                .offset(y: -30)
+                TextEditor(text: $bio)
 //                TextView(text: $session.user.bio)
                     .font(.custom("Montserrat-Regular", size: 14))
                     .padding(.horizontal)
@@ -47,7 +58,7 @@ struct AboutView: View {
                                     .fill(Color.white)
                                     .padding())
                     .overlay(
-                        Text("0/180")
+                        Text("\(bio.count)/\(maxLength)")
                             .foregroundColor(.gray)
                             .font(.caption)
                             .padding()
@@ -55,21 +66,35 @@ struct AboutView: View {
                             , alignment: .bottomTrailing)
                
                 Spacer()
-               
+                
+                NavigationLink(
+                    destination: AddPhotosView(signup),
+                    isActive: $next,
+                    label: { EmptyView() }
+                )
             }
             .navigationBarItems(leading:
                                     BackButton(signup: signup, isTop: true) {
                                         mode.wrappedValue.dismiss()
                                     },
                                  trailing:
-                                    NavigationLink(
-                                        destination: AddPhotosView(signup, $user),
-                                        isActive: $next,
-                                        label: {
-                                            NextButton(next: $next, isTop: true)
-                                        }
-                                    ).disabled(user.bio.isEmpty))//.disabled(session.user.bio.isEmpty)
-            .circleBackground(imageName: "", isTop: true)
+                                    NavNextButton(signup, isTop, save)
+            )
+            .circleBackground(imageName: nil, isTop: true)
+            .onAppear {
+                self.bio = state.user?.userPreferences?.bio ?? ""
+            }
+    }
+    
+    func save(){
+        do {
+            try userRealm.write {
+                state.user?.userPreferences?.bio = bio
+            }
+        } catch {
+            state.error = "Unable to open Realm write transaction"
+        }
+        if signup { next = true} else { self.mode.wrappedValue.dismiss()}
     }
 }
 
@@ -98,8 +123,8 @@ struct TextView: UIViewRepresentable {
 struct AboutView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            AboutView(true, .constant(Dummy.user))
-                .environmentObject(Session())
+            AboutView(true)
+                .environmentObject(AppState())
         }
     }
 }

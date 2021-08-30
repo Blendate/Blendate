@@ -8,13 +8,12 @@
 import SwiftUI
 
 struct SignupView: View {
-    @Binding var user: User
-    
+    @EnvironmentObject var state: AppState
+
     var body: some View {
         NavigationView {
-            NameView(true, $user)
+            NameView(true)
         }
-        .environmentObject(ImagePickerModel())
         .navigationViewStyle(StackNavigationViewStyle())
     }
 }

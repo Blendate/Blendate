@@ -7,44 +7,40 @@
 
 import SwiftUI
 
-struct MorePreferencesView: View {
-    @EnvironmentObject var session: Session
-
+struct MorePreferencesView: View {    
+    @Environment(\.presentationMode) var mode: Binding<PresentationMode>
+    @EnvironmentObject var state: AppState
+    @Environment(\.realm) var userRealm
     @State var next = false
+    let signup: Bool
+    let isTop = true
     
-    @Binding var user: User
-
-    init(_ user: Binding<User>){
-        self._user = user
+    init(_ signup: Bool = false){
+        self.signup = signup
     }
     
-    func signup(){
-
-
-        API.Auth.signUpGuest(user: session.user) { uid in
-            print("Signed Up \(uid)")
-//            API.User.saveImages(uid: uid, profileImage: session.profileImage!, coverPhoto: session.coverPhoto!, images: session.images) { (urls) in
-//                print("uploaded")
-////                next.toggle()
-//            } onError: { (errMsg) in
-//                print(errMsg)
+    func signupp(){
+//        RealmAPI.loginAnon(user: user) {
+//            DispatchQueue.main.async {
+//                session.currentView = .session
+//
 //            }
-//            next.toggle()
-        } onError: { (errMsg) in
-            print(errMsg)
-        }
+//        } onError: { errMsg in
+//            print(errMsg)
+//        }
+        state.currentView = .session
     }
     
     var body: some View {
         VStack {
             Text("Next Steps")
                 .blendFont(32, .DarkBlue)
-            Text("Would you like to edit your  dating preferences or begin Blending?")
+            Text("Would you like to edit your dating preferences or begin Blending?")
                 .blendFont(14, .DarkBlue)
                 .multilineTextAlignment(.center)
                 .frame(width: 250)
             NavigationLink(
-                destination: HeightView(true, $user),
+                destination: HeightView(true),
                 isActive: $next,
                 label: {
                     CapsuleButton(isActive: .constant(true), title: "More Preferences", action: {
@@ -54,7 +50,7 @@ struct MorePreferencesView: View {
                 .padding(.vertical)
                 .padding(.horizontal, 60)
             CapsuleButton(isActive: .constant(true), title: "Start Blending", action: {
-                signup()
+                signupp()
             }).padding(.horizontal, 60)
             Spacer()
         }.circleBackground(imageName: "Family", isTop: false)
@@ -65,7 +61,7 @@ struct MorePreferencesView: View {
 struct MorePreferencesView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            MorePreferencesView(.constant(Dummy.user))
+            MorePreferencesView(true)
         }
     }
 }

@@ -9,12 +9,15 @@ import SwiftUI
 
 struct ReligionView: View {
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
-    @State var next: Bool = false
+    @EnvironmentObject var state: AppState
+    @Environment(\.realm) var userRealm
+    @State var next = false
     let signup: Bool
+    let isTop = true
     
-    @Binding var user: User
-    init(_ signup: Bool = false, _ user: Binding<User>){
-        self._user = user
+    @State var religion = ""
+    
+    init(_ signup: Bool = false){
         self.signup = signup
     }
     
@@ -28,63 +31,57 @@ struct ReligionView: View {
                 .frame(width: 300, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
             VStack(spacing: 20){
                 HStack{
-                    ItemButton(title: "Hindu", width: 100, active: user.religion == .hindu) {
-                        user.religion = .hindu
-                        next.toggle()
+                    ItemButton(title: "Hindu", width: 100, active: religion == Religion.hindu.rawValue) {
+                        religion = Religion.hindu.rawValue
                     }
-                    ItemButton(title: "Buddist", width: 100, active: user.religion == .buddhist) {
-                        user.religion = .buddhist
-                        next.toggle()
+                    ItemButton(title: "Buddist", width: 100, active: religion == Religion.buddhist.rawValue) {
+                        religion = Religion.buddhist.rawValue
                     }
-                    ItemButton(title: "Jewish", width: 100, active: user.religion == .jewish) {
-                        user.religion = .jewish
-                        next.toggle()
+                    ItemButton(title: "Jewish", width: 100, active: religion == Religion.jewish.rawValue) {
+                        religion = Religion.jewish.rawValue
                     }
                     
                 }
                 
                 HStack{
-                    ItemButton(title: "Christian", width: 100, active: user.religion == .christian) {
-                        user.religion = .christian
-                        next.toggle()
+                    ItemButton(title: "Christian", width: 100, active: religion == Religion.christian.rawValue) {
+                        religion = Religion.christian.rawValue
                     }
-                    ItemButton(title: Religion.catholic.rawValue, width: 100, active: user.religion == .catholic) {
-                        user.religion = .catholic
-                        next.toggle()
+                    ItemButton(title: Religion.catholic.rawValue, width: 100, active: religion == Religion.catholic.rawValue) {
+                        religion = Religion.catholic.rawValue
                     }
-                    ItemButton(title: "Islam", width: 100, active: user.religion == .islam) {
-                        user.religion = .islam
-                        next.toggle()
+                    ItemButton(title: "Islam", width: 100, active: religion == Religion.islam.rawValue) {
+                        religion = Religion.islam.rawValue
                     }
                 }
                 
                 HStack{
-                    ItemButton(title: "Atheist/Agnostic", width: 120, active: user.religion == .atheist) {
-                        user.religion = .atheist
-                        next.toggle()
+                    ItemButton(title: "Atheist/Agnostic", width: 190, active: religion == Religion.atheist.rawValue) {
+                        religion = Religion.atheist.rawValue
                     }
-                    ItemButton(title: "Chinese Traditional", width: 160, active: user.religion == .chinese) {
-                        user.religion = .chinese
-                        next.toggle()
+                    ItemButton(title: "Chinese Traditional", width: 190, active: religion == Religion.chinese.rawValue) {
+                        religion = Religion.chinese.rawValue
                     }
                 }
                 
                 HStack{
-                    ItemButton(title: "Muslim", width: 100, active: user.religion == .muslim) {
-                        user.religion = .muslim
-                        next.toggle()
+                    ItemButton(title: "Muslim", width: 100, active: religion == Religion.muslim.rawValue) {
+                        religion = Religion.muslim.rawValue
                     }
-                    ItemButton(title: "Sikhism", width: 100, active: user.religion == .sikhism) {
-                        user.religion = .sikhism
-                        next.toggle()
+                    ItemButton(title: "Sikhism", width: 100, active: religion == Religion.sikhism.rawValue) {
+                        religion = Religion.sikhism.rawValue
                     }
-                    ItemButton(title: "Other", width: 100, active: user.religion == .other) {
-                        user.religion = .other
-                        next.toggle()
+                    ItemButton(title: "Other", width: 100, active: religion == Religion.other.rawValue) {
+                        religion = Religion.other.rawValue
                     }
                 }
                 
             }
+            NavigationLink(
+                destination: PoliticsView(signup),
+                isActive: $next,
+                label: { EmptyView() }
+            )
             
         }
         .navigationBarItems(leading:
@@ -92,19 +89,33 @@ struct ReligionView: View {
                                     mode.wrappedValue.dismiss()
                                 },
                             trailing:
-                                NavigationLink(
-                                    destination: PoliticsView(signup, $user),
-                                    isActive: $next,
-                                    label: {
-                                        NextButton(next: $next, isTop: true)
-                                    }
-                                ).disabled(user.religion == .none))
-        .circleBackground(imageName: "Family", isTop: true)
+                                NavNextButton(signup, isTop, save)
+        )
+        .circleBackground(imageName: "Religion", isTop: true)
+        .onAppear {
+            self.religion = state.user?.userPreferences?.religion ?? ""
+        }
+    }
+    
+    func save(){
+        do {
+            try userRealm.write {
+                state.user?.userPreferences?.religion = religion
+            }
+        } catch {
+            state.error = "Unable to open Realm write transaction"
+        }
+        if signup { next = true} else { self.mode.wrappedValue.dismiss()}
     }
 }
 
 struct ReligionView_Previews: PreviewProvider {
     static var previews: some View {
-        ReligionView(true, .constant(Dummy.user))
+        Group {
+            NavigationView {
+                ReligionView(true)
+            }
+//            .previewDevice("iPhone SE (2nd generation)")
+        }
     }
 }

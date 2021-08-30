@@ -9,12 +9,15 @@ import SwiftUI
 
 struct WantKidsView: View {
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
-    @State var next: Bool = false
+    @EnvironmentObject var state: AppState
+    @Environment(\.realm) var userRealm
+    @State var next = false
     let signup: Bool
+    let isTop = true
     
-    @Binding var user: User
-    init(_ signup: Bool = false, _ user: Binding<User>){
-        self._user = user
+    @State var familyPlans = ""
+    
+    init(_ signup: Bool = false){
         self.signup = signup
     }
     
@@ -30,35 +33,47 @@ struct WantKidsView: View {
                     .padding(.top, 150)
                 
                 HStack{
-                    ItemButton(title: "Yes") {
-                        user.familyPlans = .wantMore
-                        next.toggle()
-                    }.padding(.trailing)
+                    ItemButton(title: "Yes", active: familyPlans == FamilyPlans.wantMore.rawValue) {
+                        familyPlans = FamilyPlans.wantMore.rawValue
+                    }.padding()
                     
-                    ItemButton(title:"No") {
-                        user.familyPlans = .dontWant
-                        next.toggle()
+                    ItemButton(title:"No", active: familyPlans == FamilyPlans.dontWant.rawValue) {
+                        familyPlans = FamilyPlans.dontWant.rawValue
                     }
                 }
-                ItemButton(title:"Don't Care", width: 150) {
-                    user.familyPlans = .dontWant
-                    next.toggle()
-                }.padding(.trailing)
+                ItemButton(title:"Don't Care", width: 150, active: familyPlans == FamilyPlans.dontWant.rawValue) {
+                    familyPlans = FamilyPlans.dontWant.rawValue
+                }
+                
+                NavigationLink(
+                    destination: WorkView(signup),
+                    isActive: $next,
+                    label: { EmptyView() }
+                )
             }
-            .frame(maxWidth: .infinity, maxHeight:.infinity)
+            .padding(.bottom, 40)
             .navigationBarItems(leading:
                                     BackButton(signup: signup, isTop: true) {
                                         mode.wrappedValue.dismiss()
                                     },
                                  trailing:
-                                    NavigationLink(
-                                        destination: WorkView(signup, $user),
-                                        isActive: $next,
-                                        label: {
-                                            NextButton(next: $next, isTop: true)
-                                        }
-                                    ).disabled(user.familyPlans == .none))
+                                    NavNextButton(signup, isTop, save)
+            )
             .circleBackground(imageName: "Family", isTop: true)
+            .onAppear {
+                self.familyPlans = state.user?.userPreferences?.familyPlans ?? ""
+            }
+    }
+    
+    func save(){
+        do {
+            try userRealm.write {
+                state.user?.userPreferences?.familyPlans = familyPlans
+            }
+        } catch {
+            state.error = "Unable to open Realm write transaction"
+        }
+        if signup { next = true} else { self.mode.wrappedValue.dismiss()}
     }
 }
 
@@ -66,7 +81,7 @@ struct WantKidsView: View {
 struct WantKids_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            WantKidsView(true, .constant(Dummy.user))
+            WantKidsView(true)
         }
     }
 }

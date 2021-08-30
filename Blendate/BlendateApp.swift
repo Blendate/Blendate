@@ -6,20 +6,17 @@
 //
 
 import SwiftUI
-import Firebase
 
 @main
 struct BlendateApp: App {
-    let session = Session()
-    init(){
-        FirebaseApp.configure()
-    }
-    
+    @StateObject var state = AppState()
+
     var body: some Scene {
         WindowGroup {
+//            InitialView()
             EntryView()
-                .environmentObject(session)
-                .onAppear(perform: UIApplication.shared.addTapGestureRecognizer)
+                .environmentObject(state)
+
         }
     }
 }
@@ -29,5 +26,7 @@ struct BlendateApp: App {
  
  If not create profile right away Ask for images should be after profile creation
  
+ 
+ big tile for about that can be scrollable
  
  */

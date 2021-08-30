@@ -1,75 +1,106 @@
 //
-//  User.swift
+//  RealmUser.swift
 //  Blendate
 //
-//  Created by Michael Wilkowski on 1/14/21.
+//  Created by Michael on 7/22/21.
 //
 
 import Foundation
-import SwiftUI
+import RealmSwift
 
-struct User: Encodable, Decodable, Identifiable {
-    var id = UUID()
-        
-    var uid: String 
-    
-    var identifier: String = ""
-//    var completeSignup = false
-    
-    var match: MatchUser
-    var images: [Int:String] = [:]
-    var profileImage: String = ""
-    var coverPhoto: String = ""
-    
-    var firstName: String = ""
-    var lastName: String = ""
-    var birthday: Date = Date()
-    var gender: Gender = .none
-    var isParent: Bool = true
-    var children: Int = 0
-    var childrenAge: IntRange = IntRange(min: 0, max: 0)
-    
-    var location: String = ""
-    var bio: String = ""
+//func UserPartition()->String {
+//    guard let id = app.currentUser?.id else { return ""}
+//    return "user=\(id)"
+//}
 
-    private var isDate: Bool = true
+func UserConfig()->Realm.Configuration {
+    guard let user = app.currentUser else {return Realm.Configuration()}
+    let id = user.id
+    let config = user.configuration(partitionValue: "user=\(id)")
+    return config
+}
+
+func MatchUserConfig()->Realm.Configuration {
+    guard let user = app.currentUser else {return Realm.Configuration()}
+    let config = user.configuration(partitionValue: AllUsersPartition)
+    return config
+}
+
+@objcMembers class User: Object, ObjectKeyIdentifiable {
     
-    init(id: String){
-        self.uid = id
-        self.match = MatchUser()
+    dynamic var _id = UUID().uuidString
+    dynamic var partition = "" // "user=_id"
+    dynamic var identifier = ""
+    dynamic var userPreferences: UserPreferences?
+    dynamic var seekingPreferences: UserPreferences?
+
+    var conversations = RealmSwift.List<Conversation>()
+    dynamic var presence = "Off-Line"
+    
+    var presenceState: Presence {
+        get { return Presence(rawValue: presence) ?? .hidden }
+        set { presence = newValue.asString }
     }
-    
-    // DATEUSER
-    
-    var height: Double = 0
-    var seeking: Gender?
-    var relationship: Status?
-    var familyPlans: FamilyPlans?
-    var workTitle: String = ""
-    var schoolTitle: String = ""
-    var religion: Religion?
-    var politics: Politics?
-    var ethnicity: Ethnicity?
-    var mobility: Mobility?
-    var vices: [Vice] = []
-    var interests: [String] = []
-    
-    var dislike: [String] = []
-    var like: [String] = []
-    
-    var hometown: String?
-    
+
+    override static func primaryKey() -> String? {
+        return "_id"
+    }
+}
+
+@objcMembers class UserPreferences: EmbeddedObject, ObjectKeyIdentifiable {
+    dynamic var profilePhoto: Photo?
+    dynamic var coverPhoto: Photo?
+
+    dynamic var photo1: Photo?
+    dynamic var photo2: Photo?
+    dynamic var photo3: Photo?
+    dynamic var photo4: Photo?
+    dynamic var photo5: Photo?
+    dynamic var photo6: Photo?
+
+
+    dynamic var firstName: String = ""
+    dynamic var lastName: String = ""
+    dynamic var birthday: Date = Date()
+    dynamic var gender: String = ""
+
+    dynamic var isParent: Bool = false
+    dynamic var children: Int = 0
+    dynamic var childAgeMin: Int = 0
+    dynamic var childAgeMax: Int = 0
+    dynamic var location: String = ""
+    dynamic var bio: String = ""
+    dynamic var height: Double = 0
+    dynamic var seeking: String = ""
+    dynamic var relationship: String = ""
+    dynamic var familyPlans: String = ""
+    dynamic var workTitle: String = ""
+    dynamic var schoolTitle: String = ""
+    dynamic var mobility: String = ""
+    dynamic var religion: String = ""
+    dynamic var politics: String = ""
+    dynamic var ethnicity: String = ""
+    let vices = RealmSwift.List<String>()
+    let interests = RealmSwift.List<String>()
+}
+
+extension UserPreferences {
+
     func fullName()->String {
-        return firstName + " " + lastName
+        return (firstName) + " " + (lastName)
     }
-    
-    func age()->Int {
+
+    func ageString()->String {
         let now = Date()
         let calendar = Calendar.current
         let ageComponents = calendar.dateComponents([.year], from: birthday, to: now)
-        return ageComponents.year ?? 0
+        if let age = ageComponents.year {
+            return "\(age)"
+        } else {
+            return "--"
+        }
     }
-    
+
     func feet() -> String {
         let feet = height * 0.0328084
         let feetShow = Int(floor(feet))
@@ -79,142 +110,3 @@ struct User: Encodable, Decodable, Identifiable {
     }
 }
 
-struct MatchUser: Encodable, Decodable {
-    var birthday: Date = Date()
-    var gender: Gender = .none
-    var isParent: Bool = true
-    var children: Int = 0
-    var childrenAge: IntRange = IntRange(min: 0, max: 0)
-    
-    var location: String = ""
-    var height: Double = 0
-    var seeking: Gender?
-    var relationship: Status?
-    var familyPlans: FamilyPlans?
-    var workTitle: String = ""
-    var schoolTitle: String = ""
-    var religion: Religion?
-    var politics: Politics?
-    var ethnicity: Ethnicity?
-    var mobility: Mobility?
-    var vices: [Vice] = []
-    var interests: [String] = []
-}
-
-struct IntRange: Codable {
-    var min: Int
-    var max: Int
-}
-
-enum FamilyPlans: String, Codable {
-    case wantMore = "Want more children"
-    case dontWant = "Don't want more children"
-    case dontCare = "Open to all"
-}
-
-enum Status: String, Codable {
-    case single = "Single"
-    case divorced = "Divorced"
-    case separated = "Separated"
-    case widowed = "Widowed"
-    case other = "Complicated"
-}
-
-enum Gender: String, Codable {
-    case male = "Male" // Men
-    case female = "Female" //Women
-    case nonBinary = "Non-Binary" // non-binary
-    case other = "Prefer not to say" // open to all
-    case none = "null"
-}
-
-enum Ethnicity: String, Codable {
-    case caucasian = "White/Caucasian"
-    case islander = "Pacific Isander"
-    case african = "Black/African Descent"
-    case hispanic = "Hispanic/Latinx"
-    case eastAsian = "East Asian"
-    case southAsian = "South Asian"
-    case indian = "Native American"
-    case middleEast = "Middle Eastern"
-    case other = "Other"
-
-}
-enum Religion: String, Codable, CaseIterable {
-    case atheist = "Atheist/Agnostic"
-    case christian = "Christian"
-    case catholic = "Catholic"
-    case muslim = "Muslim"
-    case jewish = "Jewish"
-    case hindu = "Hindu"
-    case buddhist = "Buddhist"
-    case chinese = "Chinese Traditional"
-    case islam = "Islam"
-    case sikhism = "Sikhism"
-    case other = "Other"
-}
-
-enum Politics: String, Codable {
-    case conservative = "Conservative"
-    case liberal = "Liberal"
-    case centrist = "Centrist"
-    case other = "Other"
-}
-
-enum Mobility: String, Codable {
-    case notWilling = "Not Willing to Move"
-    case willing = "Willing to Move"
-    case noPref = "No Preference"
-}
-
-enum Vice: String, Codable {
-    case alcohol = "Alcohol"
-    case snacker = "Late night snacker"
-    case weed = "Marijuana"
-    case smoke = "Tobacco"
-    case psychs = "Psycedelics"
-    case sleep = "Sleeping In"
-    case nail = "Nail Biter"
-    case coffee = "Coffee"
-    case procras = "Procrastinator"
-    case chocolate = "Chocolate"
-    case tanning = "Sun Tanning"
-    case gambling = "Gambling"
-    case shopping = "Shopping"
-    case excersize = "Excercising"
-    case books = "Book Worm"
-
-
-}
-
-extension Encodable {
-    func toDic() throws -> [String:Any] {
-        let data = try JSONEncoder().encode(self)
-        
-        guard let dict = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.allowFragments) as? [String:Any] else {
-            throw NSError()
-        }
-        return dict
-    }
-}
-
-extension Decodable {
-    init(fromDict: Any) throws {
-        let data = try JSONSerialization.data(withJSONObject: fromDict, options: JSONSerialization.WritingOptions.prettyPrinted)
-        let decoder = JSONDecoder()
-        self = try decoder.decode(Self.self, from: data)
-    }
-}
-
-extension Binding where Value == User? {
-    func unwrapSession() -> Binding<User> {
-        return Binding<User>(
-            get: {
-                return self.wrappedValue ?? User(id: "")
-            },
-            set: {
-                self.wrappedValue = $0
-            }
-        )
-    }
-}

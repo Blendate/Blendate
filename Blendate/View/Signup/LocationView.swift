@@ -9,76 +9,153 @@ import SwiftUI
 import MapKit
 
 struct LocationView: View {
-    @State private var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 40.7128, longitude: -74.0060), span: MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5))
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
-    
+    @EnvironmentObject var state: AppState
+    @Environment(\.realm) var userRealm
+    @State var next = false
     let signup: Bool
-    @Binding var user: User
-    init(_ signup: Bool = false, _ user: Binding<User>){
-        self._user = user
+    let isTop = true
+    
+    
+    @ObservedObject var locationFetcher = LocatonViewModel()
+    
+    init(_ signup: Bool = false){
         self.signup = signup
     }
     
-    
-    @State var location: String = ""
-    
     var body: some View {
-            VStack{
-                VStack {
-                    Text("My location")
-                        .blendFont(32, .DarkBlue)
-                        .multilineTextAlignment(.center)
-                        .frame(width: 300, alignment: .center)
-                    Text("Only neighborhood name will be shown")
-                        .font(.custom("Montserrat-Regular", size: 16))
+        VStack{
+            VStack {
+                Text("My location")
+                    .blendFont(32, .DarkBlue)
+                    .multilineTextAlignment(.center)
+                    .frame(width: 300, alignment: .center)
+                Text("Only neighborhood name will be shown")
+                    .montserrat(.regular, 16)
+                    .foregroundColor(.DarkBlue)
+                    .multilineTextAlignment(.center)
+                    .frame(width: getRect().width * 0.556, alignment: .center)
+            }.padding(.bottom, 50)
+            
+            VStack {
+                HStack{
+                    Image(systemName: "magnifyingglass")
                         .foregroundColor(.DarkBlue)
-                        .padding(.top,5)
-                        .multilineTextAlignment(.center)
-                        .frame(width: getRect().width * 0.556, alignment: .center)
-                }
-                VStack {
-                    HStack{
-                        Image(systemName: "magnifyingglass")
-                            .foregroundColor(.DarkBlue)
-                        TextField("Search", text: $location)
-                    }.padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: 7)
-                            .stroke(Color.Blue, lineWidth: 1.0)
-                        
-                    )
-                    Map(coordinateRegion: $region)
-                        .cornerRadius(12)
-                }
-                .padding()
-                .frame(width: getRect().width * 0.9, height: getRect().height * 0.65, alignment: .center)
-                .background(RoundedRectangle(cornerRadius: 12)
-                                .foregroundColor(.white)
+                    TextField("Search", text: $locationFetcher.locationString)
+                    
+                }.padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 7)
+                        .stroke(Color.Blue, lineWidth: 1.0)
+                        .background(Color.white)
                 )
-                Spacer()
+                Map(coordinateRegion: $locationFetcher.region, showsUserLocation: true, userTrackingMode: .constant(.follow))
+//                    .addOverlay(MKCircle(center: locationFetcher.location!.coordinate, radius: CLLocationDistance(100)))
+                    .cornerRadius(12)
+                    .padding(.bottom)
+
+                
             }
-            .navigationBarItems(leading:
-                                    BackButton(signup: signup, isTop: false) {
-                                        mode.wrappedValue.dismiss()
-                                    },
-                                 trailing:
-                                    NavigationLink(
-                                        destination: AboutView(signup, $user),
-                                        label: {
-                                            NextButton(next: .constant(true), isTop: false)
-                                        }
-                                    ))
-            .circleBackground(imageName: "", isTop: false)
+            .padding()
+            
+            NavigationLink(
+                destination: AboutView(signup),
+                isActive: $next,
+                label: { EmptyView() }
+            )
+        }
+        .navigationBarItems(leading:
+                                BackButton(signup: signup, isTop: false) {
+                                    mode.wrappedValue.dismiss()
+                                },
+                            trailing:
+                                NavNextButton(signup, isTop, save)
+        )
+        .circleBackground(imageName: nil, isTop: false)
+        .onAppear {
+            locationFetcher.start()
+        }
+
+    }
+    
+    func save(){
+        do {
+            try userRealm.write {
+                state.user?.userPreferences?.location = locationFetcher.locationString
+            }
+        } catch {
+            state.error = "Unable to open Realm write transaction"
+        }
+        if signup { next = true} else { self.mode.wrappedValue.dismiss()}
     }
 }
 
+
+class LocatonViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
+    
+    let manager = CLLocationManager()
+    @Published var location: CLLocation?
+    @Published var region: MKCoordinateRegion = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 51.507222, longitude: -0.1275), // London
+                                                                   span: MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1))
+    @Published var locationString: String = ""
+    
+//    @Binding var user: AppUser
+    
+    override init() {
+        super.init()
+        manager.delegate = self
+        manager.desiredAccuracy = 100
+        
+    }
+    
+    func start() {
+        manager.requestWhenInUseAuthorization()
+        manager.startUpdatingLocation()
+    }
+
+    
+    func geoCode(){
+        
+        let geoCoder = CLGeocoder()
+        
+        guard let lat = location?.coordinate.latitude,
+              let lon = location?.coordinate.longitude else {return}
+        
+        let location = CLLocation(latitude: lat, longitude: lon)
+        geoCoder.reverseGeocodeLocation(location, completionHandler: { placemarks, error -> Void in
+
+            guard let placeMark = placemarks?.first else { return }
+
+            if let subLocality = placeMark.subLocality,
+               let locality = placeMark.locality {
+                self.locationString = "\(subLocality), \(locality)"
+            }
+            
+        })
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+        if let location = locations.last {
+            self.location = location
+            geoCode()
+        }
+    }
+}
+
+extension Map {
+    func addOverlay(_ overlay: MKOverlay) -> some View {
+        MKMapView.appearance().addOverlay(overlay)
+        return self
+    }
+}
 
 #if DEBUG
 struct LocationView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            LocationView(true, .constant(Dummy.user))
-                .environmentObject(Session())
+            LocationView(true)
+                .environmentObject(AppState())
         }
     }
 }

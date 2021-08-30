@@ -1,192 +1,181 @@
 //
-//  BirthdayView.swift
+//  BirthdayView2.swift
 //  Blendate
 //
-//  Created by Michael Wilkowski on 3/9/21.
+//  Created by Michael on 8/8/21.
 //
 
 import SwiftUI
-
+import RealmSwift
 
 struct BirthdayView: View {
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-//    @EnvironmentObject var session: Session
-
+    @Environment(\.presentationMode) var mode: Binding<PresentationMode>
+    @EnvironmentObject var state: AppState
+    @Environment(\.realm) var userRealm
+    @State var next = false
+    let isTop = true
     let signup: Bool
     
-    @State var isPickerOpen = false
-//    @State var selectedDate = Date()
     @State var monthValue = "December"
     @State var dateValue = "21"
     @State var yearValue = "2021"
     
-    @Binding var user: User
-    init(_ signup: Bool = false, _ user: Binding<User>){
-        self._user = user
+    @State var birthday = Date()
+
+    
+    init(_ signup: Bool = false){
         self.signup = signup
     }
     
     var body: some View {
-            VStack{
-                Text("What is your Birthate?")
-                    .font(.custom("Montserrat-SemiBold", size: 32))
-                    .foregroundColor(.Blue)
-                    .padding(.top, 65)
-                    .multilineTextAlignment(.center)
-                    .frame(width: 300, alignment: .center)
-                
-                Button(action: {
-                    isPickerOpen = true
-                }, label: {
-                    HStack{
-                        Spacer()
-                               
-                            ZStack{
-                                        RoundedRectangle(cornerRadius: 10)
-                                            .foregroundColor(Color.white.opacity(0.8))
-                                            .frame(width: 85, height: 50, alignment: .center)
-                                            .shadow(radius: 1)
-                                        
-                                        RoundedRectangle(cornerRadius: 10)
-                                            .foregroundColor(.white)
-                                            .frame(width: 100, height: 40, alignment: .center)
-                                            .shadow(radius: 2)
-                                
-                                Text(monthValue)
-                                    .font(.custom("Montserrat-Regualr", size: 16))
-                                    .foregroundColor(.Blue)
-                                    }
-                        
-                        
-                        Spacer()
-                        ZStack{
-                                
-                                RoundedRectangle(cornerRadius: 6)
-                                    .foregroundColor(Color.white.opacity(0.8))
-                                    .frame(width: 45, height: 50, alignment: .center)
-                                    .shadow(radius: 1)
-                                
-                                RoundedRectangle(cornerRadius: 6)
-                                    .foregroundColor(.white)
-                                    .frame(width: 60, height: 40, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                                    .shadow(radius: 2)
-                            
-                            Text(dateValue)
-                                .font(.custom("Montserrat-Regualr", size: 16))
-                                .foregroundColor(.Blue)
-                            }
-                        Spacer()
-                        
-                     ZStack{
-                                
-                                RoundedRectangle(cornerRadius: 10)
-                                    .foregroundColor(Color.white.opacity(0.8))
-                                    .frame(width: 65, height: 50, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                                    .shadow(radius: 1)
-                                
-                                RoundedRectangle(cornerRadius: 5)
-                                    .foregroundColor(.white)
-                                    .frame(width: 80, height: 40, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                                    .shadow(radius: 2)
-                        
-                        Text(yearValue)
-                            .font(.custom("Montserrat-Regualr", size: 16))
-                            .foregroundColor(.Blue)
-                            }
-                        Spacer()
-                    }
-                    .padding(.horizontal)
-                })
-                .padding(.top, 40)
-               
-               
-                Spacer()
-                if isPickerOpen{
-                    DatePicker("", selection: $user.birthday,in: ...Date(), displayedComponents: .date)
-                        .labelsHidden()
-                        
-                        .datePickerStyle(WheelDatePickerStyle())
-                        .padding()
-                        .overlay(Button(action: {
-                            
-                            
-                               let formatter = DateFormatter()
-                               formatter.dateFormat = "yyyy-MM-dd HH:mm:ss 'UTC'"
-                             
-
-                               formatter.dateFormat = "yyyy"
-                               yearValue = formatter.string(from: user.birthday)
-                               formatter.dateFormat = "MMMM"
-                               monthValue = formatter.string(from: user.birthday)
-                               formatter.dateFormat = "dd"
-                               dateValue = formatter.string(from: user.birthday)
-                            
-                            isPickerOpen = false
-                        }, label: {
-                            Text("Done").bold()
-                                .font(.custom("Montserrat-Regualr", size: 24))
-                                .foregroundColor(.Blue)
-                                
-                        }), alignment: .bottom)
-                        
-                        .background(Rectangle()
-                                        .fill(Color.white.opacity(0.9))
-                                        .frame(width: UIScreen.main.bounds.width,  alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                                        .ignoresSafeArea()
-                        )
-                }
-                NavigationLink(
-                    destination: GenderView(signup, $user),
-                    label: {
-                        NextButton(next: .constant(true), isTop: false)
-            
-                    }
-                )}
-            .onAppear{ setDate() }
-            .navigationBarItems(leading:
-                                    BackButton(signup: signup, isTop: false) {
-                                        presentationMode.wrappedValue.dismiss()
-                                    },
-                                 trailing:
-                                    NavigationLink(
-                                        destination: GenderView(signup, $user),
-                                        label: {
-                                            NextButton(next: .constant(true), isTop: false)
-                                
-                                        }
-                                    ))
-            .circleBackground(imageName: "Birthday", isTop: false)
+        VStack {
+            Spacer()
+            Text("What is your Birthday?")
+                .montserrat(.semibold, 32)
+                .foregroundColor(.DarkBlue)
+                .multilineTextAlignment(.center)
+                .frame(width: 300, alignment: .center)
+                .padding(.bottom, 60)
+            VStack {
+                DatePicker("label", selection: $birthday, displayedComponents: [.date])
+                    .datePickerStyle(CompactDatePickerStyle())
+                    .labelsHidden()
+                birthdayRect
+            }//.background(Color.yellow)
+            NavigationLink(
+                destination: GenderView(signup),
+                isActive: $next,
+                label: { EmptyView() }
+            )
+        }.padding(.bottom, 130)
+        .navigationBarItems(leading:
+                                BackButton(signup: signup, isTop: isTop) {
+                                    mode.wrappedValue.dismiss()
+                                },
+                            trailing:
+                                NavNextButton(signup, isTop, save)
+        )
+        .circleBackground(imageName: "Birthday", isTop: isTop)
+        .onChange(of: birthday, perform: { value in
+            setDate(value)
+        })
+        .onAppear {
+            setDate(state.user?.userPreferences?.birthday ?? Date())
+        }
     }
     
-    func setDate(){
-        let today = Date()
+    var birthdayRect: some View {
+//        Button(action: {}, label: {
+            HStack{
+                Spacer()
+                BirthdayRect($monthValue, .month)
+                Spacer()
+                BirthdayRect($dateValue, .day)
+                Spacer()
+                BirthdayRect($yearValue, .year)
+                Spacer()
+            }
+//            .padding(.horizontal)
+//        })
+    }
+    
+    func save(){
+        do {
+            try userRealm.write {
+                state.user?.userPreferences?.birthday = birthday
+            }
+        } catch {
+            print("Unable to open Realm write transaction")
+            state.error = "Unable to open Realm write transaction"
+        }
+        print("wrote: \(String(describing: state.user?._id))")
+        if signup { next = true} else { self.mode.wrappedValue.dismiss()}
+    }
+    
+    private func setDate(_ date: Date = Date()){
+        birthday = date
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss 'UTC'"
-      
-
-        formatter.dateFormat = "yyyy"
-        yearValue = formatter.string(from: today)
-        formatter.dateFormat = "MMMM"
-        monthValue = formatter.string(from: today)
-        formatter.dateFormat = "dd"
-        dateValue = formatter.string(from: today)
         
-        print("\(user.firstName)")
-        print("\(user.gender)")
+        formatter.dateFormat = "yyyy"
+        yearValue = formatter.string(from: date)
+        formatter.dateFormat = "MMMM"
+        monthValue = formatter.string(from: date)
+        formatter.dateFormat = "dd"
+        dateValue = formatter.string(from: date)
+    }
+}
 
-
+struct BirthdayView_Previews: PreviewProvider {
+    static var previews: some View {
+        BirthdayView()
+            .environmentObject(AppState())
     }
 }
 
 
+extension View {
+    func userInteractionDisabled() -> some View {
+        self.modifier(NoHitTesting())
+    }
+}
 
-#if DEBUG
-struct BirthdayView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationView {
-            BirthdayView(true, .constant(Dummy.user))
-                .environmentObject(Session())
+struct NoHitTesting: ViewModifier {
+    func body(content: Content) -> some View {
+        SwiftUIWrapper { content }.allowsHitTesting(false)
+    }
+}
+
+
+struct SwiftUIWrapper<T: View>: UIViewControllerRepresentable {
+    let content: () -> T
+    func makeUIViewController(context: Context) -> UIHostingController<T> {
+        UIHostingController(rootView: content())
+    }
+    func updateUIViewController(_ uiViewController: UIHostingController<T>, context: Context) {}
+}
+
+enum BirthdayValue {
+    case month
+    case day
+    case year
+}
+
+struct BirthdayRect: View {
+    
+    @Binding var text: String
+    let value: BirthdayValue
+    let width: (CGFloat,CGFloat)
+    
+    init(_ text: Binding<String>, _ value: BirthdayValue){
+        self._text = text
+        self.value = value
+        
+        switch value {
+        case .month:
+            width = (85, 100)
+        case .day:
+            width = (45, 60)
+        case .year:
+            width = (65, 80)
+        }
+
+    }
+    
+    var body: some View {
+        ZStack{
+            RoundedRectangle(cornerRadius: 10)
+                .foregroundColor(Color.white.opacity(0.8))
+                .frame(width: width.0, height: 50, alignment: .center)
+                .shadow(radius: 1)
+            RoundedRectangle(cornerRadius: 10)
+                .foregroundColor(.white)
+                .frame(width: width.1, height: 40, alignment: .center)
+                .shadow(radius: 2)
+            
+            Text(text)
+                .montserrat(.semibold, 16)
+                .foregroundColor(.DarkBlue)
         }
     }
 }
-#endif

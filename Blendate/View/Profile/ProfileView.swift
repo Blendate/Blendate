@@ -6,284 +6,163 @@
 //
 
 import SwiftUI
+import RealmSwift
 
 
 
 struct ProfileView: View {
-    @Binding var user: User
-    var type: ProfileType
-    @State var editTapped = false
+    @EnvironmentObject var state: AppState
+    @ObservedRealmObject var user: User
+    let profileType: ProfileType
+
+    @State var lineupIndex: Int = 0
+    @State var editType = EditType.none
+//    @State var userPref: UserPreferences?
     
-    init(_ user: Binding<User>, _ type: ProfileType = .myProfile){
-        self._user = user
-        self.type = type
+    @State var showSheet = false
+    @State var sheetState = SheetState.none
+//    {
+//        willSet {
+//            showSheet = newValue != .none
+//        }
+//    }
+    
+    init(_ profileType: ProfileType, _ user: User){
+        self.profileType = profileType
+        self.user = user
     }
-    
-    init(_ users: Binding<[User]>, _ type: ProfileType = .dateProfile){
-        self._user = users[0]
-        self.type = type
-    }
-    
+
     var body: some View {
         NavigationView {
-            ScrollView{
-                VStack(alignment:.leading) {
-                    // Cover Card
-                    VStack {
-                        FirebaseImageView(imageURL: user.coverPhoto)
-                            .frame(height: UIScreen.main.bounds.height * 0.3, alignment: .center)
-                            .zIndex(0)
-                    }.overlay(
-                        ProfileCardView(user: $user, type: type, editTapped: $editTapped)
-                            .padding(.horizontal)
-                            .offset(x: 0, y: 200), alignment: .bottom
-                    )
-                    if editTapped {
-                        EditProfile($user)
-                            .padding(.top,90)
-//                        Text("Edit Area")
-//                            .padding(.top, 90)
-
+            if profileType == .dateProfile && lineupIndex >= state.lineup.count {
+                NoMatches()
+            } else {
+                ScrollView {
+                    coverPhoto
+                    if editType != .none {
+                        editView
                     } else {
-                    // About
-                    VStack(alignment:.leading){
-                        Text("About \(user.firstName)")
-                            .font(.custom("LexendDeca-Regular.", size: 18))
-                            .padding(.top, 90)
-                            .padding(.bottom)
-                        Text(user.bio)
-                            .font(.custom("LexendDeca-Regular.", size: 16))
-                            .foregroundColor(.accentColor)
-                            .frame(width:300, alignment: .center)
-                    }.padding()
-                    // Info Cards
-                    ScrollView(.horizontal, showsIndicators: false, content: {
-                        VStack{
-                            HStack(alignment:.top){
-                                InfoCard(.personal, user)
-                                InfoCard(.children, user)
-                                InfoCard(.background, user)
-                                InfoCard(.lifestyle, user)
-
-                            }.padding(.horizontal)
-                            Spacer()
-                        }
-                    }).padding(.vertical)
-                    // Profile Images
-                    ScrollView(.horizontal, showsIndicators: true, content: {
-                        VStack{
-                            HStack{
-                                ImageCollectionView()
-                                ImageCollectionView_2()
-                                ImageCollectionView()
-                            }
-                        }
-                    })
-                    .padding()
-                    interests
-                    ExtraSpacer()
+                        ProfileAbout(userPref: userPref())
+                        ProfileInfoCards(userPref: userPref())
+                        ProfilePhotos(userPref: userPref())
+                        ProfileInterests(userPref: userPref())
                     }
                 }
-            }
-            .edgesIgnoringSafeArea(.top)
-            .navigationBarTitle("")
-            .navigationBarHidden(true)
-        }
-    }
-
-    var interests: some View {
-        VStack(alignment:.leading){
-            Text("Interests")
-                .font(.custom("LexendDeca-Regular.", size: 18))
-            HStack{
-                
-                
-                ZStack {
-                    RoundedRectangle(cornerRadius: 15)
-                        .fill(Color.white)
-                        .frame(width: UIScreen.main.bounds.width * 0.45, height: 90, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                        .shadow(color: .gray, radius: 2, x: /*@START_MENU_TOKEN@*/0.0/*@END_MENU_TOKEN@*/, y: 4)
-                    VStack{
-                        Text("Travel")
-                            .font(.custom("LexendDeca-Regular.", size: 16))
-                            .foregroundColor(.accentColor)
-                            .padding(.top)
-                        Text("Kid Friendly Hotels, Travel Advice, Travel Accessories For Kids")
-                            .font(.custom("LexendDeca-Regular.", size: 10))
-                            .foregroundColor(.gray)
-                            .frame(width: 160, height: 50, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                    }
-                }
-                
-                ZStack {
-                    RoundedRectangle(cornerRadius: 15)
-                        .fill(Color.white)
-                        .frame(width: UIScreen.main.bounds.width * 0.45, height: 90, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                        .shadow(color: .gray, radius: 2, x: /*@START_MENU_TOKEN@*/0.0/*@END_MENU_TOKEN@*/, y: 4)
-                    VStack{
-                        Text("Art")
-                            .font(.custom("LexendDeca-Regular.", size: 16))
-                            .foregroundColor(.accentColor)
-                        Text("Theater, Interior Design, Craft Art, Dance, Fashion")
-                            .font(.custom("LexendDeca-Regular.", size: 10))
-                            .foregroundColor(.gray)
-                            .frame(width: 140, height: 50, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                    }
-                }
-                
-            }
-            
-            HStack{
-                
-                
-                ZStack {
-                    RoundedRectangle(cornerRadius: 15)
-                        .fill(Color.white)
-                        .frame(width: UIScreen.main.bounds.width * 0.45, height: 90, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                        .shadow(color: .gray, radius: 2, x: /*@START_MENU_TOKEN@*/0.0/*@END_MENU_TOKEN@*/, y: 4)
-                    VStack{
-                        Text("Entertainment")
-                            .font(.custom("LexendDeca-Regular.", size: 16))
-                            .foregroundColor(.accentColor)
-                        Text("Movies, Music, Gaming, Podcasts, Celebrities")
-                            .font(.custom("LexendDeca-Regular.", size: 10))
-                            .foregroundColor(.gray)
-                            .frame(width: 140, height: 50, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                    }
-                }
-                
-                ZStack {
-                    RoundedRectangle(cornerRadius: 15)
-                        .fill(Color.white)
-                        .frame(width: UIScreen.main.bounds.width * 0.45, height: 90, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                        .shadow(color: .gray, radius: 2, x: /*@START_MENU_TOKEN@*/0.0/*@END_MENU_TOKEN@*/, y: 4)
-                    VStack{
-                        Text("Food")
-                            .font(.custom("LexendDeca-Regular.", size: 16))
-                            .foregroundColor(.accentColor)
-                        Text("Picky Eaters, Healthy Recipes, Veganism, Vegetarianism ")
-                            .font(.custom("LexendDeca-Regular.", size: 10))
-                            .foregroundColor(.gray)
-                            .frame(width: 140, height: 50, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                    }
-                }
-                
+                .background(Color.LightPink)
+                .edgesIgnoringSafeArea(.top)
+                .navigationBarHidden(true)
             }
         }
-        .padding(.horizontal)
+//        .onAppear{
+//
+//            if profileType == .dateProfile {
+//                self.userPref = self.state.lineup.first?.userPreferences
+//            } else {
+//                self.userPref = user.userPreferences
+//            }
+//
+//        }
+        .sheet(isPresented: $showSheet, onDismiss: sheetDismiss, content: {
+            sheetContent()
+        })
+        .onChange(of: sheetState, perform: { value in
+            showSheet = value != .none
+        })
+    }
+    
+    func userPref()->Binding<UserPreferences?> {
+        if profileType == .dateProfile {
+            return .constant(state.lineup[lineupIndex].userPreferences)
+        } else {
+            return $user.userPreferences
+        }
+    }
+    
+    func sheetDismiss(){
+        sheetState = .none
+    }
+    
+    var coverPhoto: some View {
+        ZStack(alignment: .bottom) {
+            VStack {
+                ProfileCoverPhoto(userPref: userPref())
+                Spacer()
+            }
+            VStack {
+                Spacer()
+                ProfileCardView(type: profileType, editType: $editType, sheetState: $sheetState, userPref: userPref(), pass: pass, blend: blend)
+                    
+                    .if((profileType == .myProfile)) { view in
+                        view.environment(\.realmConfiguration, UserConfig())
+                    }
+            }
+        }.frame(width: UIScreen.main.bounds.width, height: 350)
+
     }
 
-}
-
-struct ExtraSpacer: View {
-    var body: some View {
-        Rectangle()
-            .fill(Color.white)
-            .frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 130, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-        Spacer()
+    
+    var editView: some View {
+        Group {
+            switch editType {
+            case .About:
+                EditProfile(userPref: userPref())
+            case .Photos:
+                EditPhotos()
+            case .Interests:
+                EditInterests()
+            case .none:
+                EmptyView()
+            }
+        }
     }
-}
-struct ProfileView2_Previews: PreviewProvider {
-    static var previews: some View {
-        ProfileView(.constant(Dummy.user))
-            .previewDevice("iPhone 8")
+    
+    func pass(){
+        print("Index: \(lineupIndex) Lineup: \(state.lineup.count)")
+        lineupIndex += 1
+
+//        if lineupIndex <= (state.lineup.count - 1)  {
+//            self.userPref = self.state.lineup[lineupIndex].userPreferences
+//        }
+
+    }
+    
+    func blend(){
         
-        ProfileView(.constant(Dummy.user))
-            .previewDevice("iPhone 11")
     }
-}
+    
+    @ViewBuilder
+    private func sheetContent() -> some View {
+        if sheetState == .account {
+            AccountView()
+                .environmentObject(state)
+        } else if sheetState == .preferences {
+            PreferencesView()
+                .environmentObject(state)
 
-struct ImageCollectionView: View {
-    var body: some View {
-        VStack{
-            
-            ZStack{
-                FirebaseImageView(imageURL: "")
-//                Image("sample1")
-//                    .resizable()
-//                    .scaledToFill()
-                    .frame(width: 162, height: 213, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                
-                Text("#myLove")
-                    .font(.custom("LexendDeca-Regular.", size: 10))
-                    .foregroundColor(.white)
-                    .padding(.vertical, 5)
-                    .padding(.horizontal)
-                    .background(Capsule()
-                                    .fill(Color(#colorLiteral(red: 0.1420793831, green: 0.256313622, blue: 0.69624722, alpha: 1))))
-                    .offset(x: -40, y: -80)
-            }
-            
-            ZStack{
-                FirebaseImageView(imageURL: "")
-//                Image("sample2")
-//                    .resizable()
-//                    .scaledToFill()
-                    .frame(width: 162, height: 171, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                
-                Text("#myLove")
-                    .font(.custom("LexendDeca-Regular.", size: 10))
-                    .foregroundColor(.white)
-                    .padding(.vertical, 5)
-                    .padding(.horizontal)
-                    .background(Capsule()
-                                    .fill(Color(#colorLiteral(red: 0.1420793831, green: 0.256313622, blue: 0.69624722, alpha: 1))))
-                    .offset(x: -40, y: -60)
-                
-            }
-            
+        // else if ...
+        } else {
+            EmptyView()
         }
     }
+
+    
 }
 
-
-struct ImageCollectionView_2: View {
+struct NoMatches: View {
     var body: some View {
-        VStack{
-            
-            ZStack{
-                FirebaseImageView(imageURL: "")
-//                Image("sample3")
-//                    .resizable()
-//                    .scaledToFill()
-                    .frame(width: 162, height: 171, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                
-                Text("#myLove")
-                    .font(.custom("LexendDeca-Regular.", size: 10))
-                    .foregroundColor(.white)
-                    .padding(.vertical, 5)
-                    .padding(.horizontal)
-                    .background(Capsule()
-                                    .fill(Color(#colorLiteral(red: 0.1420793831, green: 0.256313622, blue: 0.69624722, alpha: 1))))
-                    .offset(x: -40, y: -60)
-                
-            }
-            
-            ZStack{
-                FirebaseImageView(imageURL: "")
-
-//                Image("sample4")
-//                    .resizable()
-//                    .scaledToFill()
-                    .frame(width: 162, height: 213, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                
-                Text("#myLove")
-                    .font(.custom("LexendDeca-Regular.", size: 10))
-                    .foregroundColor(.white)
-                    .padding(.vertical, 5)
-                    .padding(.horizontal)
-                    .background(Capsule()
-                                    .fill(Color(#colorLiteral(red: 0.1420793831, green: 0.256313622, blue: 0.69624722, alpha: 1))))
-                    .offset(x: -40, y: -80)
-            }
-            
-        }
+        Text("No More Matches")
+            .font(.system(size: 42))
     }
 }
 
-
+struct ProfileView_Previews: PreviewProvider {
+        
+    static var previews: some View {
+        ProfileView(.myProfile, Dummy.user)
+            .environmentObject(AppState())
+        
+        ProfileView(.dateProfile, Dummy.user)
+            .environmentObject(AppState([Dummy.matchUser]))
+    }
+}
 

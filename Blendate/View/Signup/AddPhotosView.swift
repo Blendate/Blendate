@@ -7,27 +7,32 @@
 
 import SwiftUI
 
+
 struct AddPhotosView: View {
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
-//    @EnvironmentObject var session: Session
-    @EnvironmentObject var imageSession: ImagePickerModel
-    
+    @EnvironmentObject var state: AppState
+    @Environment(\.realm) var userRealm
+    @State var next = false
     let signup: Bool
-    @State private var next = false
+    let isTop = false
+    
+    @State var profilePhoto: Photo?
+    @State var coverPhoto: Photo?
+
+    @State var photo1: Photo?
+    @State var photo2: Photo?
+    @State var photo3: Photo?
+    @State var photo4: Photo?
+    @State var photo5: Photo?
+    @State var photo6: Photo?
+    
     @State var images: [Int:String] = [:]
 
-    
-    var active: Binding<Bool> { Binding (
-        get: { (imageSession.profileImage != nil && imageSession.coverPhoto != nil && imageSession.photos.keys.count > 3)},
-            set: { _ in }
-        )
-    }
-
-    @Binding var user: User
-    init(_ signup: Bool = false, _ user: Binding<User>){
-        self._user = user
+    init(_ signup: Bool = false){
         self.signup = signup
     }
+    
+
     
     var body: some View {
             VStack {
@@ -35,14 +40,12 @@ struct AddPhotosView: View {
                     VStack {
                         Text("Profile Photo")
                             .blendFont(18, .DarkBlue)
-                        EmptyPhoto(urlString: user.images[1] ?? "", imageNum: 1, selectedImage: $imageSession.profileImage)
-                            .frame(width: 160, height: 210)
+                        EmptyPhoto(imageNum: 1, photo: $profilePhoto)
                     }
                     VStack {
                         Text("Cover Photo")
                             .blendFont(18, .DarkBlue)
-                        EmptyPhoto(urlString: user.images[2] ?? "", imageNum: 2, selectedImage: $imageSession.coverPhoto)
-                            .frame(width: 160, height: 210)
+                        EmptyPhoto(imageNum: 2, photo: $coverPhoto)
                     }
                 }.padding(.bottom, 50)
                 .padding(.top, 30)
@@ -54,60 +57,71 @@ struct AddPhotosView: View {
                 }.padding(.vertical)
                 ScrollView(.horizontal) {
                     HStack(spacing: 10) {
-                        ForEach(3..<9) { i in
-                            EmptyPhoto(urlString: user.images[i + 2] ?? "", imageNum: i + 2, selectedImage: $imageSession.photos[i+2])
-                                .frame(width: 100, height: 132)
-                        }
+                        EmptyPhoto(imageNum: 3, photo: $photo1)
+                        EmptyPhoto(imageNum: 4, photo: $photo2)
+                        EmptyPhoto(imageNum: 5, photo: $photo3)
+                        EmptyPhoto(imageNum: 6, photo: $photo4)
+                        EmptyPhoto(imageNum: 7, photo: $photo5)
+                        EmptyPhoto(imageNum: 8, photo: $photo6)
                     }
                 }
                 Spacer()
                 Text("As part of our Community Guidelines; pictures of minors are prohibited, unless accompanied by an adult")
                     .blendFont(14, .white)
                 Spacer()
+                NavigationLink(
+                    destination: MorePreferencesView(signup),
+                    isActive: $next,
+                    label: { EmptyView() }
+                )
             }.padding()
             .navigationBarItems(leading:
                                     BackButton(signup: signup, isTop: false) {
                                         mode.wrappedValue.dismiss()
                                     },
                                  trailing:
-                                    NavigationLink(
-                                        destination: MorePreferencesView($user),
-                                        isActive: $next,
-                                        label: {
-                                            NextButton(next: $next, isTop: false)
-                                        }
-                                    ))
-            .circleBackground(imageName: "", isTop: false)
+                                    NavNextButton(signup, isTop, save)
+            )
+            .circleBackground(imageName: nil, isTop: false)
     }
+    
+    func save(){
+        do {
+            try userRealm.write {
+                state.user?.userPreferences?.profilePhoto = profilePhoto
+                state.user?.userPreferences?.coverPhoto = coverPhoto
+                state.user?.userPreferences?.photo1 = photo1
+                state.user?.userPreferences?.photo2 = photo2
+                state.user?.userPreferences?.photo3 = photo3
+                state.user?.userPreferences?.photo4 = photo4
+                state.user?.userPreferences?.photo5 = photo5
+                state.user?.userPreferences?.photo6 = photo6
+            }
+        } catch {
+            state.error = "Unable to open Realm write transaction"
+        }
+        if signup { next = true} else { self.mode.wrappedValue.dismiss()}
+    }
+    
 }
 
-struct EmptyPhoto: View {
-    @EnvironmentObject var session: Session
 
-    var urlString: String
+struct EmptyPhoto: View {
+//    var urlString: String
     var imageNum: Int
     
     @State var showPicker = false
-    @Binding var selectedImage: UIImage?
-    
-    func save(){
-//        API.User.saveImage(uid: session.user.uid, image: selectedImage, imageNum: imageNum) { (url) in
-//            print(url)
-//        } onError: { (errMsg) in
-//            print(errMsg)
-//        }
-    }
+    @Binding var photo: Photo?
     
     var body: some View {
         Group {
-//            if urlString.count > 1 {
-//                FirebaseImageView(imageURL: urlString)
-            if let image = selectedImage {
-                Image(uiImage: image)
+            if let picture = photo?.picture,
+                let image = UIImage(data: picture) {
+                    Image(uiImage: image)
                     .resizable()
-                    .scaledToFit()
+                    .scaledToFill()
                     .frame(width: imageNum < 3 ? 160:100, height: imageNum < 3 ? 210:132)
-                    .cornerRadius(15)
+                    .clipShape(RoundedRectangle(cornerRadius: 15))
             } else {
                 ZStack {
                     Rectangle()
@@ -118,14 +132,20 @@ struct EmptyPhoto: View {
                         .foregroundColor(.LightGray)
                     Image(systemName: "plus")
                         .foregroundColor(.DarkBlue)
-                }.onTapGesture {
-                    showPicker = true
                 }
+                .frame(width: imageNum < 3 ? 160:100, height: imageNum < 3 ? 210:132)
             }
         }
-        .sheet(isPresented: $showPicker, onDismiss: save, content: {
-            ImagePicker(selectedImage: $selectedImage)
-        })
+        .onTapGesture {
+            addAttachment()
+        }
+    }
+    
+    private func addAttachment() {
+        PhotoCaptureController.show(source: .photoLibrary) { controller, photo in
+            self.photo = photo
+            controller.hide()
+        }
     }
 }
 
@@ -133,9 +153,47 @@ struct EmptyPhoto: View {
 struct AddPhotosView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            AddPhotosView(true, .constant(Dummy.user))
-                .environmentObject(Session())
+            AddPhotosView(true)
+                .environmentObject(AppState())
         }
     }
 }
 #endif
+
+//struct EmptyPhoto2: View {
+////    var urlString: String
+//    var imageNum: Int
+//
+//    @State var showPicker = false
+//    @Binding var selectedImage: UIImage?
+//
+//    var body: some View {
+//        Group {
+//            if let image = selectedImage {
+//                Image(uiImage: image)
+//                    .resizable()
+//                    .scaledToFill()
+//                    .frame(width: imageNum < 3 ? 160:100, height: imageNum < 3 ? 210:132)
+//                    .clipShape(RoundedRectangle(cornerRadius: 15))
+//            } else {
+//                ZStack {
+//                    Rectangle()
+//                        .foregroundColor(.white)
+//                        .cornerRadius(15)
+//                    Circle()
+//                        .frame(width: 50)
+//                        .foregroundColor(.LightGray)
+//                    Image(systemName: "plus")
+//                        .foregroundColor(.DarkBlue)
+//                }
+//                .frame(width: imageNum < 3 ? 160:100, height: imageNum < 3 ? 210:132)
+//            }
+//        }
+//        .onTapGesture {
+//            showPicker = true
+//        }
+//        .sheet(isPresented: $showPicker) {
+//            ImagePicker(selectedImage: $selectedImage)
+//        }
+//    }
+//}

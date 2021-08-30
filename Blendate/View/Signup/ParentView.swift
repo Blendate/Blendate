@@ -9,14 +9,17 @@ import SwiftUI
 
 struct ParentView: View {
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
-    @State private var next = false
+    @EnvironmentObject var state: AppState
+    @Environment(\.realm) var userRealm
+    @State var next = false
     let signup: Bool
+    let isTop = true
     
-    @Binding var user: User
-    init(_ signup: Bool = false, _ user: Binding<User>){
-        self._user = user
+    init(_ signup: Bool = false){
         self.signup = signup
     }
+    
+    @State var isParent: Bool = true
     
     var body: some View {
         VStack {
@@ -25,28 +28,42 @@ struct ParentView: View {
                 .bold()
                 .blendFont(32, .DarkBlue)
             HStack {
-                ItemButton(title: "Yes", active: user.isParent) {
-                    user.isParent = true
+                ItemButton(title: "Yes", active: isParent) {
+                    isParent = true
                 }
-                ItemButton(title: "No", active: !user.isParent) {
-                    user.isParent = false
+                ItemButton(title: "No", active: !isParent) {
+                    isParent = false
                 }
-            }.padding(.bottom, 150)
+            }.padding(.bottom, 100)
+            NavigationLink(
+                destination: getDestination(),
+                isActive: $next,
+                label: { EmptyView() }
+            )
         }
         .navigationBarItems(leading:
                                 BackButton(signup: signup, isTop: true) {
                                     mode.wrappedValue.dismiss()
                                 },
                              trailing:
-                                NavigationLink(
-                                    destination: getDestination(),
-                                    isActive: $next,
-                                    label: {
-                                        NextButton(next: $next, isTop: true)
-                                    }
-                                ))
+                                NavNextButton(signup, isTop, save)
+        )
         .circleBackground(imageName: "Family", isTop: true)
+        .onAppear {
+            self.isParent = state.user?.userPreferences?.isParent ?? false
+        }
+    }
 
+    
+    func save(){
+        do {
+            try userRealm.write {
+                state.user?.userPreferences?.isParent = isParent
+            }
+        } catch {
+            state.error = "Unable to open Realm write transaction"
+        }
+        if signup { next = true} else { self.mode.wrappedValue.dismiss()}
     }
     
     var navBar: some View {
@@ -66,7 +83,7 @@ struct ParentView: View {
                     Button(action: {
                         next.toggle()
                     }, label: {
-                        Text("Next")
+                        Text(signup ? "Next":"")
                             .font(.custom("Montserrat-Bold", size: 16))
                             .foregroundColor(.white)
                     })
@@ -77,10 +94,10 @@ struct ParentView: View {
     }
     
     func getDestination() -> AnyView{
-        if user.isParent {
-            return AnyView(NumberKidsView(signup, $user))
+        if isParent {
+            return AnyView(NumberKidsView(signup))
         } else {
-            return AnyView(LocationView(signup, $user))
+            return AnyView(LocationView(signup))
         }
     }
 }
@@ -89,8 +106,8 @@ struct ParentView: View {
 struct ParentView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            ParentView(true, .constant(Dummy.user))
-                .environmentObject(Session())
+            ParentView(true)
+                .environmentObject(AppState())
         }
     }
 }

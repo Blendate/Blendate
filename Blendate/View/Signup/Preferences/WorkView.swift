@@ -9,12 +9,14 @@ import SwiftUI
 
 struct WorkView: View {
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
-    @State var next: Bool = false
+    @EnvironmentObject var state: AppState
+    @Environment(\.realm) var userRealm
+    @State var next = false
     let signup: Bool
+    let isTop = false
     
-    @Binding var user: User
-    init(_ signup: Bool = false, _ user: Binding<User>){
-        self._user = user
+    @State var workTitle = ""
+    init(_ signup: Bool = false){
         self.signup = signup
     }
     
@@ -22,7 +24,8 @@ struct WorkView: View {
         VStack {
             VStack {
                 Text("Work")
-                    .font(.custom("Montserrat-SemiBold", size: 32))
+                    .lexendDeca(.regular, 32)
+//                    .font(.custom("Montserrat-SemiBold", size: 32))
                     .foregroundColor(.DarkBlue)
                     .multilineTextAlignment(.center)
                     .frame(width: 300, alignment: .center)
@@ -39,7 +42,7 @@ struct WorkView: View {
                 RoundedRectangle(cornerRadius: 6)
                     .fill(Color.white)
                 
-                TextField("", text: $user.workTitle)
+                TextField("", text: $workTitle)
                     .padding(.horizontal)
                 
             }
@@ -51,29 +54,43 @@ struct WorkView: View {
             )
 
             Spacer()
-            
+            NavigationLink(
+                destination: EducationView(signup),
+                isActive: $next,
+                label: { EmptyView() }
+            )
         }
         .navigationBarItems(leading:
                                 BackButton(signup: signup, isTop: false) {
                                     mode.wrappedValue.dismiss()
                                 },
                              trailing:
-                                NavigationLink(
-                                    destination: EducationView(signup, $user),
-                                    isActive: $next,
-                                    label: {
-                                        NextButton(next: $next, isTop: false)
-                                    }
-                                ).disabled(user.workTitle.isEmpty))
+                                NavNextButton(signup, isTop, save)
+
+        )
         .circleBackground(imageName: "Work", isTop: false)
+        .onAppear {
+            self.workTitle = state.user?.userPreferences?.workTitle ?? ""
+        }
         
+    }
+    
+    func save(){
+        do {
+            try userRealm.write {
+                state.user?.userPreferences?.workTitle = workTitle
+            }
+        } catch {
+            state.error = "Unable to open Realm write transaction"
+        }
+        if signup { next = true} else { self.mode.wrappedValue.dismiss()}
     }
 }
 #if DEBUG
 struct WorkView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            WorkView(true, .constant(Dummy.user))
+            WorkView(true)
         }
     }
 }

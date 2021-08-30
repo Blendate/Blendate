@@ -9,121 +9,126 @@ import SwiftUI
 
 struct NumberKidsView: View {
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
-//    @EnvironmentObject var session: Session
-    @State var next: Bool = false
+    @EnvironmentObject var state: AppState
+    @Environment(\.realm) var userRealm
+    @State var next = false
     let signup: Bool
+    let isTop = true
     
-    @Binding var user: User
-    init(_ signup: Bool = false, _ user: Binding<User>){
-        self._user = user
+    init(_ signup: Bool = false){
         self.signup = signup
     }
     
     @State var offset : CGFloat = 0
     @State var numberOfKids : CGFloat = 0
+    @State var children: Int = 0
     
-    var active: Binding<Bool> { Binding (
-        get: { user.children > 0 },
-            set: { _ in }
-        )
-    }
+//    var kidsProxy: Binding<CGFloat> {
+//        Binding<CGFloat>(
+//            get: { numberOfKids },
+//            set: { children = Int($0) }
+//        )
+//    }
     
-    var kidsProxy: Binding<CGFloat> {
-        Binding<CGFloat>(
-            get: { CGFloat(user.children) },
-            set: { user.children = Int($0) }
-        )
-    }
+    let pickerCount = 5
     
     var body: some View {
-            VStack(spacing: 15){
-                Spacer(minLength: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/)
-           
-                Text("How many kids do you have?")
-                    .font(.custom("Montserrat-SemiBold", size: 32))
-                    .foregroundColor(.DarkBlue)
-                    .padding(.top, 65)
-                    .multilineTextAlignment(.center)
-                    .frame(width: 300, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                    .padding(.top, 150)
+        VStack(spacing: 15){
+            Spacer()
+            
+            Text("How many kids do you have?")
+                .montserrat(.semibold, 32)
+                .foregroundColor(.DarkBlue)
+                .multilineTextAlignment(.center)
+                .frame(width: 300, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+            
+            
+            HorizontalPickerView(count: pickerCount, offset: $numberOfKids) {
                 
-                let pickerCount = 5
-                            
-                HorizontalPickerView(count: pickerCount, offset: $numberOfKids) {
+                HStack(spacing: 0){
                     
-                   
-                    HStack(spacing: 0){
+                    ForEach(1...pickerCount, id:\.self){ index in
                         
-                        ForEach(1...pickerCount, id:\.self){ index in
-                            
-                            Text("\(index)")
-                                .foregroundColor(.gray)
-                                .font(.custom("Montserrat-SemiBold", size: 16))
-                                .frame(width:30)
-                            
-                            
-                            //subTick
-                            ForEach(1...4, id:\.self){ index in
-                                
-                                Rectangle()
-                                    .fill(Color.clear)
-                                    .frame(width: 1, height: 15)
-                                    // Gap b/w to line
-                                    .frame(width:20)
-                            }
-                        }.foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
-          
-                        Text("\(pickerCount + 1)")
+                        Text("\(index)")
                             .foregroundColor(.gray)
                             .font(.custom("Montserrat-SemiBold", size: 16))
-                            .frame(width:20)
-                            // Gap b/w to line
-                            .frame(width:20)
-                    }
-                    .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
-
+                            .frame(width:30)
+                        
+                        
+                        //subTick
+                        ForEach(1...4, id:\.self){ index in
+                            
+                            Rectangle()
+                                .fill(Color.clear)
+                                .frame(width: 1, height: 15)
+                                // Gap b/w to line
+                                .frame(width:20)
+                        }
+                    }.foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
+                    
+                    Text("\(pickerCount + 1)")
+                        .foregroundColor(.gray)
+                        .font(.custom("Montserrat-SemiBold", size: 16))
+                        .frame(width:20)
+                        // Gap b/w to line
+                        .frame(width:20)
                 }
-               
-                .frame(height: 50)
-                .overlay(
-                    Text("\(getValue(from: 1, index: numberOfKids))")
-                        .font(.system(size: 38, weight: .heavy))
-                        .foregroundColor(.purple)
-                        .padding()
-                        .background(
-                            ZStack {
-                                
-                                RoundedRectangle(cornerRadius: 7)
-                                    .fill(Color.white.opacity(0.9))
-                                            .frame(width: 40, height: 62, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                                    .shadow(radius: 2)
-                                
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color.white)
-                                            .frame(width: 66, height: 40, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                                    .shadow(radius: 2)
-                            }
-                        )
-                        )
-                .padding()
-                Spacer(minLength: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/)
-                
+                .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
                 
             }
-            .frame(maxWidth: .infinity, maxHeight:.infinity)
-            .navigationBarItems(leading:
-                                    BackButton(signup: signup, isTop: true) {
-                                        mode.wrappedValue.dismiss()
-                                    },
-                                 trailing:
-                                    NavigationLink(
-                                        destination: KidsRangeView(signup, $user),
-                                        isActive: $next,
-                                        label: {
-                                            NextButton(next: $next, isTop: true)
-                                        }
-                                    ))
-            .circleBackground(imageName: "Family", isTop: true)
+            
+            .frame(height: 50)
+            .overlay(
+                Text("\(getValue(from: 1, index: numberOfKids))")
+                    .font(.system(size: 38, weight: .heavy))
+                    .foregroundColor(.purple)
+                    .padding()
+                    .background(
+                        ZStack {
+                            
+                            RoundedRectangle(cornerRadius: 7)
+                                .fill(Color.white.opacity(0.9))
+                                .frame(width: 40, height: 62, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                                .shadow(radius: 2)
+                            
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(Color.white)
+                                .frame(width: 66, height: 40, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                                .shadow(radius: 2)
+                        }
+                    )
+            )
+            .padding()
+            NavigationLink(
+                destination: KidsRangeView(signup),
+                isActive: $next,
+                label: { EmptyView() }
+            )
+        }
+        .padding(.bottom, 50)
+        .frame(maxWidth: .infinity, maxHeight:.infinity)
+        .navigationBarItems(leading:
+                                BackButton(signup: signup, isTop: true) {
+                                    mode.wrappedValue.dismiss()
+                                },
+                            trailing:
+                                NavNextButton(signup, isTop, save)
+        )
+        .circleBackground(imageName: "Family", isTop: true)
+        .onAppear {
+            self.numberOfKids = CGFloat(state.user?.userPreferences?.children ?? 0)
+        }
+    }
+    
+    func save(){
+        do {
+            try userRealm.write {
+                state.user?.userPreferences?.children = Int(numberOfKids / 80)
+            }
+        } catch {
+            state.error = "Unable to open Realm write transaction"
+        }
+        if signup { next = true} else { self.mode.wrappedValue.dismiss()}
     }
     
     func getWeight(from:Int) -> String{
@@ -146,9 +151,9 @@ struct NumberKidsView: View {
         let progress = index / 20
         return "\(startWeight + (Int(progress * 0.2)))"
     }
-
-}
     
+}
+
 //    var body: some View {
 //            VStack {
 //                SVGView(.kidsAmount)
@@ -193,8 +198,8 @@ struct NumberKidsView: View {
 struct NumberKidsView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            NumberKidsView(true, .constant(Dummy.user))
-                .environmentObject(Session())
+            NumberKidsView(true)
+                .environmentObject(AppState())
         }
     }
 }

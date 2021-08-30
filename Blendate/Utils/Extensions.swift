@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import RealmSwift
 
 enum Direction {
     case top
@@ -82,8 +83,8 @@ extension UIApplication: UIGestureRecognizerDelegate {
     }
 }
 
-extension RangeReplaceableCollection where Element: Equatable{
-    mutating func tapItem(_ element: Element) {
+extension RealmSwift.List where Element: Equatable{
+    func tapItem(_ element: Element) {
         if let index = firstIndex(of: element) {
             remove(at: index)
         } else {
@@ -92,9 +93,32 @@ extension RangeReplaceableCollection where Element: Equatable{
     }
 }
 
-//extension UINavigationController {
-//    // Remove back button text
-//    open override func viewWillLayoutSubviews() {
-//        navigationBar.topItem?.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-//    }
-//}
+
+
+extension View {
+    func placeholder<Content: View>(
+        when shouldShow: Bool,
+        alignment: Alignment = .leading,
+        @ViewBuilder placeholder: () -> Content) -> some View {
+
+        ZStack(alignment: alignment) {
+            placeholder().opacity(shouldShow ? 1 : 0)
+            self
+        }
+    }
+}
+
+extension View {
+    /// Applies the given transform if the given condition evaluates to `true`.
+    /// - Parameters:
+    ///   - condition: The condition to evaluate.
+    ///   - transform: The transform to apply to the source `View`.
+    /// - Returns: Either the original `View` or the modified `View` if the condition is `true`.
+    @ViewBuilder func `if`<Content: View>(_ condition: Bool, transform: (Self) -> Content) -> some View {
+        if condition {
+            transform(self)
+        } else {
+            self
+        }
+    }
+}

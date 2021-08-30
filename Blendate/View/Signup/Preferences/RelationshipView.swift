@@ -9,12 +9,15 @@ import SwiftUI
 
 struct RelationshipView: View {
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
-    @State var next: Bool = false
+    @EnvironmentObject var state: AppState
+    @Environment(\.realm) var userRealm
+    @State var next = false
     let signup: Bool
+    let isTop = true
     
-    @Binding var user: User
-    init(_ signup: Bool = false, _ user: Binding<User>){
-        self._user = user
+    @State var relationship = ""
+    
+    init(_ signup: Bool = false){
         self.signup = signup
     }
     
@@ -26,55 +29,64 @@ struct RelationshipView: View {
                 .multilineTextAlignment(.center)
                 .frame(width: 350, alignment: .center)
             HStack{
-                ItemButton(title: "Single", active: user.relationship == .single){
-                    user.relationship = .single
-                    next.toggle()
+                ItemButton(title: "Single", active: relationship == Status.single.rawValue){
+                    relationship = Status.single.rawValue
                 }.padding(.trailing)
                 
-                ItemButton(title: "Seperated", active: user.relationship == .separated){
-                    user.relationship = .separated
-                    next.toggle()
+                ItemButton(title: "Seperated", active: relationship == Status.separated.rawValue){
+                    relationship = Status.separated.rawValue
                 }
             }
             HStack{
-                ItemButton(title: "Divorced", active: user.relationship == .divorced){
-                    user.relationship = .divorced
-                    next.toggle()
+                ItemButton(title: "Divorced", active: relationship == Status.divorced.rawValue){
+                    relationship = Status.divorced.rawValue
                 }.padding(.trailing)
                 
-                ItemButton(title: "Widowed", active: user.relationship == .widowed){
-                    user.relationship = .widowed
-                    next.toggle()
+                ItemButton(title: "Widowed", active: relationship == Status.widowed.rawValue){
+                    relationship = Status.widowed.rawValue
                 }
             }
             HStack{
-                ItemButton(title: "Other", active: user.relationship == .other){
-                    user.relationship = .other
-                    next.toggle()
+                ItemButton(title: "Other", active: relationship == Status.other.rawValue){
+                    relationship = Status.other.rawValue
                 }.padding(.trailing)
             }
             Spacer()
+            NavigationLink(
+                destination: WantKidsView(signup),
+                isActive: $next,
+                label: { EmptyView() }
+            )
         }
-            .navigationBarItems(leading:
+        .navigationBarItems(leading:
                                     BackButton(signup: signup, isTop: false) {
                                         mode.wrappedValue.dismiss()
                                     },
                                  trailing:
-                                    NavigationLink(
-                                        destination: WantKidsView(signup, $user),
-                                        isActive: $next,
-                                        label: {
-                                            NextButton(next: $next, isTop: false)
-                                        }
-                                    ).disabled(user.relationship == .none))
-            .circleBackground(imageName: "Family", isTop: false)
+                                    NavNextButton(signup, false, save)
+            )
+        .circleBackground(imageName: "Relationship", isTop: false)
+        .onAppear {
+            self.relationship = state.user?.userPreferences?.relationship ?? ""
+        }
+    }
+    
+    func save(){
+        do {
+            try userRealm.write {
+                state.user?.userPreferences?.relationship = relationship
+            }
+        } catch {
+            state.error = "Unable to open Realm write transaction"
+        }
+        if signup { next = true} else { self.mode.wrappedValue.dismiss()}
     }
 }
 
 struct RelationshipView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView{
-            RelationshipView(true, .constant(Dummy.user))
+            RelationshipView(true)
         }
     }
 }

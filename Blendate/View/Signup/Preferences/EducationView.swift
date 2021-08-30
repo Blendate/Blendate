@@ -9,12 +9,15 @@ import SwiftUI
 
 struct EducationView: View {
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
-    @State var next: Bool = false
+    @EnvironmentObject var state: AppState
+    @Environment(\.realm) var userRealm
+    @State var next = false
     let signup: Bool
+    let isTop = false
     
-    @Binding var user: User
-    init(_ signup: Bool = false, _ user: Binding<User>){
-        self._user = user
+    @State var schoolTitle = ""
+    
+    init(_ signup: Bool = false){
         self.signup = signup
     }
     
@@ -34,44 +37,59 @@ struct EducationView: View {
                     .padding(.top,5)
                     .multilineTextAlignment(.center)
                     .frame(width: getRect().width * 0.7, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-            }
+            }.padding(.bottom, 40)
+
             
             ZStack {
                 RoundedRectangle(cornerRadius: 6)
                     .fill(Color.white)
                     
-                TextField("", text: $user.schoolTitle)
+                TextField("", text: $schoolTitle)
                     .padding(.horizontal)
                     
             }
             .frame(width: getRect().width * 0.9, height: 40, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
             .background(
-            RoundedRectangle(cornerRadius: 6)
-                .stroke(Color(#colorLiteral(red: 0.8280140758, green: 0.8503483534, blue: 0.941247642, alpha: 1)))
-                .frame(width: getRect().width * 0.91, height: 41, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                RoundedRectangle(cornerRadius: 6)
+                    .stroke(Color(#colorLiteral(red: 0.8280140758, green: 0.8503483534, blue: 0.941247642, alpha: 1)))
+                    .frame(width: getRect().width * 0.91, height: 41, alignment: .center)
             )
+
             Spacer()
-          
+            NavigationLink(
+                destination: MobilityView(signup),
+                isActive: $next,
+                label: { EmptyView() }
+            )
+            
         }
         .navigationBarItems(leading:
                                 BackButton(signup: signup, isTop: false) {
                                     mode.wrappedValue.dismiss()
                                 },
                              trailing:
-                                NavigationLink(
-                                    destination: MobilityView(signup, $user),
-                                    isActive: $next,
-                                    label: {
-                                        NextButton(next: $next, isTop: false)
-                                    }
-                                ).disabled(user.schoolTitle.isEmpty))
-        .circleBackground(imageName: "Family", isTop: false)
-        
+                                NavNextButton(signup, isTop, save)
+        )
+        .circleBackground(imageName: "Education", isTop: false)
+        .onAppear {
+            self.schoolTitle = state.user?.userPreferences?.schoolTitle ?? ""
+        }
+    }
+    
+    func save(){
+        do {
+            try userRealm.write {
+                state.user?.userPreferences?.schoolTitle = schoolTitle
+            }
+        } catch {
+            state.error = "Unable to open Realm write transaction"
+        }
+        if signup { next = true} else { self.mode.wrappedValue.dismiss()}
     }
 }
 
 struct EducationView_Previews: PreviewProvider {
     static var previews: some View {
-        EducationView(true, .constant(Dummy.user))
+        EducationView(true)
     }
 }

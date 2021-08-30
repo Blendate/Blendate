@@ -9,13 +9,15 @@ import SwiftUI
 
 struct GenderView: View {
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
-//    @EnvironmentObject var session: Session
-    @State var next: Bool = false
+    @EnvironmentObject var state: AppState
+    @Environment(\.realm) var userRealm
+    @State var next = false
     let signup: Bool
+    let isTop = true
     
-    @Binding var user: User
-    init(_ signup: Bool = false, _ user: Binding<User>){
-        self._user = user
+    @State var gender: String = ""
+    
+    init(_ signup: Bool = false){
         self.signup = signup
     }
     
@@ -29,57 +31,54 @@ struct GenderView: View {
                 .frame(width: 300, alignment: .center)
             VStack(spacing: 30){
                 HStack{
-                    ItemButton(title: "He/Him", active: user.gender == .male) {
-                        user.gender = .male
-//                        next.toggle()
-                        print(user.gender)
+                    ItemButton(title: "He/Him", active: gender == Gender.male.rawValue) {
+                        gender = Gender.male.rawValue
                     }.padding(.trailing)
                     
-                    ItemButton(title: "She/Her", active: user.gender == .female) {
-                        user.gender = .female
-//                        next.toggle()
+                    ItemButton(title: "She/Her", active: gender == Gender.female.rawValue) {
+                        gender = Gender.female.rawValue
                     }
                 }
                 HStack{
-                    ItemButton(title: "They/Them", active: user.gender == .nonBinary) {
-                        user.gender = .nonBinary
+                    ItemButton(title: "They/Them", active: gender == Gender.nonBinary.rawValue) {
+                        gender = Gender.nonBinary.rawValue
 //                        next.toggle()
                     }.padding(.trailing)
-                    ItemButton(title: "Other", active: user.gender == .other) {
-                        user.gender = .other
+                    ItemButton(title: "Other", active: gender == Gender.other.rawValue) {
+                        gender = Gender.other.rawValue
 //                        next.toggle()
                     }
                 }
             }
+            NavigationLink(
+                destination: ParentView(signup),
+                isActive: $next,
+                label: { EmptyView() }
+            )
         }
+        .padding(.bottom, 60)
         .navigationBarItems(leading:
-                                BackButton(signup: signup, isTop: true) {
+                                BackButton(signup: signup, isTop: isTop) {
                                     mode.wrappedValue.dismiss()
                                 },
                              trailing:
-                                nextButton
+                                NavNextButton(signup, isTop, save)
         )
-        .circleBackground(imageName: "Family", isTop: true)
+        .circleBackground(imageName: "Gender", isTop: isTop)
+        .onAppear {
+            self.gender = state.user?.userPreferences?.gender ?? ""
+        }
     }
     
-    var nextButton: some View {
-        if signup {
-            return AnyView(
-                NavigationLink(
-                    destination: ParentView(signup, $user),
-                    label: {
-                        NextButton(next: $next, isTop: true)
-                    }
-                ).disabled(user.gender == .none)
-            )
-        } else {
-            return AnyView(
-                Button(action: {}, label: {
-                    Text("Save")
-                        .foregroundColor(.white)
-                })
-            )
+    func save(){
+        do {
+            try userRealm.write {
+                state.user?.userPreferences?.gender = gender
+            }
+        } catch {
+            state.error = "Unable to open Realm write transaction"
         }
+        if signup { next = true} else { self.mode.wrappedValue.dismiss()}
     }
 }
 
@@ -88,12 +87,8 @@ struct GenderView: View {
 struct GenderView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            GenderView(true, .constant(Dummy.user))
-                .environmentObject(Session())
-        }
-        NavigationView {
-            GenderView(false, .constant(Dummy.user))
-                .environmentObject(Session())
+            GenderView(true)
+                .environmentObject(AppState())
         }
     }
 }

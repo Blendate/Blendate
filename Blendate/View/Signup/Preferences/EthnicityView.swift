@@ -9,12 +9,15 @@ import SwiftUI
 
 struct EthnicityView: View {
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
-    @State var next: Bool = false
+    @EnvironmentObject var state: AppState
+    @Environment(\.realm) var userRealm
+    @State var next = false
     let signup: Bool
-    @Binding var user: User
+    let isTop = true
     
-    init(_ signup: Bool = false, _ user: Binding<User>){
-        self._user = user
+    @State var ethnicity = ""
+    
+    init(_ signup: Bool = false){
         self.signup = signup
     }
     
@@ -28,74 +31,81 @@ struct EthnicityView: View {
                 
                 VStack(spacing: 20){
                     HStack{
-                        ItemButton(title: "Pacific Islander", width: 160, active: user.ethnicity == .islander){
-                            user.ethnicity = .islander
-                            next.toggle()
+                        ItemButton(title: "Pacific Islander", width: 160, active: ethnicity == Ethnicity.islander.rawValue){
+                            ethnicity = Ethnicity.islander.rawValue
                         }
-                        ItemButton(title: "Black/African Descent", width: 180, active: user.ethnicity == .african){
-                            user.ethnicity = .african
-                            next.toggle()
+                        ItemButton(title: "Black/African Descent", width: 180, active: ethnicity == Ethnicity.african.rawValue){
+                            ethnicity = Ethnicity.african.rawValue
                         }
                     }
                     HStack{
-                        ItemButton(title: "East Asian", active: user.ethnicity == .eastAsian){
-                            user.ethnicity = .eastAsian
-                            next.toggle()
+                        ItemButton(title: "East Asian", active: ethnicity == Ethnicity.eastAsian.rawValue){
+                            ethnicity = Ethnicity.eastAsian.rawValue
                         }
-                        ItemButton(title: "Hispanic/Latino", width: 180, active: user.ethnicity == .hispanic){
-                            user.ethnicity = .hispanic
-                            next.toggle()
+                        ItemButton(title: "Hispanic/Latino", width: 180, active: ethnicity == Ethnicity.hispanic.rawValue){
+                            ethnicity = Ethnicity.hispanic.rawValue
                         }
                     }
                     HStack{
-                        ItemButton(title: "South Asian", active: user.ethnicity == .southAsian){
-                            user.ethnicity = .southAsian
-                            next.toggle()
+                        ItemButton(title: "South Asian", active: ethnicity == Ethnicity.southAsian.rawValue){
+                            ethnicity = Ethnicity.southAsian.rawValue
                         }
-                        ItemButton(title: "Native American", width: 160, active: user.ethnicity == .indian){
-                            user.ethnicity = .indian
-                            next.toggle()
+                        ItemButton(title: "Native American", width: 160, active: ethnicity == Ethnicity.indian.rawValue){
+                            ethnicity = Ethnicity.indian.rawValue
                         }
                     }
                     HStack{
-                        ItemButton(title: "White/Caucasian", width: 160, active: user.ethnicity == .caucasian){
-                            user.ethnicity = .caucasian
-                            next.toggle()
+                        ItemButton(title: "White/Caucasian", width: 160, active: ethnicity == Ethnicity.caucasian.rawValue){
+                            ethnicity = Ethnicity.caucasian.rawValue
                         }
-                        ItemButton(title: "Middle Eastern", width: 160, active: user.ethnicity == .middleEast){
-                            user.ethnicity = .middleEast
-                            next.toggle()
+                        ItemButton(title: "Middle Eastern", width: 160, active: ethnicity == Ethnicity.middleEast.rawValue){
+                            ethnicity = Ethnicity.middleEast.rawValue
                         }
                     }
                     HStack{
-                        ItemButton(title: "Other", active: user.ethnicity == .other){
-                            user.ethnicity = .other
-                            next.toggle()
+                        ItemButton(title: "Other", active: ethnicity == Ethnicity.other.rawValue){
+                            ethnicity = Ethnicity.other.rawValue
                         }
                     }
                 }.padding()
                 Spacer()
+                NavigationLink(
+                    destination: VicesView(signup),
+                    isActive: $next,
+                    label: { EmptyView() }
+                )
             }
-                .navigationBarItems(leading:
-                                        BackButton(signup: signup, isTop: true) {
-                                            mode.wrappedValue.dismiss()
-                                        },
-                                     trailing:
-                                        NavigationLink(
-                                            destination: VicesView(signup, $user),
-                                            isActive: $next,
-                                            label: {
-                                                NextButton(next: $next, isTop: true)
-                                            }
-                                        ).disabled(user.ethnicity == .none ))
-                .circleBackground(imageName: "", isTop: true)
+            .offset(y: -30)
+
+            .navigationBarItems(leading:
+                                    BackButton(signup: signup, isTop: true) {
+                                        mode.wrappedValue.dismiss()
+                                    },
+                                 trailing:
+                                NavNextButton(signup, isTop, save)
+            )
+            .circleBackground(imageName: nil, isTop: true)
+            .onAppear {
+                self.ethnicity = state.user?.userPreferences?.ethnicity ?? ""
+            }
+    }
+    
+    func save(){
+        do {
+            try userRealm.write {
+                state.user?.userPreferences?.ethnicity = ethnicity
+            }
+        } catch {
+            state.error = "Unable to open Realm write transaction"
+        }
+        if signup { next = true} else { self.mode.wrappedValue.dismiss()}
     }
 }
 
 struct EthnicityView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView{
-            EthnicityView(true, .constant(Dummy.user))
+            EthnicityView(true)
         }
     }
 }

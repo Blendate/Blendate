@@ -6,32 +6,20 @@
 //
 
 import SwiftUI
+import RealmSwift
 
 struct VicesView: View {
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
-    @State var next: Bool = false
+    @EnvironmentObject var state: AppState
+    @Environment(\.realm) var userRealm
+    @State var next = false
     let signup: Bool
+    let isTop = true
     
-    @Binding var user: User
-    init(_ signup: Bool = false, _ user: Binding<User>){
-        self._user = user
+    @State var vices = RealmSwift.List<String>()
+    
+    init(_ signup: Bool = false){
         self.signup = signup
-    }
-    
-    func signupUser(){
-        print(try! user.toDic())
-        API.Auth.signUpGuest(user: user) { uid in
-            print("Signed Up \(uid)")
-//            API.User.saveImages(uid: uid, profileImage: session.profileImage!, coverPhoto: session.coverPhoto!, images: session.images) { (urls) in
-//                print("uploaded")
-////                next.toggle()
-//            } onError: { (errMsg) in
-//                print(errMsg)
-//            }
-//            next.toggle()
-        } onError: { (errMsg) in
-            print(errMsg)
-        }
     }
     
     var body: some View {
@@ -43,99 +31,102 @@ struct VicesView: View {
             ScrollView{
                 VStack(spacing: 20){
                     HStack {
-                        ItemButton(title: "Alcohol", active: user.vices.contains(.alcohol)){
-                            user.vices.tapItem(.alcohol)
-                            next.toggle()
+                        ItemButton(title: "Alcohol", active: vices.contains(Vice.alcohol.rawValue)){
+                            vices.tapItem(Vice.alcohol.rawValue)
                         }
-                        ItemButton(title: "Late night snacker", width: 180, active: user.vices.contains(.snacker)){
-                            user.vices.tapItem(.snacker)
-                            next.toggle()
+                        ItemButton(title: "Late night snacker", width: 180, active: vices.contains(Vice.snacker.rawValue)){
+                            vices.tapItem(Vice.snacker.rawValue)
                         }
                     }
                     HStack {
-                        ItemButton(title: "Marijuana", width: 150, active: user.vices.contains(.weed)){
-                            user.vices.tapItem(.weed)
-                            next.toggle()
+                        ItemButton(title: "Marijuana", width: 150, active: vices.contains(Vice.weed.rawValue)){
+                            vices.tapItem(Vice.weed.rawValue)
                         }
-                        ItemButton(title: "Tobacco", width: 150, active: user.vices.contains(.smoke)){
-                            user.vices.tapItem(.smoke)
-                            next.toggle()
+                        ItemButton(title: "Tobacco", width: 150, active: vices.contains(Vice.smoke.rawValue)){
+                            vices.tapItem(Vice.smoke.rawValue)
                         }
                     }
                     HStack {
-                        ItemButton(title: "Psycedelics", width: 150, active: user.vices.contains(.psychs)){
-                            user.vices.tapItem(.psychs)
-                            next.toggle()
+                        ItemButton(title: "Psycedelics", width: 150, active: vices.contains(Vice.psychs.rawValue)){
+                            vices.tapItem(Vice.psychs.rawValue)
                         }
-                        ItemButton(title: "Sleeping in", width: 150, active: user.vices.contains(.sleep)){
-                            user.vices.tapItem(.sleep)
-                            next.toggle()
+                        ItemButton(title: "Sleeping in", width: 150, active: vices.contains(Vice.sleep.rawValue)){
+                            vices.tapItem(Vice.sleep.rawValue)
                         }
                     }
                     HStack {
-                        ItemButton(title: "Nail Biter", width: 150, active: user.vices.contains(.nail)){
-                            user.vices.tapItem(.nail)
-                            next.toggle()
+                        ItemButton(title: "Nail Biter", width: 150, active: vices.contains(Vice.nail.rawValue)){
+                            vices.tapItem(Vice.nail.rawValue)
                         }
-                        ItemButton(title: "Coffee Drinker", width: 150, active: user.vices.contains(.coffee)){
-                            user.vices.tapItem(.coffee)
-                            next.toggle()
+                        ItemButton(title: "Coffee Drinker", width: 150, active: vices.contains(Vice.coffee.rawValue)){
+                            vices.tapItem(Vice.coffee.rawValue)
                         }
                     }
                     HStack {
-                        ItemButton(title: "Procrastinator", width: 150, active: user.vices.contains(.procras)){
-                            user.vices.tapItem(.procras)
-                            next.toggle()
+                        ItemButton(title: "Procrastinator", width: 150, active: vices.contains(Vice.procras.rawValue)){
+                            vices.tapItem(Vice.procras.rawValue)
                         }
-                        ItemButton(title: "Chocolate", width: 150, active: user.vices.contains(.chocolate)){
-                            user.vices.tapItem(.chocolate)
-                            next.toggle()
+                        ItemButton(title: "Chocolate", width: 150, active: vices.contains(Vice.chocolate.rawValue)){
+                            vices.tapItem(Vice.chocolate.rawValue)
                         }
                     }
                     HStack {
-                        ItemButton(title: "Sun tanning", width: 150, active: user.vices.contains(.tanning)){
-                            user.vices.tapItem(.tanning)
-                            next.toggle()
+                        ItemButton(title: "Sun tanning", width: 150, active: vices.contains(Vice.tanning.rawValue)){
+                            vices.tapItem(Vice.tanning.rawValue)
                         }
-                        ItemButton(title: "Gambling", width: 150, active: user.vices.contains(.gambling)){
-                            user.vices.tapItem(.gambling)
-                            next.toggle()
+                        ItemButton(title: "Gambling", width: 150, active: vices.contains(Vice.gambling.rawValue)){
+                            vices.tapItem(Vice.gambling.rawValue)
                         }
                     }
                     HStack {
-                        ItemButton(title: "Shopping", width: 150, active: user.vices.contains(.shopping)){
-                            user.vices.tapItem(.shopping)
-                            next.toggle()
+                        ItemButton(title: "Shopping", width: 150, active: vices.contains(Vice.shopping.rawValue)){
+                            vices.tapItem(Vice.shopping.rawValue)
                         }
-                        ItemButton(title: "Excercising", width: 150, active: user.vices.contains(.excersize)){
-                            user.vices.tapItem(.excersize)
-                            next.toggle()
+                        ItemButton(title: "Excercising", width: 150, active: vices.contains(Vice.excersize.rawValue)){
+                            vices.tapItem(Vice.excersize.rawValue)
                         }
                     }
                     HStack {
-                        ItemButton(title: "Book Worm", width: 150, active: user.vices.contains(.books)){
-                            user.vices.tapItem(.books)
-                            next.toggle()
+                        ItemButton(title: "Book Worm", width: 150, active: vices.contains(Vice.books.rawValue)){
+                            vices.tapItem(Vice.books.rawValue  )
                         }
                     }
                 }
             }.padding()
-            CapsuleButton(isActive: .constant(true), title: "Start Blending", action: {
-                signupUser()
-            }).padding()
+            if signup {
+                CapsuleButton(isActive: .constant(true), title: "Start Blending", action: {
+                    state.currentView = .session
+                }).padding()
+            }
         }
+        .offset(y: -40)
         .navigationBarItems(leading:
                                 BackButton(signup: signup, isTop: true) {
                                     mode.wrappedValue.dismiss()
-                                },
-                             trailing:
-                                Button(action: {}) {
-                                    Text("Done")
+                                }
+                            ,trailing:
+                                Button(action: {state.currentView = .session}) {
+                                    Text(signup ? "Done":"")
                                         .bold()
                                         .blendFont(16, .white)
-                                })
-        .circleBackground(imageName: "", isTop: true)
+                                }
+        )
+        .circleBackground(imageName: nil, isTop: true)
+        .onAppear {
+            self.vices = state.user?.userPreferences?.vices ?? RealmSwift.List<String>()
+        }
         
+    }
+    
+    func save(){
+//        do {
+//            try userRealm.write {
+//                state.user?.preferences?.vices = vices
+//            }
+//        } catch {
+//            state.error = "Unable to open Realm write transaction"
+//        }
+        if signup { next = true} else { self.mode.wrappedValue.dismiss()}
     }
     
 }
@@ -143,7 +134,7 @@ struct VicesView: View {
 struct VicesView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView{
-            VicesView(true, .constant(Dummy.user))
+            VicesView(true)
         }
     }
 }
