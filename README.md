@@ -1,2 +1,0 @@
-# Blendate
-Blendate iOS App
