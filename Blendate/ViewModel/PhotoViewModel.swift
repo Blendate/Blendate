@@ -65,8 +65,8 @@ struct PhotoService {
         }
     }
     
-    static func photo(_ photos: Binding<[Photo]>, _ index: Int)->Binding<Photo>? {
-        return photos.first(where: {$0.placement.wrappedValue == index})
+    static func photo(_ photos: [Photo], _ index: Int)->Photo? {
+        return photos.first(where: {$0.placement == index})
     }
 }
 

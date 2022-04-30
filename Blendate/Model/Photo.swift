@@ -21,15 +21,6 @@ struct Photo: Codable, Equatable, Identifiable {
     }
 }
 
-struct Location: Codable, Identifiable, Equatable {
-    var id:String = UUID().uuidString
-    var name: String
-    let lat: Double
-    let lon: Double
-    func coordinate()->CLLocationCoordinate2D {
-        return CLLocationCoordinate2D(latitude: lat, longitude: lon)
-    }
-}
 
 
 

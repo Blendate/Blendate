@@ -44,7 +44,7 @@ struct ProfileCardView: View {
         let url = details.photos.first(where: {$0.placement == 1})?.url
         return ZStack(alignment: .bottom) {
             VStack(spacing: 0) {
-                CoverPhotoView(url: url)
+                PhotoView.Cover(url: url)
                 Spacer()
             }
             Card
@@ -56,13 +56,18 @@ struct ProfileCardView: View {
 
         return ZStack(alignment: .top) {
             VStack {
-                VStack {
-                    Text(details.fullName + ", " + "\(details.age)")
-                    Text(details.info.location.name)
+                if profileType != .session {
+                    VStack {
+                        Text(details.fullName + ", " + "\(details.age)")
+                        Text(details.info.location.name)
+                    }
+                    .fontType(.regular, 18, .white)
+                    .padding(.bottom)
+                    .padding(.top, avatarSize/1.5)
+                } else {
+                    Rectangle().fill(Color.clear)
+                        .frame(height: avatarSize/2)
                 }
-                .fontType(.regular, 18, .white)
-                .padding(.bottom)
-                .padding(.top, avatarSize/1.5)
                 ProfileButtons(profileType) { swipe in
                     matchVM.swipe(on: uid, swipe)
                 }
@@ -70,7 +75,7 @@ struct ProfileCardView: View {
             .background(details.color.opacity(0.6))
             .mask(RoundedRectangle(cornerRadius: 25.0))
             .padding(.top, avatarSize/2)
-            AvatarView(url: url, size: avatarSize)
+            PhotoView.Avatar(url: url, size: avatarSize)
         }
         .padding(.horizontal)
     }

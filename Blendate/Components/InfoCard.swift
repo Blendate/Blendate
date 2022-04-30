@@ -79,7 +79,7 @@ struct InfoData: View {
     }
 
     var body: some View {
-        if !info.isEmpty {
+        if !info.isBlank {
             VStack(alignment: .leading) {
                 Text(info)
                     .fontType(.regular, 14, .DarkBlue)
@@ -121,7 +121,7 @@ enum InfoType: String, CaseIterable, Identifiable {
                 return false
             } else {return true}
         case .background:
-            if details.info.religion.isBlank && details.info.politics.isEmpty && details.info.ethnicity.isBlank {
+            if details.info.religion.isBlank && details.info.politics.isBlank && details.info.ethnicity.isBlank {
                 return false
             } else {return true}
         case .lifestyle:

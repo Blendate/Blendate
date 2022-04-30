@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+import CoreLocation
 struct Details: Codable {
 
     var type: PropType = .detail
@@ -21,7 +21,13 @@ struct Details: Codable {
     var interests: [String] = []
     
     var info: Filters = Filters(.detail)
-    var photos: [Photo] = []
+    var photos: [Photo] = {
+        var array: [Photo] = []
+        for i in 0..<8 {
+            array.append(Photo(placement: i))
+        }
+        return array
+    }()
     
     var color: Color = .Blue
     
@@ -100,3 +106,12 @@ struct IntRange: Codable {
 }
 
 
+struct Location: Codable, Identifiable, Equatable {
+    var id:String = UUID().uuidString
+    var name: String
+    let lat: Double
+    let lon: Double
+    func coordinate()->CLLocationCoordinate2D {
+        return CLLocationCoordinate2D(latitude: lat, longitude: lon)
+    }
+}

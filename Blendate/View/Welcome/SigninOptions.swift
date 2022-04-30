@@ -20,8 +20,8 @@ class MyAuthViewController : FUIAuthPickerViewController {
             if let button = each as? UIButton {
                 button.layer.cornerRadius = 20.0
                 button.layer.masksToBounds = true
-                button.layer.backgroundColor = UIColor.white.cgColor
-                button.setTitleColor(UIColor.black, for: .normal)
+//                button.layer.backgroundColor = UIColor.white.cgColor
+//                button.setTitleColor(UIColor.black, for: .normal)
             }
         }
         

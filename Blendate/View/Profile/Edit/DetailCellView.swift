@@ -76,11 +76,19 @@ extension DetailCellView {
         case .ethnicity:
             PropPicker( Ethnicity.self, $details.info.ethnicity)
         case .vices:
-            PropPicker( Ethnicity.self, $details.info.ethnicity)
+            NavigationLink {
+                MultiSelectPickerView(allItems: Vices.allCases.map{$0.rawValue}, selectedItems: $details.info.vices)
+            } label: {
+                HStack {
+                    Spacer()
+                    Text(stringArrayValue(details.info.vices))
+                }
+            }
         case .photos:
             NavigationLink {
                 AddPhotosView(photos: $details.photos, signup: false)
             } label: {EmptyView()}.tint(.Blue)
+            
         case .bio:
             TextField("", text: $details.bio)
                 .multilineTextAlignment(.trailing)
@@ -91,7 +99,15 @@ extension DetailCellView {
             TextField("", text: $details.schoolTitle)
                 .multilineTextAlignment(.trailing)
         case .interests:
-            Text(stringArrayValue(details.interests))
+            NavigationLink {
+                MultiSelectPickerView(allItems: Interest.allCases.map{$0.rawValue}, selectedItems: $details.interests)
+            } label: {
+                HStack {
+                    Spacer()
+                    Text(stringArrayValue(details.interests))
+                }
+            }.buttonStyle(.plain)
+
         }
     }
     
@@ -118,18 +134,7 @@ extension DetailCellView {
         set: { details.info.maxDistance = Int($0) }
     }
     
-    func stringArrayValue(_ array: [String]) -> String {
-        if !array.isEmpty {
-            let first = array.map({$0}).prefix(upTo: 2).joined(separator:", ")
-            let moreAmount = array.count - 2
-            
-            let more = moreAmount < 1 ? "":" +\(moreAmount) more"
-            
-            return first + more
-        } else {
-            return ""
-        }
-    }
+
     
     struct PropPicker<T:Property>: View {
         let prop: T.Type
@@ -160,6 +165,86 @@ extension DetailCellView {
 
         }
     }
+    
+//    struct ArrayPicker<T:Property>: View {
+//        let prop: T.Type
+//        @Binding var array: [String]
+//
+//        init(_ prop: T.Type, _ value: Binding<[String]>){
+//            self.prop = prop
+//            self._array = value
+//        }
+//        var body: some View {
+//            Menu {
+//                Picker("", selection: $array) {
+//                    ForEach(Array(T.allCases), id: \.self.value) {
+//                        Text($0.value + (array.contains($0.value) ? "+":""))
+//                            .tag($0.value)
+//                    }
+//                    Text("--").tag("--")
+//                }
+//    //            .pickerStyle(.menu)
+//                .labelsHidden()
+//                .pickerStyle(InlinePickerStyle())
+//
+//            } label: {
+//                Text(stringArrayValue(array))
+//                    .foregroundColor(.primary)
+//                // make your custom button here
+//            }
+//
+//        }
+//}
+
+        
+        struct MultiSelectPickerView: View {
+            // The list of items we want to show
+            @State var allItems: [String]
+         
+            // Binding to the selected items we want to track
+            @Binding var selectedItems: [String]
+         
+            var body: some View {
+                Form {
+                    List {
+                        ForEach(allItems, id: \.self) { item in
+                            Button(action: {
+                                withAnimation {
+                                    if self.selectedItems.contains(item) {
+                                        // Previous comment: you may need to adapt this piece
+                                        self.selectedItems.removeAll(where: { $0 == item })
+                                    } else {
+                                        self.selectedItems.append(item)
+                                    }
+                                }
+                            }) {
+                                HStack {
+                                    Image(systemName: "checkmark")
+                                        .opacity(self.selectedItems.contains(item) ? 1.0 : 0.0)
+                                    Text(item)
+                                }
+                            }
+                            .foregroundColor(.primary)
+                        }
+                    }
+                }
+            }
+        }
+        
+        func stringArrayValue(_ array: [String]) -> String {
+            guard !array.isEmpty else {return "--"}
+            if array.count >= 2 {
+                let first = array.map({$0}).prefix(upTo: 2).joined(separator:", ")
+                let moreAmount = array.count - 2
+                
+                let more = moreAmount < 1 ? "":" +\(moreAmount) more"
+                
+                return first + more
+            } else {
+                return array.first ?? "T"
+            }
+        }
+
 }
 
 struct DetailCellView_Previews: PreviewProvider {

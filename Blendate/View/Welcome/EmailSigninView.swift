@@ -27,7 +27,9 @@ struct EmailSigninView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button(systemName: "xmark", action: {dismiss()})
+                    Button("Cancel") {
+                        dismiss()
+                    }
                 }
             }
         }
@@ -38,7 +40,6 @@ struct EmailSigninView: View {
             await signin()
         }
         .capsuleButton(fontsize: 18)
-
     }
 
     

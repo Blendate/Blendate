@@ -52,7 +52,7 @@ struct ChatView: View {
             }
         }
         .sheet(isPresented: $showProfile) {
-            if let user = withUser { ProfileView(.constant(user), .view) }
+            if let user = withUser { MatchProfileView(user: user) }
         }
     }
 }

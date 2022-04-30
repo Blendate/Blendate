@@ -38,34 +38,6 @@ extension WelcomeView {
         .shadow(radius: 10)
     }
     
-    var logoheader: some View {
-        VStack {
-            Image.icon(100, .white)
-            Text("Blendate")
-                .fontType(.semibold, 52, .white)
-            Text("Find your blended family")
-                .fontType(.semibold, 16, .white)
-        }
-    }
-
-    
-    var terms: some View {
-        Text("By signing up, you agree to our [Terms](https://blendate.app) See what data we collect in our [Privacy Policy](https://blendate.app).")
-            .multilineTextAlignment(.center)
-            .padding(.horizontal)
-            .padding(.bottom, 6)
-            .foregroundColor(Color.gray)
-    }
-    
-    var signinButtons: some View {
-        VStack {
-            emailButton
-            SocialSigninButtons()
-                .frame(height:240)
-                .noPreview(140, 240, "Social Button")
-        }
-    }
-    
     var emailButton: some View {
         Button {
             showEmail = true
@@ -86,6 +58,37 @@ extension WelcomeView {
         .cornerRadius(20)
 
     }
+    
+    var signinButtons: some View {
+        VStack {
+            emailButton
+            SocialSigninButtons()
+                .frame(height:240)
+                .noPreview(140, 240, "Social Button")
+        }
+    }
+
+    var logoheader: some View {
+        VStack {
+            Image.icon(100, .white)
+            Text("Blendate")
+                .fontType(.semibold, 52, .white)
+            Text("Find your blended family")
+                .fontType(.semibold, 16, .white)
+        }
+    }
+    
+    var terms: some View {
+        Text("By signing up, you agree to our [Terms](https://blendate.app) See what data we collect in our [Privacy Policy](https://blendate.app).")
+            .multilineTextAlignment(.center)
+            .padding(.horizontal)
+            .padding(.bottom, 6)
+            .foregroundColor(Color.gray)
+    }
+    
+
+    
+
 }
 
 

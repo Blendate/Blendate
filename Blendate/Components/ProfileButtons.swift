@@ -79,7 +79,13 @@ extension ProfileButtons {
         @Binding var state: ProfileSheet.State?
 
         var body: some View {
-            Button(action:{state = type}){
+            Button(action:{
+                printD(type.rawValue)
+                state = type
+                printD(state?.rawValue ?? "NONE")
+
+                
+            }){
                 VStack(alignment: .center){
                     Text(type.rawValue)
                     if type == .edit {

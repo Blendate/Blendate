@@ -24,68 +24,60 @@ struct PhotosGridView: View {
         }
     }
 
-    @Binding var photos: [Photo]
+    var photos: [Photo]
     let editMode: Bool
 //    let rows = [ GridItem(.flexible()), GridItem(.flexible())]
 
     let rows = [ GridItem(.fixed(210)),
                   GridItem(.fixed(170)) ]
     
-    init(_ photos: Binding<[Photo]>, _ editMode: Bool = false){
-        self._photos = photos
+    init(_ photos: [Photo], _ editMode: Bool = false){
+        self.photos = photos
         self.editMode = editMode
     }
     
     var body: some View {
         VStack{
-            
             ScrollView(.horizontal, showsIndicators: false, content: {
-//                ForEach(Groups.allCases){ group in
-//                    ForEach()
-//                    VStack {
-//
-//                    }
-//                }
-                    HStack{
-                        VStack{
-                            if let photo = photo(2) {
-                                PhotoVieww(photo)
-                            }
-                            if let photo = photo(3) {
-                                PhotoVieww(photo)
-                            }
+                HStack{
+                    VStack{
+                        if let photo = photo(2) {
+                            PhotoView(photo)
                         }
-                        VStack{
-                            if let photo = photo(4) {
-                                PhotoVieww(photo)
-                            }
-                            if let photo = photo(5) {
-                                PhotoVieww(photo)
-                            }
-
-                        }
-                        VStack{
-                            if let photo = photo(6) {
-                                PhotoVieww(photo)
-                            }
-                            if let photo = photo(7) {
-                                PhotoVieww(photo)
-                            }
+                        if let photo = photo(3) {
+                            PhotoView(photo)
                         }
                     }
+                    VStack{
+                        if let photo = photo(4) {
+                            PhotoView(photo)
+                        }
+                        if let photo = photo(5) {
+                            PhotoView(photo)
+                        }
+                    }
+                    VStack{
+                        if let photo = photo(6) {
+                            PhotoView(photo)
+                        }
+                        if let photo = photo(7) {
+                            PhotoView(photo)
+                        }
+                    }
+                }
             })
             .padding()
         }
     }
     
-    private func photo(_ index: Int)->Binding<Photo>?{
-        return PhotoService.photo($photos, index)
+    private func photo(_ index: Int)->Photo?{
+        return PhotoService.photo(photos, index)
     }
 
 }
 
 struct PhotosGridView_Previews: PreviewProvider {
     static var previews: some View {
-        PhotosGridView(.constant(dev.michael.details.photos))
+        PhotosGridView(dev.michael.details.photos)
     }
 }

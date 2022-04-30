@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+enum ProfileType { case view, match, session }
 struct MatchProfileView: View {
     @StateObject var vm: MatchViewModel
     
@@ -21,7 +22,7 @@ struct MatchProfileView: View {
         } else {
             self.profileType = .match
         }
-    }
+    } 
     
     var body: some View {
         Group {
@@ -38,13 +39,13 @@ struct MatchProfileView: View {
             ProfileCardView(user.details, profileType, user.id)
             bio(user)
             infocards(user)
-            PhotosGridView(.constant(user.details.photos))
+            PhotosGridView(user.details.photos)
             interests(user)
         }
     }
     
     var matchProfile: some View {
-        LoadingView(showLoading: vm.loading, .Blue, "Filtering for your potential Blends...") {
+        Group {
             if let first = vm.lineup.first {
                     profileView(first)
                     .environmentObject(vm)
@@ -93,7 +94,7 @@ struct MatchProfileView: View {
 
 struct MatchProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        MatchProfileView()
+        MatchProfileView(user: dev.michael)
     }
 }
 

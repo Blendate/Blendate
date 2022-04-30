@@ -25,7 +25,7 @@ struct MatchAvatarView: View {
                     Circle()
                         .stroke( Color.DarkBlue,lineWidth: 2)
                         .frame(width: 80, height: 80, alignment: .center)
-                    AvatarView(url: user?.details.photos[0].url, size: 70)
+                    PhotoView.Avatar(url: user?.details.photos[0].url, size: 70)
                 }
                 Text(user?.details.firstname ?? "")
             }
