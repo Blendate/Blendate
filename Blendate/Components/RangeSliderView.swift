@@ -122,7 +122,7 @@ struct RangeSliderView_Previews: PreviewProvider {
                         Spacer()
                         Text(dev.bindingMichael.filters.ageRange.label)
                     }
-                    RangeSliderView(range: dev.$bindingMichael.filters.ageRange, totalWidth: geo.size.width, slider: IntRange(18, 75))
+                    RangeSliderView(range: dev.$bindingMichael.filters.ageRange, totalWidth: geo.size.width, slider: KAgeRange)
                 }
             }
         }

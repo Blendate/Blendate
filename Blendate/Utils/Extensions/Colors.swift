@@ -19,6 +19,8 @@ extension Color {
     static let LightGray = Color(UIColor.systemGray6)
     static let LightGray2 = Color(red: 0.9, green: 0.9, blue: 0.9)
     static let accent = Color("AccentColor")
+    static let gradient = LinearGradient(gradient: Gradient(colors: [.DarkBlue, .DarkPink]), startPoint: .bottomTrailing, endPoint: .topLeading)
+
 }
 
 public func ColorNavbar(){

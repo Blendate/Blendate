@@ -10,12 +10,14 @@ import Foundation
 enum PropType:Codable { case detail, filter }
 
 let kOpenString:String = "Open to all"
-
+let KAgeRange: IntRange = IntRange(18,75)
+let KKidAge: IntRange = IntRange(0,19)
+let kEmailKey: String = "kEmailKey"
 
 struct Filters: Codable {    
     var isParent: Bool = false
     var children: Int = 0
-    var childrenRange = IntRange(0, 1)
+    var childrenRange = IntRange(0,1)
     var height: Int = 0
     var seeking: String = "--"
     var relationship: String = "--"
@@ -26,7 +28,7 @@ struct Filters: Codable {
     var ethnicity: String = "--"
     var vices: [String] = []
 
-    var ageRange = IntRange(18, 75)
+    var ageRange = KAgeRange
     var maxDistance: Int = 50
 
     var location: Location = Location(name: "", lat: 0, lon: 0)
@@ -41,6 +43,7 @@ struct Filters: Codable {
             religion = kOpenString
             politics = kOpenString
             ethnicity = kOpenString
+            childrenRange = IntRange(0,19)
         }
     }
 }
@@ -69,8 +72,6 @@ enum Filter: String, Identifiable, CaseIterable {
         case other = "Other"
 
         func cells(_ filters: Filters) -> [Filter] {
-//        case maxDistance, ageRange, seeking, isParent, children, childrenRange, height, relationship, familyPlans,
-//            mobility, religion, politics, ethnicity, vices
             switch self {
             case .general:
                 return [.maxDistance, .ageRange, .seeking]
@@ -91,60 +92,3 @@ enum Filter: String, Identifiable, CaseIterable {
     }
 }
 
-//
-//
-//extension Filters {
-//
-//    mutating func set(_ property: Detail, _ value: Any) {
-//        let bool = value as? Bool ?? false
-//        let string = value as? String ?? "Open to all"
-//        let stringArray = value as? [String] ?? []
-//        let int = value as? Int ?? 0
-//        let range = value as? IntRange ?? IntRange(0, 1)
-//        let location = value as? Location ?? Location(name: "New York", lat: 40.7128, lon: -74.0060)
-//
-//        switch property {
-//
-//
-//        case .seeking: seeking = string
-//        case .isParent: isParent = bool
-//        case .children: children = int
-//        case .childrenRange: childrenRange = range
-//        case .height: height = int
-//        case .relationship: relationship = string
-//        case .familyPlans: familyPlans = string
-//        case .mobility: mobility = string
-//        case .religion: religion = string
-//        case .politics: politics = string
-//        case .ethnicity: ethnicity = string
-//        case .vices: vices = stringArray
-//        case .ageRange: ageRange = range
-//        case .maxDistance: maxDistance = int
-//        case .location: self.location = location
-//        default: return
-//        }
-//    }
-//
-//    func getValue(_ detail: Detail) -> Any {
-//        switch detail {
-//        case .seeking: return seeking
-//        case .relationship: return relationship
-//        case .familyPlans: return familyPlans
-//        case .mobility: return mobility
-//        case .religion: return religion
-//        case .politics: return politics
-//        case .ethnicity: return ethnicity
-//        case .isParent: return isParent
-//        case .children: return children
-//        case .childrenRange: return childrenRange
-//        case .height: return height
-//        case .vices: return vices
-//        case .ageRange: return ageRange
-//        case .maxDistance: return maxDistance
-//        case .location: return location
-//        default: return "NONE"
-//        }
-//    }
-
-
-//}

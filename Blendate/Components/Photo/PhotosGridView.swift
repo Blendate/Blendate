@@ -35,7 +35,7 @@ struct PhotosGridView: View {
         self.photos = photos
         self.editMode = editMode
     }
-    
+    #warning("fix this to a grid with 2 collumns alternating")
     var body: some View {
         VStack{
             ScrollView(.horizontal, showsIndicators: false, content: {

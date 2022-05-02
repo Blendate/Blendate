@@ -54,7 +54,7 @@ extension DetailCellView {
     var value: some View {
         switch detail {
         case .childrenRange:
-            RangeSliderView(range: $details.info.childrenRange, totalWidth: 300, slider: IntRange(1, 12))
+            RangeSliderView(range: $details.info.childrenRange, totalWidth: 300, slider: KKidAge)
         case .height:
             Slider(value: height, in: 1...50, step: 1.0).tint(.Blue)
         case .isParent:

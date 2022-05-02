@@ -24,7 +24,6 @@ struct WelcomeView: View {
             terms
         }
         .errorAlert(error: $error)
-
     }
     
     var card: some View {
@@ -49,7 +48,7 @@ struct WelcomeView: View {
             .padding(.top)
             .padding(.horizontal, 30)
             .shadow(radius: 10)
-        }
+        } 
     }
     
     
@@ -62,13 +61,12 @@ struct WelcomeView: View {
                 .keyboardType(.emailAddress)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
-            AsyncButton("Sign in", action: sendEmail)
-            .fontType(.semibold, 22)
+            AsyncButton("Sign in with email", action: sendEmail)
+            .fontType(.semibold, 14, .Blue)
             .tint(.white)
             .buttonStyle(.borderedProminent)
             .buttonBorderShape(.roundedRectangle(radius: 5))
             .controlSize(.regular)
-            .foregroundColor(.Blue)
 //            .capsuleButton(color: .white, fontsize: 22)
         }
     }
@@ -115,7 +113,7 @@ struct WelcomeView: View {
         
         do {
             try await Auth.auth().sendSignInLink(toEmail: email, actionCodeSettings: actionCodeSettings)
-            UserDefaults.standard.set(email, forKey: "Email")
+            UserDefaults.standard.set(email, forKey: kEmailKey)
             self.error = AlertError(errorDescription: "Email Sent", failureReason: "Please check your email for a link to authenticate and sign in, if you don't have an account one will be created for you")
         } catch {
             self.error = error as? AlertError

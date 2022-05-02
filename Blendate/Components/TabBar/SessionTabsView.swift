@@ -105,49 +105,45 @@ struct TabBottomView_Previews: PreviewProvider {
 struct ClassicTabBar: View {
     @Binding var selectedIndex: Int
     @Binding var user: User
-    
-    @StateObject var messageVM: MessagesViewModel
-    @StateObject var matchVM: MatchViewModel
+    @EnvironmentObject var matchVM: MatchViewModel
+
 
     init(_ user: Binding<User>, _ index: Binding<Int>){
-        self._messageVM = StateObject(wrappedValue: MessagesViewModel())
-        self._matchVM = StateObject(wrappedValue: MatchViewModel())
-        
         self._user = user
         self._selectedIndex = index
     }
     
     var body: some View {
-        TabView(selection: $selectedIndex) {
-            MatchProfileView()
-                .transition(.opacity)
-                .environmentObject(matchVM)
-                .tabItem{
-                    Image("icon-2")
-                }
-                .tag(0)
-            MessagesView()
-                .environmentObject(messageVM)
-                .tabItem{
-                    Image("chat")
-                }
-                .tag(1)
+        LoadingView(showLoading: matchVM.loading) {
+            TabView(selection: $selectedIndex) {
+                    MatchProfileView()
+                        .transition(.opacity)
+                        .tabItem{
+                            Image("icon-2")
+                        }
+                        .tag(0)
+                MessagesView()
+                    .tabItem{
+                        Image("chat")
+                    }
+                    .tag(1)
 
-            TodayView()
-                .tabItem{
-                    Image("heart")
-                }
-                .tag(2)
+                TodayView()
+                    .tabItem{
+                        Image("heart")
+                    }
+                    .tag(2)
 
-            ProfileView($user)
-                .tabItem{
-                    Image("profile")
-                }
-                .tag(3)
+                ProfileView($user)
+                    .tabItem{
+                        Image("profile")
+                    }
+                    .tag(3)
 
+            }
         }
+
         .task {
-//            await messageVM.getConvos()
             await matchVM.getLineup()
         }
     }

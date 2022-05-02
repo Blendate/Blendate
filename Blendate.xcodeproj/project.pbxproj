@@ -46,7 +46,6 @@
 		4C788479281895F900B643C2 /* ToolBarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C788478281895F900B643C2 /* ToolBarItem.swift */; };
 		4C78847B28189F4E00B643C2 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C78847A28189F4E00B643C2 /* Button.swift */; };
 		4C78847D2818A03000B643C2 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C78847C2818A03000B643C2 /* Image.swift */; };
-		4C7C21F527E8EDAB00997B17 /* AppDelegate+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7C21F427E8EDAB00997B17 /* AppDelegate+Notifications.swift */; };
 		4C7C21F927E8F90100997B17 /* DeveloperPrview+Users.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7C21F827E8F90100997B17 /* DeveloperPrview+Users.swift */; };
 		4C80024F27609E7E00F9410A /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C80024C27609E7E00F9410A /* ProfileView.swift */; };
 		4C80025727609E9800F9410A /* FiltersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C80025327609E9800F9410A /* FiltersView.swift */; };
@@ -136,6 +135,7 @@
 		4CC1358927F649D100719F48 /* MatchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC1358827F649D100719F48 /* MatchViewModel.swift */; };
 		4CC1358B27F64B4300719F48 /* MessagesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC1358A27F64B4300719F48 /* MessagesViewModel.swift */; };
 		4CC1358D27F65E6F00719F48 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC1358C27F65E6F00719F48 /* ChatViewModel.swift */; };
+		4CC23DBB281FB0180058E457 /* UIApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC23DBA281FB0180058E457 /* UIApplication.swift */; };
 		4CC2F9512817922100A1D105 /* EmptyLineupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC2F9502817922100A1D105 /* EmptyLineupView.swift */; };
 		4CC57ED82802C08C00C6683C /* MembershipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC57ED72802C08C00C6683C /* MembershipView.swift */; };
 		4CCFAC15280364AE0063FCA6 /* SettingCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CCFAC14280364AE0063FCA6 /* SettingCellView.swift */; };
@@ -186,7 +186,6 @@
 		4C788478281895F900B643C2 /* ToolBarItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolBarItem.swift; sourceTree = "<group>"; };
 		4C78847A28189F4E00B643C2 /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
 		4C78847C2818A03000B643C2 /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
-		4C7C21F427E8EDAB00997B17 /* AppDelegate+Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDelegate+Notifications.swift"; sourceTree = "<group>"; };
 		4C7C21F827E8F90100997B17 /* DeveloperPrview+Users.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeveloperPrview+Users.swift"; sourceTree = "<group>"; };
 		4C80024C27609E7E00F9410A /* ProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		4C80025327609E9800F9410A /* FiltersView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FiltersView.swift; sourceTree = "<group>"; };
@@ -265,6 +264,7 @@
 		4CC1358827F649D100719F48 /* MatchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchViewModel.swift; sourceTree = "<group>"; };
 		4CC1358A27F64B4300719F48 /* MessagesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesViewModel.swift; sourceTree = "<group>"; };
 		4CC1358C27F65E6F00719F48 /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
+		4CC23DBA281FB0180058E457 /* UIApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIApplication.swift; sourceTree = "<group>"; };
 		4CC2F9502817922100A1D105 /* EmptyLineupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyLineupView.swift; sourceTree = "<group>"; };
 		4CC57ED72802C08C00C6683C /* MembershipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MembershipView.swift; sourceTree = "<group>"; };
 		4CCFAC14280364AE0063FCA6 /* SettingCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCellView.swift; sourceTree = "<group>"; };
@@ -332,7 +332,6 @@
 			children = (
 				4C8059A527601ED900D85D14 /* BlendateApp.swift */,
 				4C9306A227960A99000ABD89 /* AppDelegate.swift */,
-				4C7C21F427E8EDAB00997B17 /* AppDelegate+Notifications.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -529,6 +528,7 @@
 			children = (
 				4C805A4D2760437E00D85D14 /* Colors.swift */,
 				4C788478281895F900B643C2 /* ToolBarItem.swift */,
+				4CC23DBA281FB0180058E457 /* UIApplication.swift */,
 				4C78847A28189F4E00B643C2 /* Button.swift */,
 				4C197C64281BA219002DD266 /* Int.swift */,
 				4C197C502819220E002DD266 /* Binding.swift */,
@@ -864,13 +864,13 @@
 				4C8059E227603C3200D85D14 /* WelcomeView.swift in Sources */,
 				4C82C4E727633788008F3E59 /* EthnicityView.swift in Sources */,
 				4C16AD5A279A92E400779502 /* UserSettings.swift in Sources */,
+				4CC23DBB281FB0180058E457 /* UIApplication.swift in Sources */,
 				4C805A5D27604ED300D85D14 /* LocationView.swift in Sources */,
 				4C91822E28176CB100D5CF62 /* InterestsGridView.swift in Sources */,
 				4C8059DC27603B5000D85D14 /* TodayView.swift in Sources */,
 				4C82C4E627633788008F3E59 /* MobilityView.swift in Sources */,
 				4C788477281895AD00B643C2 /* CapsuleButton.swift in Sources */,
 				4C197C512819220E002DD266 /* Binding.swift in Sources */,
-				4C7C21F527E8EDAB00997B17 /* AppDelegate+Notifications.swift in Sources */,
 				4CD27CE1281CD74E00CD0F20 /* SignupViewMod+View.swift in Sources */,
 				4C82C4EC27633788008F3E59 /* EducationView.swift in Sources */,
 				4CC1358B27F64B4300719F48 /* MessagesViewModel.swift in Sources */,

@@ -24,12 +24,46 @@ struct MatchProfileView: View {
     } 
     
     var body: some View {
-        Group {
+
+        
             if profileType == .view {
                 viewProfile
             } else {
                 matchProfile
+                    .task {
+                        await vm.getLineup()
+                    }
             }
+        
+    }
+        
+    @ViewBuilder
+    var matchProfile: some View {
+        if !vm.loading {
+            if let first = vm.lineup.first {
+                profileView(first)
+                .sheet(isPresented: $vm.matched) {
+                    withAnimation(.spring()) {
+                        vm.matched = false
+                        vm.lineup.removeFirst()
+                    }
+                } content: {
+                    MatchedView(show: $vm.matched, user: session.user, matchedWith: first)
+                        .environmentObject(vm)
+                }
+                .animation(Animation.spring(), value: vm.lineup.first)
+            } else {
+                EmptyLineupView(sessionUser: $session.user)
+            }
+        } else {
+            ProgressView()
+        }
+    }
+    
+    @ViewBuilder
+    var viewProfile: some View {
+        if let viewUser = viewUser {
+            profileView(viewUser)
         }
     }
     
@@ -42,47 +76,6 @@ struct MatchProfileView: View {
             interests(user)
         }
     }
-    
-    var matchProfile: some View {
-        Group {
-            if let first = vm.lineup.first {
-                    profileView(first)
-                    .environmentObject(vm)
-                    .sheet(isPresented: $vm.matched) {
-                        withAnimation(.spring()) {
-                            vm.matched = false
-                            vm.lineup.removeFirst()
-                        }
-                    } content: {
-                        MatchedView(show: $vm.matched, user: session.user, matchedWith: first)
-                            .environmentObject(vm)
-                    }
-                    .animation(Animation.spring(), value: vm.lineup.first)
-            } else {
-                EmptyLineupView(sessionUser: $session.user)
-            }
-        }
-    }
-    
-    var viewProfile: some View {
-        Group {
-            if let viewUser = viewUser {
-                profileView(viewUser)
-            } else {
-                EmptyView()
-            }
-        }
-    }
-    
-    func noInfo(_ user: User)->Bool{
-        for group in InfoType.allCases {
-            if group.show(user.details) {
-                return false
-            }
-        }
-        return true
-    }
-    
 
 }
 

@@ -54,7 +54,7 @@ struct FilterCellView: View {
     var value: some View {
         switch filter {
         case .childrenRange:
-            RangeSliderView(range: $filters.childrenRange, totalWidth: width, slider: IntRange(1, 18))
+            RangeSliderView(range: $filters.childrenRange, totalWidth: width, slider: KKidAge)
         case .height:
             Slider(value: height, in: 1...50, step: 1.0).tint(.Blue)
         case .isParent:
@@ -80,7 +80,7 @@ struct FilterCellView: View {
         case .maxDistance:
             Slider(value: maxDistance, in: 1...50, step: 1.0).tint(.Blue)
         case .ageRange:
-            RangeSliderView(range: $filters.ageRange, totalWidth: width, slider: IntRange(18, 75))
+            RangeSliderView(range: $filters.ageRange, totalWidth: width, slider: KAgeRange)
         }
     }
     

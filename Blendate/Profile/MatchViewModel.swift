@@ -8,6 +8,7 @@
 import SwiftUI
 enum Swipe: String { case pass = "passes", like = "likes" }
 
+@MainActor
 class MatchViewModel: ObservableObject {
     
     @Published var lineup: [User] = []
@@ -17,7 +18,8 @@ class MatchViewModel: ObservableObject {
     
     let service = MatchService()
     
-    @MainActor
+    
+    
     func getLineup() async {
         do {
             self.lineup = try await service.fetchLineup()
@@ -32,7 +34,6 @@ class MatchViewModel: ObservableObject {
         }
     }
 
-    @MainActor
     func swipe(on swipedUID: String?, _ swipe: Swipe) {
         Task {
             if let convo = try await service.swiped(swipe, on: swipedUID) {

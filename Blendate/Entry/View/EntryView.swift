@@ -21,12 +21,11 @@ struct EntryView: View {
             case .uid(let uid):
                 SessionView(uid)
             }
-        }//.preferredColorScheme(.light)
+        }
     }
 }
 
 enum FirebaseState { case loading, noUser, uid(String) }
-
 
 @MainActor
 class FirebaseAuthState: ObservableObject {
@@ -35,11 +34,8 @@ class FirebaseAuthState: ObservableObject {
         
     init(){
         FirebaseManager.instance.auth.addStateDidChangeListener { (_,user) in
-          if let uid = user?.uid {
-              self.state = .uid(uid)
-          } else {
-              self.state = .noUser
-          }
-      }
+            if let uid = user?.uid { self.state = .uid(uid) }
+            else { self.state = .noUser }
+        }
     }
 }
