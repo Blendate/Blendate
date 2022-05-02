@@ -6,24 +6,55 @@
 //
 
 import SwiftUI
-import Firebase
 
+@MainActor
+class SessionViewModel: ObservableObject {
 
+    @Published var selectedTab: Int = 0
+    @Published var user: User = User()
+    @Published var loadingState: SessionState = .loading
 
-//
-//    func requestAuthorizationForNotifications() async {
-//        do {
-//            let granted = try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
-//            if granted != self.user.settings.notifications.isOn {
-//                self.user.settings.notifications.isOn = granted
-//                if let fcm = UserDefaults.standard.string(forKey: "fcm"),
-//                   self.user.fcm.isEmpty {
-//                    self.user.fcm = fcm
-//                }
-//                try UserService().updateUser(with: self.user)
-//            }
-//
-//        } catch {
-//            printD(error)
-//        }
-//    }
+    private let uid: String
+    
+    let userService: UserService = UserService()
+    
+    init(_ uid: String){
+        self.uid = uid
+    }
+    
+    func getUserDoc() async {
+        printD("Fetching Doc for: \(uid)")
+        do {
+            self.user = try await userService.fetchUser(from: uid)
+
+            try? await Task.sleep(nanoseconds: 2 * 1_000_000_000) // 1 second
+            withAnimation(.spring()) {
+                self.loadingState = user.settings.onboarded ? .user : .noUser
+            }
+        } catch {
+            printD(error.localizedDescription)
+            withAnimation(.spring()) {
+                loadingState = .noUser
+            }
+        }
+    }
+    
+    func checkNotification() async -> Bool {
+        do {
+            let notificationCenter = UNUserNotificationCenter.current()
+            let authStatus:UNAuthorizationStatus = await notificationCenter.notificationSettings().authorizationStatus
+            
+            switch authStatus {
+            case .notDetermined:
+                return try await notificationCenter.requestAuthorization(options: [.badge, .alert, .sound])
+            case .authorized:
+                return true
+            default:
+                return false
+            }
+        } catch {
+            print(error.localizedDescription)
+            return false
+        }
+    }
+}
