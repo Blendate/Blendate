@@ -10,34 +10,39 @@ import SwiftUI
 enum SessionState {case noUser, user, loading}
 
 struct SessionView: View {
-    @StateObject var vm: SessionViewModel
-    
+    @StateObject var session: SessionViewModel
+    @StateObject var matchVM: MatchViewModel
+
     init(_ uid: String){
-        self._vm = StateObject(wrappedValue: SessionViewModel(uid))
+        self._session = StateObject(wrappedValue: SessionViewModel(uid))
+        self._matchVM = StateObject(wrappedValue: MatchViewModel())
+
     }
     
     var body: some View {
-        LoadingView(showLoading: vm.loadingState == .loading) {
-            if vm.loadingState == .noUser {
-                SignupView(user: $vm.user)
-                    .environmentObject(vm)
-            } else if vm.loadingState == .user {
+        LoadingView(showLoading: session.loadingState == .loading && matchVM.loading == true) {
+            if session.loadingState == .noUser {
+                SignupView(user: $session.user)
+            } else if session.loadingState == .user {
                 tabBar
             }
         }
+        .environmentObject(session)
+        .environmentObject(matchVM)
         .task {
-            await vm.getUserDoc()
+            await session.getUserDoc()
+            await matchVM.getLineup()
         }
     }
     
     @ViewBuilder
     var tabBar: some View {
-        if vm.user.settings.dev?.classicTab ?? false {
-            ClassicTabBar($vm.user, $vm.selectedTab)
-        } else {
-            SessionTabsView($vm.user, $vm.selectedTab)
-
-        }
+//        if vm.user.settings.dev?.classicTab ?? false {
+//            ClassicTabBar($vm.user, $vm.selectedTab)
+//        } else {
+//            SessionTabsView($vm.user, $vm.selectedTab)
+//        }
+        ClassicTabBar($session.user, $session.selectedTab)
     }
 
 }

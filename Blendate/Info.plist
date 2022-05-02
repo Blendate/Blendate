@@ -24,12 +24,27 @@
 				<string>com.googleusercontent.apps.579356578076-mudh2f82rp55snhe52rq2v79vhb3pdj1</string>
 			</array>
 		</dict>
-		<dict/>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>email</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.blendate.blendate</string>
+			</array>
+		</dict>
 	</array>
 	<key>FacebookAppID</key>
 	<string>fb946699869574716</string>
 	<key>FacebookDisplayName</key>
 	<string>Blendate-Test</string>
+	<key>FirebaseOpenAppQueryItemEmailName</key>
+	<string>email</string>
+	<key>FirebaseOpenAppScheme</key>
+	<string>https</string>
+	<key>FirebaseOpenAppURIPrefix</key>
+	<string>blendate.page.link/email</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbauth2</string>

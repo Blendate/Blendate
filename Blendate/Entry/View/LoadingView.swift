@@ -52,7 +52,7 @@ struct LoadingView<Content: View>: View {
                             .foregroundColor(foreground)
                         ZStack {
                             HStack(spacing: 0){
-                                ForEach(loadingText.indices) { index in
+                                ForEach(Array(loadingText.indices), id: \.self) { index in
                                     Text(loadingText[index])
                                         .font(.headline)
                                         .fontWeight(.heavy)

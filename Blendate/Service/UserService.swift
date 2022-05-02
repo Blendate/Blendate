@@ -7,6 +7,7 @@
 
 import Foundation
 import FirebaseFirestore
+import SwiftUI
 
 class UserService {
 
@@ -33,6 +34,7 @@ class UserService {
                !cache.settings.providers.contains(prov) {
                 cache.settings.providers.append(prov)
             }
+            cache.details.photos = cache.details.photos.sorted(by: {$0.placement < $1.placement})
             return cache
         }
         else { throw FirebaseError.decode }

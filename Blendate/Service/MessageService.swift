@@ -11,10 +11,6 @@ class MessageService {
     
     let firebase = FirebaseManager.instance
     
-//    func fetchConversations() async throws -> [Conversation] {
-//        let uid = try firebase.checkUID()
-//    }
-    
     func sendMessage(conversationID: String?, message: String) async throws {
         let uid = try firebase.checkUID()
         guard let cid = conversationID else { throw FirebaseError.generic("Invalid Conversation")}

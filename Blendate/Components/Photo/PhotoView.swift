@@ -7,42 +7,46 @@
 
 import SwiftUI
 import CachedAsyncImage
-import PhotosPicker
 import PhotosUI
 
 struct PhotoView: View {
     @Binding var photo: Photo
+    
     let editmode: Bool
-    
-//    private let large: Bool
+    let isCell: Bool
     private let size: (width: CGFloat, height: CGFloat)
-
-    @State var isLoading = false
     @State var showPicker = false
+    @State var isLoading = false
+    @State var showfull = false
     
-    init(_ photo: Binding<Photo>){
+    
+    init(_ photo: Binding<Photo>, isCell: Bool = false){
         self.editmode = true
         self._photo = photo
+        self.isCell = isCell
         
         switch photo.placement.wrappedValue {
             case 0,1: self.size = (160, 210)
             default: self.size = (100, 132)
         }
+
     }
     
-    init(_ photo: Photo){
+    init(_ photo: Photo, _ isCell: Bool = false ){
         self.editmode = false
         self._photo = .constant(photo)
-        
+        self.isCell = isCell
+
         switch photo.placement {
             case 2,5,6: self.size = (162, 213)
             default: self.size = (162, 171)
         }
+
     }
     
     
     var body: some View {
-        CachedAsyncImage(url: photo.url) { image in
+        CachedAsyncImage(urlRequest: photo.request, urlCache: .imageCache) { image in
             image
                 .resizable()
                 .scaledToFill()
@@ -58,18 +62,27 @@ struct PhotoView: View {
                 setPhoto(image)
             }
         }
+        .sheet(isPresented: $showfull) {
+            CachedAsyncImage(urlRequest: photo.request, urlCache: .imageCache) { image in
+                image
+                    .resizable()
+                    .scaledToFill()
+            } placeholder: {
+                ProgressView()
+            }
+        }
     }
     
     
     @MainActor
-    private func setPhoto(_ image: UIImage) {
+    func setPhoto(_ image: UIImage) {
         guard let data = image.jpegData(compressionQuality: 0.5)
         else { return
 //            throw FirebaseError.generic("Could Not Upload Image to Server")
         }
         Task {
             do {
-                let photo = try await PhotoService.uploadPhoto(at: photo.placement, data)
+                let photo = try await PhotoService().uploadPhoto(at: photo.placement, data)
                 self.photo = photo
                 isLoading = false
             } catch {
@@ -84,14 +97,9 @@ struct PhotoView: View {
         if editmode && !isLoading {
             isLoading = true
             showPicker = true
+        } else if !isCell {
+            showfull = true
         }
-    }
-    
-    private var config: PHPickerConfiguration {
-        var configuration = PHPickerConfiguration()
-        configuration.selectionLimit = 1
-        configuration.filter = .images
-        return configuration
     }
     
     var placeholder: some View {
@@ -121,10 +129,38 @@ struct PhotoView: View {
 extension PhotoView {
 
     struct Avatar: View {
-        var url: URL?
+        @State private var showfull = false
+        var request: URLRequest?
         let size: CGFloat
+        var isCell: Bool = false
+
         var body: some View {
-            CachedAsyncImage(url: url) { image in
+            if isCell {
+                image
+            } else {
+                image
+                    .onTapGesture(perform: tapped)
+                    .sheet(isPresented: $showfull) {
+                        CachedAsyncImage(urlRequest: request, urlCache: .imageCache) { image in
+                            image
+                                .resizable()
+                                .scaledToFill()
+                        } placeholder: {
+                            ProgressView()
+                        }
+                    }
+            }
+
+        }
+        
+        private func tapped(){
+            if !isCell {
+                showfull = true
+            }
+        }
+        
+        var image: some View {
+            CachedAsyncImage(urlRequest: request, urlCache: .imageCache) { image in
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fill)
@@ -142,13 +178,17 @@ extension PhotoView {
                     .clipShape(Circle())
             }
         }
+        
     }
+    
 
     struct Cover: View {
-        var url: URL?
+        @State var showfull = false
+
+        var request: URLRequest?
         var body: some View {
             
-            CachedAsyncImage(url: url) { image in
+            CachedAsyncImage(urlRequest: request, urlCache: .imageCache) { image in
                 image
                     .resizable()
                     .scaledToFill()
@@ -157,6 +197,16 @@ extension PhotoView {
             } placeholder: {
                 Rectangle().foregroundColor(.gray)
                     .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/2.2)
+            }
+            .onTapGesture{showfull = true}
+            .sheet(isPresented: $showfull) {
+                CachedAsyncImage(urlRequest: request, urlCache: .imageCache) { image in
+                    image
+                        .resizable()
+                        .scaledToFill()
+                } placeholder: {
+                    ProgressView()
+                }
             }
         }
     }
@@ -167,4 +217,9 @@ struct PhotoView2_Previews: PreviewProvider {
     static var previews: some View {
         PhotoView($photo)
     }
+}
+
+extension URLCache {
+    
+    static let imageCache = URLCache(memoryCapacity: 512*1000*1000, diskCapacity: 10*1000*1000*1000)
 }
