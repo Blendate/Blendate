@@ -14,10 +14,7 @@ class MessagesViewModel: ObservableObject {
     var conversations: [Conversation] {
         return self.allConvos.filter({ !$0.lastMessage.isEmpty })
     }
-    var matches: [Conversation] {
-        return self.allConvos.filter({ $0.lastMessage.isEmpty })
-    }
-    
+
     init(){
         fetchConvos()
     }
@@ -39,6 +36,7 @@ class MessagesViewModel: ObservableObject {
                         }
                     }
                     else if change.type == .modified {
+                        printD("Message Modified")
                         if let convo = try? change.document.data(as: Conversation.self) {
                             if let index = self.allConvos.firstIndex(where: {$0.id == convo.id}) {
                                 self.allConvos[index] = convo

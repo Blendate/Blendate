@@ -10,7 +10,7 @@ import Foundation
 enum PropType:Codable { case detail, filter }
 
 let kOpenString:String = "Open to all"
-let KAgeRange: IntRange = IntRange(18,75)
+let KAgeRange: IntRange = IntRange(18,76)
 let KKidAge: IntRange = IntRange(0,19)
 let kEmailKey: String = "kEmailKey"
 
@@ -18,7 +18,7 @@ struct Filters: Codable {
     var isParent: Bool = false
     var children: Int = 0
     var childrenRange = IntRange(0,1)
-    var height: Int = 0
+    var height: Int = 60
     var seeking: String = "--"
     var relationship: String = "--"
     var familyPlans: String = "--"
@@ -58,6 +58,14 @@ enum Filter: String, Identifiable, CaseIterable {
             return "Parent"
         case .childrenRange:
             return "Children Age Range"
+        case .maxDistance:
+            return "Max Distance"
+        case .ageRange:
+            return "Age Range"
+        case .familyPlans:
+            return "Family Plans"
+        case .height:
+            return "Minimum Height"
         default: return rawValue.camelCaseToWords()
         }
         

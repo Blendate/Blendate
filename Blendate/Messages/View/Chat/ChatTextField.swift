@@ -48,7 +48,7 @@ struct TextEditorView: View {
                 AsyncButton(action: sendMessage, label: {
                     Image(systemName: "paperplane")
                         .resizable()
-                        .frame(width: 20, height: 20)
+                        .frame(width: 18, height: 18)
                         .padding(10)
                         .foregroundColor(string.isBlank ? Color.gray:Color.white)
                         .background(string.isBlank ? Color.clear:Color.Blue)
@@ -77,7 +77,7 @@ struct TextEditorView: View {
 
 struct ChatTextField_Previews: PreviewProvider {
     static var previews: some View {
-        ChatTextField(newMessage: .constant("New Message")){
+        ChatTextField(newMessage: dev.$bindingMichael.fcm){
             
         }
     }

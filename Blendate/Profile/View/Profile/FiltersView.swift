@@ -19,7 +19,6 @@ struct FiltersView: View {
     @State var smoking: String = "Open to all"
     @State var cannabis: String = "Open to all"
 
-    #warning("fix Sliders")
     var body: some View {
         NavigationView{
             GeometryReader { geo in

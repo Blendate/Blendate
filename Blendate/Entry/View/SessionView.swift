@@ -10,6 +10,7 @@ import SwiftUI
 enum SessionState {case noUser, user, loading}
 
 struct SessionView: View {
+    
     @StateObject var session: SessionViewModel
     @StateObject var matchVM: MatchViewModel
     @StateObject var messageVM: MessagesViewModel
@@ -18,7 +19,6 @@ struct SessionView: View {
         self._session = StateObject(wrappedValue: SessionViewModel(uid))
         self._matchVM = StateObject(wrappedValue: MatchViewModel())
         self._messageVM = StateObject(wrappedValue: MessagesViewModel())
-
     }
     
     var body: some View {
@@ -51,6 +51,8 @@ struct SessionView: View {
                         }
                         .tag(3)
 
+                }.task {
+                    await session.checkNotification()
                 }
             }
         }

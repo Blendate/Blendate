@@ -86,7 +86,8 @@ extension RangeSliderView {
             .gesture(DragGesture().onChanged { value in
                 if value.location.x >= valueToLocation(slider.min) &&
                     value.location.x <= valueMax.wrappedValue {
-                    self.range.min = Int(value.location.x / ratio)
+                    self.range.min = locationToValue(value.location.x)
+//                    self.valueMin = value.location.x
 //                    self.minWidth = value.location.x
                 }
             })
@@ -97,9 +98,9 @@ extension RangeSliderView {
             .offset(x: valueMax.wrappedValue)
             .gesture(DragGesture().onChanged { value in
                 if value.location.x <= valueToLocation(slider.max) &&
-                    value.location.x >= CGFloat(slider.max)  {
-                    self.range.max = Int(value.location.x / ratio)
-//                    self.maxWidth = value.location.x
+                    value.location.x >= valueMin.wrappedValue  {
+                    self.range.max = locationToValue(value.location.x)
+//                    self.valueMax = value.location.x
                 }
             })
     }
@@ -120,7 +121,7 @@ struct RangeSliderView_Previews: PreviewProvider {
                     HStack {
                         Text("Label")
                         Spacer()
-                        Text(dev.bindingMichael.filters.ageRange.label)
+                        Text(dev.bindingMichael.filters.ageRange.label(max: KAgeRange.max))
                     }
                     RangeSliderView(range: dev.$bindingMichael.filters.ageRange, totalWidth: geo.size.width, slider: KAgeRange)
                 }

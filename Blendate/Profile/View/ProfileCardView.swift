@@ -61,7 +61,7 @@ struct ProfileCardView: View {
                         Text(details.fullName + ", " + "\(details.age)")
                         Text(details.info.location.name)
                     }
-                    .fontType(.regular, 18, .white)
+                    .fontType(.semibold, 18, .white)
                     .padding(.bottom)
                     .padding(.top, avatarSize/1.5)
                 } else {

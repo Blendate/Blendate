@@ -28,14 +28,15 @@ struct MessagesView: View {
     }
     
     var matches: some View {
-        Group {
-            if vm.matches.isEmpty {
+        let matches = vm.allConvos.filter({ $0.lastMessage.isEmpty })
+        return Group {
+            if matches.isEmpty {
                 emptyMatches
             }
             else {
                 ScrollView(.horizontal, showsIndicators: false){
                     LazyHStack(spacing: 20){
-                        ForEach(vm.matches, id:\.self.timestamp){ match in
+                        ForEach(matches, id:\.self.timestamp){ match in
                             MatchAvatarView(match)
                         }
                     }
@@ -50,14 +51,16 @@ struct MessagesView: View {
 
     
     var messages: some View {
-        Group {
-            if vm.conversations.isEmpty {
+        let conversations = $vm.allConvos.filter({ !$0.lastMessage.wrappedValue.isEmpty })
+
+        return Group {
+            if conversations.isEmpty {
                 noConvos
             } else {
                 VStack {
                     messageDivider
                     List {
-                        ForEach(vm.conversations, id: \.id) { conversation in
+                        ForEach(conversations, id: \.id) { conversation in
                             ConvoCellView(conversation: conversation)
                         }
                     }.listStyle(.plain)

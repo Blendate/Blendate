@@ -9,7 +9,7 @@ import Foundation
 
 struct UserSettings: Codable {
     var premium: Bool = false
-    var notifications = Notifications()
+    var notifications = Notifications(isOn: false)
     var invisbleBlending: Bool = false
     var providers: [Provider] = []
     var onboarded = false
@@ -33,7 +33,7 @@ struct Notifications: Codable {
     var messages: Bool = true
     var matches: Bool = true
     
-    var isOn: Bool = true
+    var isOn: Bool
 }
 
 

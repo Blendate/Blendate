@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ConvoCellView: View {
-    var conversation: Conversation
+    @Binding var conversation: Conversation
     @State var user: User?
 
     var body: some View {
@@ -22,7 +22,7 @@ struct ConvoCellView: View {
                     Text(user?.details.firstname ?? "")
                         .fontType(.semibold, 16)
                         .foregroundColor(.DarkBlue)
-                    Text(conversation.lastMessage.prefix(25) + "...")
+                    Text(conversation.lastMessage.count < 21 ? conversation.lastMessage:conversation.lastMessage.prefix(20) + "...")
                         .fontType(.semibold, 16)
                         .foregroundColor(.gray)
                         .opacity(0.5)
@@ -46,6 +46,6 @@ struct ConvoCellView: View {
 
 struct ConvoCellView_Previews: PreviewProvider {
     static var previews: some View {
-        ConvoCellView(conversation: dev.conversation)
+        ConvoCellView(conversation: .constant(dev.conversation))
     }
 }

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Sliders
 
 struct FilterCellView: View {
     let filter: Filter
@@ -41,22 +42,21 @@ struct FilterCellView: View {
     
     var sliderLabel: some View {
         switch filter {
-        case .height: return Text(filters.height.cmToInches)
-        case .childrenRange: return Text(filters.childrenRange.label )
+        case .height: return Text(filters.height < 52 ? "--" : filters.height.cmToInches)
+        case .childrenRange: return Text(filters.childrenRange.label(max:KKidAge.max) )
         case .maxDistance: return Text("\(filters.maxDistance) mi")
-        case .ageRange: return Text( filters.ageRange.label )
+        case .ageRange: return Text( filters.ageRange.label(max: KAgeRange.max) )
         default: return Text("")
         }
     }
-    
     
     @ViewBuilder
     var value: some View {
         switch filter {
         case .childrenRange:
-            RangeSliderView(range: $filters.childrenRange, totalWidth: width, slider: KKidAge)
+            RangeSlider(range: childrenRange, in: KKidAge.min...KKidAge.max, step: 1)
         case .height:
-            Slider(value: height, in: 1...50, step: 1.0).tint(.Blue)
+            Slider(value: height, in: 52...84, step: 1.0)
         case .isParent:
             FilterPicker(Yes.self, isParent)
         case .children:
@@ -78,9 +78,9 @@ struct FilterCellView: View {
         case .vices:
             FilterPicker( Ethnicity.self, $filters.ethnicity)
         case .maxDistance:
-            Slider(value: maxDistance, in: 1...50, step: 1.0).tint(.Blue)
+            Slider(value: maxDistance, in: 1...50, step: 1.0)
         case .ageRange:
-            RangeSliderView(range: $filters.ageRange, totalWidth: width, slider: KAgeRange)
+            RangeSlider(range: ageRange, in: KAgeRange.min...KAgeRange.max, step: 1)
         }
     }
     
@@ -107,6 +107,31 @@ struct FilterCellView: View {
         set: { filters.maxDistance = Int($0) }
     }
     
+    var ageRange: Binding<ClosedRange<Int>> {
+        .init {
+            filters.ageRange.min...filters.ageRange.max
+        } set: { newValue in
+            if let min = newValue.min(), min < filters.ageRange.max {
+                filters.ageRange.min = min
+            }
+            if let max = newValue.max() {
+                filters.ageRange.max = max
+            }
+        }
+    }
+    
+    var childrenRange: Binding<ClosedRange<Int>> {
+        .init {
+            filters.childrenRange.min...filters.childrenRange.max
+        } set: { newValue in
+            if let min = newValue.min(), min < filters.childrenRange.max {
+                filters.childrenRange.min = min
+            }
+            if let max = newValue.max() {
+                filters.childrenRange.max = max
+            }
+        }
+    }
     
     func stringArrayValue(_ array: [String]) -> String {
         if !array.isEmpty {
@@ -160,3 +185,4 @@ struct Cell<Content, Accessory> where Content: View, Accessory: View {
     var content: Content
     var accessory: Accessory
 }
+

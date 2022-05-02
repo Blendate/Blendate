@@ -50,10 +50,10 @@ struct ProfileView: View {
                             .foregroundColor(.gray)
                     }
                 }
-                Section(header: PremiumHeader(user: $user)) {
-                    premium
-                }
-                .headerProminence(.increased)
+//                Section(header: PremiumHeader(user: $user)) {
+//                    premium
+//                }
+//                .headerProminence(.increased)
                 ForEach(EditDetail.DetailGroup.allCases){ group in
                     if group == .general {
                         ForEach(group.cells(details)) { cell in

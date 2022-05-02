@@ -24,6 +24,14 @@ class UserService {
         }
     }
     
+    func update(fcm: String) {
+        if let uid = try? FirebaseManager.instance.checkUID() {
+            Users.document(uid).updateData(["fcm":fcm])
+        }  else {
+            printD("Tried to set FCM but no UID")
+        }
+    }
+    
     func fetchUser(from uid: String?) async throws -> User {
         guard let uid = uid else { throw FirebaseError.generic("No UID")}
         
@@ -35,6 +43,7 @@ class UserService {
                 cache.settings.providers.append(prov)
             }
             cache.details.photos = cache.details.photos.sorted(by: {$0.placement < $1.placement})
+            print(cache.fcm)
             return cache
         }
         else { throw FirebaseError.decode }

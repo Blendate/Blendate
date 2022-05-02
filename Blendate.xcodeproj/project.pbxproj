@@ -36,6 +36,7 @@
 		4C3547552804CE0C00B0888A /* ChatTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C3547542804CE0C00B0888A /* ChatTextField.swift */; };
 		4C47045027F41B9A007517D9 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C47044F27F41B99007517D9 /* SettingsView.swift */; };
 		4C47045427F432D9007517D9 /* RangeSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C47045327F432D9007517D9 /* RangeSliderView.swift */; };
+		4C4C1F252820749D001D7802 /* Sliders in Frameworks */ = {isa = PBXBuildFile; productRef = 4C4C1F242820749D001D7802 /* Sliders */; };
 		4C521A4E27BDA9AE00674C62 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4C521A4D27BDA9AE00674C62 /* GoogleService-Info.plist */; };
 		4C57F591281CE9890059299B /* CachedAsyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = 4C57F590281CE9890059299B /* CachedAsyncImage */; };
 		4C57F593281CE9A20059299B /* PhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C57F592281CE9A20059299B /* PhotoView.swift */; };
@@ -289,6 +290,7 @@
 				4C9C029E281F39AD00EBE008 /* FirebaseAuth in Frameworks */,
 				4C9C02A6281F39AD00EBE008 /* FirebaseStorageSwift-Beta in Frameworks */,
 				4C9C0287281E0A1600EBE008 /* FirebaseEmailAuthUI in Frameworks */,
+				4C4C1F252820749D001D7802 /* Sliders in Frameworks */,
 				4C9C028F281E0A1600EBE008 /* FirebasePhoneAuthUI in Frameworks */,
 				4C57F591281CE9890059299B /* CachedAsyncImage in Frameworks */,
 				4C9C029A281F0A6100EBE008 /* HalfASheet in Frameworks */,
@@ -572,9 +574,8 @@
 		4C9C0291281E0D2600EBE008 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				4C80024C27609E7E00F9410A /* ProfileView.swift */,
+				4CCA89D02800D67C008798EE /* Profile */,
 				4C805A6F27605D3F00D85D14 /* ProfileCardView.swift */,
-				4CCA89D02800D67C008798EE /* Edit */,
 				4CC2F9522817922E00A1D105 /* Match */,
 				4C80025227609E9800F9410A /* Settings */,
 				4C8059DB27603B5000D85D14 /* TodayView.swift */,
@@ -667,14 +668,15 @@
 			path = Service;
 			sourceTree = "<group>";
 		};
-		4CCA89D02800D67C008798EE /* Edit */ = {
+		4CCA89D02800D67C008798EE /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				4C80024C27609E7E00F9410A /* ProfileView.swift */,
 				4C80025327609E9800F9410A /* FiltersView.swift */,
 				4C197C60281B8BB2002DD266 /* FilterCellView.swift */,
 				4CCFAC1628036D040063FCA6 /* DetailCellView.swift */,
 			);
-			path = Edit;
+			path = Profile;
 			sourceTree = "<group>";
 		};
 		4CD27CDD281CD63800CD0F20 /* Welcome */ = {
@@ -717,6 +719,7 @@
 				4C9C02A1281F39AD00EBE008 /* FirebaseFirestoreSwift-Beta */,
 				4C9C02A3281F39AD00EBE008 /* FirebaseMessaging */,
 				4C9C02A5281F39AD00EBE008 /* FirebaseStorageSwift-Beta */,
+				4C4C1F242820749D001D7802 /* Sliders */,
 			);
 			productName = Blendate;
 			productReference = 4C8059A227601ED900D85D14 /* Blendate.app */;
@@ -751,6 +754,7 @@
 				4C9C0283281E0A1600EBE008 /* XCRemoteSwiftPackageReference "FirebaseUI-iOS" */,
 				4C9C0298281F0A6100EBE008 /* XCRemoteSwiftPackageReference "HalfASheet" */,
 				4C9C029C281F39AD00EBE008 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				4C4C1F232820749D001D7802 /* XCRemoteSwiftPackageReference "swiftui-sliders" */,
 			);
 			productRefGroup = 4C8059A327601ED900D85D14 /* Products */;
 			projectDirPath = "";
@@ -1114,6 +1118,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		4C4C1F232820749D001D7802 /* XCRemoteSwiftPackageReference "swiftui-sliders" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/spacenation/swiftui-sliders.git";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		4C57F58F281CE9890059299B /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/lorenzofiamingo/swiftui-cached-async-image";
@@ -1149,6 +1161,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		4C4C1F242820749D001D7802 /* Sliders */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4C4C1F232820749D001D7802 /* XCRemoteSwiftPackageReference "swiftui-sliders" */;
+			productName = Sliders;
+		};
 		4C57F590281CE9890059299B /* CachedAsyncImage */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4C57F58F281CE9890059299B /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */;

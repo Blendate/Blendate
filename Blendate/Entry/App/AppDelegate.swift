@@ -13,11 +13,11 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     let gcmMessageIDKey = "gcm.message_id"
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-                
-        Messaging.messaging().delegate = self
+        FirebaseApp.configure()
 
+        Messaging.messaging().delegate = self
         UNUserNotificationCenter.current().delegate = self
-//
+        
         return true
     }
     

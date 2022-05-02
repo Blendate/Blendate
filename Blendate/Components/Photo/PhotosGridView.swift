@@ -41,26 +41,26 @@ struct PhotosGridView: View {
             ScrollView(.horizontal, showsIndicators: false, content: {
                 HStack{
                     VStack{
-                        if let photo = photo(2) {
+                        if let photo = photo(2), let _ = photo.url {
                             PhotoView(photo)
                         }
-                        if let photo = photo(3) {
-                            PhotoView(photo)
-                        }
-                    }
-                    VStack{
-                        if let photo = photo(4) {
-                            PhotoView(photo)
-                        }
-                        if let photo = photo(5) {
+                        if let photo = photo(3), let _ = photo.url {
                             PhotoView(photo)
                         }
                     }
                     VStack{
-                        if let photo = photo(6) {
+                        if let photo = photo(4), let _ = photo.url {
                             PhotoView(photo)
                         }
-                        if let photo = photo(7) {
+                        if let photo = photo(5), let _ = photo.url {
+                            PhotoView(photo)
+                        }
+                    }
+                    VStack{
+                        if let photo = photo(6), let _ = photo.url {
+                            PhotoView(photo)
+                        }
+                        if let photo = photo(7), let _ = photo.url {
                             PhotoView(photo)
                         }
                     }

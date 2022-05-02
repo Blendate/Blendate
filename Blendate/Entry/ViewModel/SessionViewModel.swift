@@ -26,8 +26,6 @@ class SessionViewModel: ObservableObject {
         printD("Fetching Doc for: \(uid)")
         do {
             self.user = try await userService.fetchUser(from: uid)
-
-            try? await Task.sleep(nanoseconds: 2 * 1_000_000_000) // 1 second
             withAnimation(.spring()) {
                 self.loadingState = user.settings.onboarded ? .user : .noUser
             }
@@ -39,22 +37,38 @@ class SessionViewModel: ObservableObject {
         }
     }
     
-    func checkNotification() async -> Bool {
+    func checkNotification() async {
         do {
             let notificationCenter = UNUserNotificationCenter.current()
             let authStatus:UNAuthorizationStatus = await notificationCenter.notificationSettings().authorizationStatus
-            
+            let fcm = UserDefaults.standard.string(forKey: "fcm")
+            printD("FCM: \(fcm ?? "NONE")")
             switch authStatus {
             case .notDetermined:
-                return try await notificationCenter.requestAuthorization(options: [.badge, .alert, .sound])
+                print("Not Determined")
+                let approved = try await notificationCenter.requestAuthorization(options: [.badge, .alert, .sound])
+                if let fcm = fcm, approved {
+                    user.settings.notifications = Notifications(isOn: true)
+                    user.fcm = fcm
+                    try userService.updateUser(with: user)
+                } else {
+                    print("NO FCM")
+                }
             case .authorized:
-                return true
+                print("Authorized")
+
+                if let fcm = fcm {
+                    print("Valid fcm attempting to set: ")
+                    user.fcm = fcm
+                    try userService.updateUser(with: user)
+                } else {
+                    print("User: \(user.fcm)")
+                }
             default:
-                return false
+                print("Othjer")
             }
         } catch {
             print(error.localizedDescription)
-            return false
         }
     }
 }

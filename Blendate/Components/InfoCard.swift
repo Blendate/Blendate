@@ -46,7 +46,7 @@ struct InfoCard: View {
                 if userPreferences.info.isParent {
                     InfoData("Parent", "Has Children")
                     InfoData("Children", "\(userPreferences.info.children)")
-                    InfoData("Ages", "\(userPreferences.info.childrenRange.label)")
+                    InfoData("Ages", "\(userPreferences.info.childrenRange.label(max: 18))")
                 }
                
                 InfoData("Family Plans", userPreferences.info.familyPlans)
@@ -81,10 +81,10 @@ struct InfoData: View {
     var body: some View {
         if !info.isBlank {
             VStack(alignment: .leading) {
-                Text(info)
-                    .fontType(.regular, 14, .DarkBlue)
                 Text(title)
                     .fontType(.regular, 13, .gray)
+                Text(info)
+                    .fontType(.regular, 14, .DarkBlue)
             }
         }
     }

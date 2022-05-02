@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Sliders
 
 struct DetailCellView: View {
     let detail: EditDetail
@@ -41,8 +42,8 @@ struct DetailCellView: View {
     
     var sliderLabel: some View {
         switch detail {
-        case .height: return Text(Int(details.info.height).cmToInches)
-        case .childrenRange: return Text(details.info.childrenRange.label )
+        case .height: return Text(details.info.height < 52 ? "--" : details.info.height.cmToInches)
+        case .childrenRange: return Text(details.info.childrenRange.label(max: KKidAge.max) )
         default: return Text("")
         }
     }
@@ -54,9 +55,9 @@ extension DetailCellView {
     var value: some View {
         switch detail {
         case .childrenRange:
-            RangeSliderView(range: $details.info.childrenRange, totalWidth: 300, slider: KKidAge)
+            RangeSlider(range: childrenRange, in: KKidAge.min...KKidAge.max, step: 1)
         case .height:
-            Slider(value: height, in: 1...50, step: 1.0).tint(.Blue)
+            Slider(value: height, in: 52...84, step: 1.0)
         case .isParent:
             Toggle("", isOn: $details.info.isParent).tint(.Blue)
         case .children:
@@ -90,8 +91,9 @@ extension DetailCellView {
             } label: {EmptyView()}.tint(.Blue)
             
         case .bio:
-            TextField("", text: $details.bio)
+            TextEditor(text: $details.bio)
                 .multilineTextAlignment(.trailing)
+                .frame(height: 80)
         case .work:
             TextField("", text: $details.workTitle)
                 .multilineTextAlignment(.trailing)
@@ -134,6 +136,31 @@ extension DetailCellView {
         set: { details.info.maxDistance = Int($0) }
     }
     
+    var ageRange: Binding<ClosedRange<Int>> {
+        .init {
+            details.info.ageRange.min...details.info.ageRange.max
+        } set: { newValue in
+            if let min = newValue.min() {
+                details.info.ageRange.min = min
+            }
+            if let max = newValue.max() {
+                details.info.ageRange.max = max
+            }
+        }
+    }
+    
+    var childrenRange: Binding<ClosedRange<Int>> {
+        .init {
+            details.info.childrenRange.min...details.info.childrenRange.max
+        } set: { newValue in
+            if let min = newValue.min(), min < details.info.childrenRange.max {
+                details.info.childrenRange.min = min
+            }
+            if let max = newValue.max() {
+                details.info.childrenRange.max = max
+            }
+        }
+    }
 
     
     struct PropPicker<T:Property>: View {

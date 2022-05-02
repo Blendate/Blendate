@@ -51,6 +51,7 @@ extension DeveloperPreview {
         usr.filters.religion = Religion.jewish.value
         usr.filters.politics = Politics.other.value
         usr.filters.ethnicity = Ethnicity.caucasian.value
+        usr.filters.ageRange = IntRange(20,45)
 
         
         return usr

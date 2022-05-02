@@ -58,6 +58,8 @@ enum EditDetail: String, Identifiable, CaseIterable {
             return "Children Age Range"
         case .bio:
             return "About"
+        case .familyPlans:
+            return "Family Plans"
         default: return rawValue.camelCaseToWords()
         }
         
@@ -95,13 +97,15 @@ struct IntRange: Codable {
     var min: Int
     var max: Int
     
+    
     init(_ min: Int, _ max: Int){
         self.min = min
         self.max = max
     }
     
-    var label: String {
-        "\(min) - \(max)"
+    func label(max maxValue: Int) -> String {
+        let maxLabel = max > (maxValue - 1) ? "\(max - 1)+" : String(max)
+        return "\(min) - \(maxLabel)"
     }
 }
 
