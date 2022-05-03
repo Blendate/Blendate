@@ -63,7 +63,8 @@ class AuthManager : NSObject{
 //                FUIEmailAuth(),
                 FUIOAuth.appleAuthProvider(),
                 FUIGoogleAuth(authUI: authUI),
-                FUIFacebookAuth(authUI: authUI),
+                FUIFacebookAuth(authUI: authUI, permissions: ["email", "public_profile"]),
+//                FUIFacebookAuth(authUI: authUI),
 
 //                FUIOAuth.twitterAuthProvider(withAuthUI: authUI),
             ]

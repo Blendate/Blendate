@@ -8,7 +8,7 @@
 import SwiftUI
 import Firebase
 import UIKit
-//import FirebaseMessaging
+import FacebookCore
 
 @main
 struct BlendateApp: App {
@@ -25,6 +25,7 @@ struct BlendateApp: App {
             EntryView()
                 .onAppear(perform: UIApplication.shared.addTapGestureRecognizer)
                 .onOpenURL { url in
+                    printD(url.absoluteString)
                     firebaseSignin(with: url)
                 }
         }
@@ -38,6 +39,8 @@ struct BlendateApp: App {
             if let email = UserDefaults.standard.string(forKey: kEmailKey) {
                 firebase.signIn(withEmail: email, link: link)
             }
+        } else {
+            FBSDKCoreKit.ApplicationDelegate.shared.application(UIApplication.shared, open: url, sourceApplication: nil, annotation: UIApplication.OpenURLOptionsKey.annotation)
         }
     }
 }
