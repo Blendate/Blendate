@@ -49,23 +49,6 @@ extension MatchProfileView {
         }
         return true
     }
-    
-    @ViewBuilder
-    func interests(_ user: User) -> some View {
-        let columns = [
-            GridItem(.fixed(getRect().width * 0.425)),
-            GridItem(.fixed(getRect().width * 0.425))
 
-        ]
-        LazyVGrid(columns: columns, spacing: 5){
-            ForEach(user.details.interests, id:\.self){ title in
-                Text(title)
-                    .fontType(.bold, 16, .white)
-                    .padding()
-                    .background(Color.Blue)
-                    .cornerRadius(20)
-            }
-        }.padding()
-    }
 }
 

@@ -45,7 +45,7 @@ enum SignupDetail: Identifiable, CaseIterable {
     
     var hasTitle: Bool {
         switch self {
-        case .birthday: return false
+//        case .birthday: return false
         default: return true
         }
     }

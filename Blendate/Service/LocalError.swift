@@ -76,10 +76,18 @@ extension View {
             isPresented: .constant(localizedAlertError != nil),
             error: localizedAlertError,
             actions: { error in
+                Button("Cancel", role: .cancel, action: {})
                 if let suggestion = error.recoverySuggestion, let retry = retry {
-                    Button(suggestion, action: retry)
+                    if let errorDesc = localizedAlertError?.errorDescription, errorDesc == "Delete Acount"{
+                        Button(suggestion, role: .destructive, action: retry).foregroundColor(Color.red)
+                    } else {
+                        Button(suggestion, action: retry)
+                    }
                 }
-            }, message: { error in
+
+                
+            },
+            message: { error in
             if let failureReason = error.failureReason {
                 Text(failureReason)
             } else {

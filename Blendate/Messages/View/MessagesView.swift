@@ -18,12 +18,21 @@ struct MessagesView: View {
     }
     var body: some View {
         NavigationView {
-            VStack{
-                matches
-                messages
-                Spacer()
+            if vm.allConvos.isEmpty {
+                VStack {
+                    Spacer()
+                    noConvos
+                }
+                .navigationTitle("Blends")
+            } else {
+                VStack{
+                    matches
+                    messages
+                    Spacer()
+                }
+                .navigationTitle("Blends")
             }
-            .navigationTitle("Blends")
+
         }
     }
     
@@ -75,20 +84,21 @@ extension MessagesView {
     
     var emptyMatches: some View {
         Text("Match with profiles to Blend with others")
-            .fontType(.regular, 18, .DarkBlue)
+            .fontType(.semibold, 18, .DarkBlue)
             .frame(height: 120, alignment: .center)
             .padding(.horizontal)
     }
     
     var noConvos: some View {
-        VStack{
+        let message = vm.allConvos.isEmpty ? "Start matching with profiles to blend with others and start conversations":"Tap on any of your matches to start a conversation"
+        return VStack{
             Divider()
             Image("Interested")
                 .resizable()
                 .scaledToFill()
                 .frame(width: 270, height: 226 , alignment: .center)
-            Text("Tap on any of your matches to start a conversation")
-                .fontType(.regular, 18, .DarkBlue)
+            Text(message)
+                .fontType(.semibold, 18, .DarkBlue)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
                 .padding(.top)

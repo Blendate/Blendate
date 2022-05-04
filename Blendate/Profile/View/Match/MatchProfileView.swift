@@ -73,7 +73,8 @@ struct MatchProfileView: View {
             bio(user)
             infocards(user)
             PhotosGridView(user.details.photos)
-            interests(user)
+            TagCloudView(tags: user.details.interests)
+                .padding(.horizontal)
         }
     }
 

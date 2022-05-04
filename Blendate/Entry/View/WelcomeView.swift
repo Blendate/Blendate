@@ -17,6 +17,7 @@ struct WelcomeView: View {
     var body: some View {
         VStack(spacing: 0) {
             Image.icon(60, .Blue)
+                .padding(.top, 10)
             logoheader
             Spacer()
             card
@@ -31,6 +32,7 @@ struct WelcomeView: View {
             VStack {
                 emailField
                     .padding(.top)
+                emailButton
                 HStack {
                     Rectangle().fill(Color.LightGray)
                         .frame(height: 1)
@@ -53,23 +55,39 @@ struct WelcomeView: View {
     
     
     var emailField: some View {
-        VStack {
-            TextField("tyler@blendate.app", text: $email)
-                .textFieldStyle(.roundedBorder)
-                .padding()
-                .padding(.horizontal)
-                .keyboardType(.emailAddress)
-                .autocapitalization(.none)
-                .disableAutocorrection(true)
-            AsyncButton("Sign in with email", action: sendEmail)
-            .fontType(.semibold, 14, .Blue)
-            .tint(.white)
-            .buttonStyle(.borderedProminent)
-            .buttonBorderShape(.roundedRectangle(radius: 5))
-            .controlSize(.regular)
-//            .capsuleButton(color: .white, fontsize: 22)
-        }
+        TextField("tyler@blendate.app", text: $email)
+            .textFieldStyle(.roundedBorder)
+            .padding()
+            .padding(.horizontal)
+            .keyboardType(.emailAddress)
+            .autocapitalization(.none)
+            .disableAutocorrection(true)
     }
+    
+    var emailButton: some View {
+        AsyncButton(action: emailTapped) {
+            HStack {
+                Image(systemName: "envelope.fill")
+                    .foregroundColor(.Blue)
+                Text("Sign in with email")
+                    .fontType(.semibold, 14, .Blue)
+                Spacer()
+            }
+            .padding(.vertical, 10)
+            .padding(.leading, 10)
+            .background(Color.white)
+            .cornerRadius(20)
+        }
+        .padding(.horizontal, 55)
+//        AsyncButton("Sign in with email", action: emailTapped)
+//        .fontType(.semibold, 14, .Blue)
+//        .tint(.white)
+//        .buttonStyle(.borderedProminent)
+//        .buttonBorderShape(.roundedRectangle(radius: 5))
+//        .controlSize(.regular)
+    }
+    
+
     
     var signinButtons: some View {
         VStack {
@@ -97,8 +115,16 @@ struct WelcomeView: View {
             .foregroundColor(Color.gray)
     }
     
+    func emailTapped() async {
+        if showEmail {
+            await sendEmail()
+        } else {
+            showEmail = true
+        }
+    }
+    
     private func sendEmail() async {
-        guard !email.isBlank
+        guard !email.isBlank, email.isValidEmail
             else {
                 self.error = AlertError(errorDescription: "Invalid Email", failureReason: "Please enter a valid email address", helpAnchor: "Please")
                 return

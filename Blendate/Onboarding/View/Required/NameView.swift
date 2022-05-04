@@ -21,6 +21,11 @@ struct NameView: View {
                 .padding(.horizontal, 60)
             Spacer()
         }.padding(.top)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(systemName: "chevron.left", action: FirebaseManager.instance.signout)
+                }
+            }
     }
 }
 

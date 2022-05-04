@@ -89,7 +89,9 @@ struct PreviewSignup: View {
             self.type = type
         }
         var body: some View {
-            SignupView(type)
+            NavigationView {
+                SignupView(type)
+            }
         }
     }
 }

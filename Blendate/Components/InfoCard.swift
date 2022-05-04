@@ -32,7 +32,7 @@ struct InfoCard: View {
         VStack(alignment:.leading){
             HStack {
                 Text(type.rawValue)
-                    .fontType(.regular, 15, .DarkBlue)
+                    .fontType(.semibold, 18, .DarkBlue)
                 Image(icon)
                     .renderingMode(.template)
                     .foregroundColor(.DarkBlue)
@@ -85,7 +85,7 @@ struct InfoData: View {
                     .fontType(.regular, 13, .gray)
                 Text(info)
                     .fontType(.regular, 14, .DarkBlue)
-            }
+            }.padding(.bottom, 2)
         }
     }
 }

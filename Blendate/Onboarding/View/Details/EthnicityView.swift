@@ -12,7 +12,7 @@ struct EthnicityView: View {
     
     let columns = [ GridItem(.flexible()), GridItem(.flexible())]
 
-    
+    #warning("fix photo")
     var body: some View {
         VStack {
             SignupTitle(.ethnicity)

@@ -17,6 +17,7 @@ struct SettingsView: View {
     }
     @Binding var user: User
     @State var showPremium: Bool = false
+    @State var alertError: AlertError?
     
     var distanceProxy: Binding<Bool>{
         Binding<Bool>(
@@ -55,6 +56,7 @@ struct SettingsView: View {
             .foregroundColor(.DarkBlue)
             .background(Color.LightGray)
             .navigationBarTitle("Settings")
+            .errorAlert(error: $alertError, retry: delete)
         }
     }
     
@@ -68,7 +70,7 @@ struct SettingsView: View {
                     Spacer()
                 }
             }
-            Button(action: signout) {
+            Button(action: showDeleteAlert) {
                 HStack {
                     Spacer()
                     Text("Delete Account")
@@ -82,6 +84,17 @@ struct SettingsView: View {
     private func signout(){
         mode.wrappedValue.dismiss()
         try? FirebaseManager.instance.auth.signOut()
+    }
+    
+    private func showDeleteAlert(){
+        self.alertError = AlertError(errorDescription: "Delete Account", failureReason: "Are you sure you want to delete your account?", recoverySuggestion: "Delete")
+    }
+    
+    private func delete(){
+        mode.wrappedValue.dismiss()
+        FirebaseManager.instance.auth.currentUser?.delete()
+        try? FirebaseManager.instance.auth.signOut()
+
     }
 }
 

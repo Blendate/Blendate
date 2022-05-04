@@ -76,6 +76,10 @@ class FirebaseManager: NSObject {
         }
         return nil
     }
+    
+    func signout(){
+        try? auth.signOut()
+    }
 
 }
 

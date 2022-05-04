@@ -15,7 +15,7 @@ let KKidAge: IntRange = IntRange(0,22)
 let kEmailKey: String = "kEmailKey"
 
 struct Filters: Codable {    
-    var isParent: Bool = false
+    var isParent: Bool = true
     var children: Int = 0
     var childrenRange = IntRange(0,1)
     var height: Int = 60

@@ -13,13 +13,14 @@ struct BirthdayView: View {
     @Binding var birthday: Date
     @State var showPicker = false
     @State var pickerSize: CGSize = .zero
+    
+    let date = Calendar.current.date(byAdding: .year, value: -18, to: Date()) ?? Date()
+    
     var body: some View {
         VStack {
-            DatePicker(selection: $birthday, displayedComponents: [.date]) {}
+            SignupTitle(.birthday)
+            DatePicker(selection: $birthday, in: ...date, displayedComponents: [.date]) {}
             .datePickerStyle(.graphical)
-                .labelsHidden()
-                .fontType(.regular, 32)
-                .padding(.horizontal)
                 .tint(.Blue)
             Spacer()
         }

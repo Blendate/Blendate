@@ -39,7 +39,7 @@ struct TodayView: View {
                     .capsuleButton(color: .Blue, fontsize: 18)
                     .offset(y: -25)
                 }.padding(.top, 70)
-                PhotoView.Avatar(size: 140)
+                PhotoView.Avatar(size: 140, isCell: true)
                     .onTapGesture {
                         showProfile = true
                     }

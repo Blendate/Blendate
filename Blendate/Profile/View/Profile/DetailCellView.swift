@@ -12,7 +12,7 @@ struct DetailCellView: View {
     let detail: EditDetail
     @Binding var details: Details
     
-    let sliders: [EditDetail] = [.height, .childrenRange]
+    let sliders: [EditDetail] = [.height, .childrenRange, .bio]
 
     
     var body: some View {
@@ -97,6 +97,8 @@ extension DetailCellView {
                 .multilineTextAlignment(.leading)
                 .frame(height: 80)
                 .font(.caption)
+                .background(Color(uiColor: .systemBackground))
+                .shadow(radius: 1)
         case .work:
             TextField("Accountant at Company", text: $details.workTitle)
                 .multilineTextAlignment(.center)
@@ -199,37 +201,6 @@ extension DetailCellView {
 
         }
     }
-    
-//    struct ArrayPicker<T:Property>: View {
-//        let prop: T.Type
-//        @Binding var array: [String]
-//
-//        init(_ prop: T.Type, _ value: Binding<[String]>){
-//            self.prop = prop
-//            self._array = value
-//        }
-//        var body: some View {
-//            Menu {
-//                Picker("", selection: $array) {
-//                    ForEach(Array(T.allCases), id: \.self.value) {
-//                        Text($0.value + (array.contains($0.value) ? "+":""))
-//                            .tag($0.value)
-//                    }
-//                    Text("--").tag("--")
-//                }
-//    //            .pickerStyle(.menu)
-//                .labelsHidden()
-//                .pickerStyle(InlinePickerStyle())
-//
-//            } label: {
-//                Text(stringArrayValue(array))
-//                    .foregroundColor(.primary)
-//                // make your custom button here
-//            }
-//
-//        }
-//}
-
         
         struct MultiSelectPickerView: View {
             // The list of items we want to show

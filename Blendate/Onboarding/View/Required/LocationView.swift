@@ -14,7 +14,7 @@ struct LocationView: View {
     @StateObject private var viewModel = LocationViewModel()
     
     
-    @State var maxDistance: Int = 0
+    @State var maxDistance: Int = 1
     @State var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 40, longitude: -73), span: MKCoordinateSpan(latitudeDelta: 50, longitudeDelta: 50))
     var distanceProxy: Binding<Double>{
         Binding<Double>(get: {
@@ -64,13 +64,7 @@ struct LocationView: View {
                     .foregroundColor(.white)
                     .disabled(viewModel.isLoading)
                 } else {
-                    Slider(value: distanceProxy, in: 1...50)
-                        .padding()
-                        .background(Color.white)
-                        .clipShape(Capsule())
-                        .padding(.bottom, 50)
-                        .padding(.horizontal, 30)
-                        .tint(.Blue)
+                    
                 }
                 if viewModel.isLoading {
                     VStack {
@@ -90,6 +84,23 @@ struct LocationView: View {
         .onChange(of: viewModel.location) { newValue in
             location = newValue
         }
+    }
+    
+    var slider: some View {
+        VStack(spacing: 0) {
+            HStack {
+                Spacer()
+                Text("\(maxDistance) mi")
+                    .foregroundColor(.DarkBlue)
+            }
+            Slider(value: distanceProxy, in: 1...50)
+                .tint(.Blue)
+        }
+        .padding()
+        .background(Color.white)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .padding(.bottom, 50)
+        .padding(.horizontal, 30)
     }
 }
 
@@ -145,42 +156,18 @@ class LocationViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
         
 
     }
-    
-//    func locationGeo(location: CLLocation, completion: @escaping (String) -> Void) {
-//        CLGeocoder().reverseGeocodeLocation(location) { placemarks, error in
-//            guard error == nil else {
-//                print("Location Error")
-//                printD(error!.localizedDescription)
-//                return
-//            }
-//            if let placemark = placemarks?[0]{
-//                let _ = placemark.location?.coordinate.longitude ?? 0.0
-//                let _ = placemark.location?.coordinate.latitude ?? 0.0
-//                let name = placemark.subAdministrativeArea!
-//                let _ = placemark.country!
-//                let region = placemark.administrativeArea!
-//
-//                let string = name + ", " + region
-//
-//                completion(string)
-//
-//            }
-//        }
-//    }
-
 }
-
-//extension Map {
-//    func addOverlay(_ overlay: MKOverlay) -> some View {
-//        MKMapView.appearance().addOverlay(overlay)
-//        return self
-//    }
-//}
 
 #if DEBUG
 struct LocationView_Previews: PreviewProvider {
     static var previews: some View {
-        PreviewSignup(.location)
+//        PreviewSignup(.location)
+        ZStack {
+            Color.Blue
+            LocationView(location: .constant(Location(name: "", lat: 40, lon: -73))).slider.previewLayout(.sizeThatFits)
+
+        }
+        
     }
 }
 #endif

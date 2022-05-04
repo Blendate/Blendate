@@ -40,6 +40,7 @@
 		4C521A4E27BDA9AE00674C62 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4C521A4D27BDA9AE00674C62 /* GoogleService-Info.plist */; };
 		4C57F591281CE9890059299B /* CachedAsyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = 4C57F590281CE9890059299B /* CachedAsyncImage */; };
 		4C57F593281CE9A20059299B /* PhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C57F592281CE9A20059299B /* PhotoView.swift */; };
+		4C5D59582822532800CD9053 /* TagCloudView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C5D59572822532800CD9053 /* TagCloudView.swift */; };
 		4C78847128188CA500B643C2 /* AsyncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C78847028188CA500B643C2 /* AsyncButton.swift */; };
 		4C788473281890E600B643C2 /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C788472281890E600B643C2 /* Array.swift */; };
 		4C7884752818910E00B643C2 /* SeperatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7884742818910E00B643C2 /* SeperatorView.swift */; };
@@ -177,6 +178,7 @@
 		4C47045327F432D9007517D9 /* RangeSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RangeSliderView.swift; sourceTree = "<group>"; };
 		4C521A4D27BDA9AE00674C62 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4C57F592281CE9A20059299B /* PhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoView.swift; sourceTree = "<group>"; };
+		4C5D59572822532800CD9053 /* TagCloudView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagCloudView.swift; sourceTree = "<group>"; };
 		4C78847028188CA500B643C2 /* AsyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncButton.swift; sourceTree = "<group>"; };
 		4C788472281890E600B643C2 /* Array.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
 		4C7884742818910E00B643C2 /* SeperatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeperatorView.swift; sourceTree = "<group>"; };
@@ -676,6 +678,7 @@
 				4C9C029B281F0C9000EBE008 /* Model */,
 				4C8059EB2760420D00D85D14 /* View */,
 				4CD27CDE281CD6B200CD0F20 /* ItemButton.swift */,
+				4C5D59572822532800CD9053 /* TagCloudView.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -827,6 +830,7 @@
 				4C805A5527604D6000D85D14 /* GenderView.swift in Sources */,
 				4C3547552804CE0C00B0888A /* ChatTextField.swift in Sources */,
 				4C0A58302818EBB10068CCCE /* IceBreakersView.swift in Sources */,
+				4C5D59582822532800CD9053 /* TagCloudView.swift in Sources */,
 				4C02578927F7766400844565 /* SessionViewModel.swift in Sources */,
 				4C805A7027605D3F00D85D14 /* ProfileCardView.swift in Sources */,
 				4CB4E45B27F8F38300E775D1 /* Icebreakers.swift in Sources */,
@@ -1022,7 +1026,7 @@
 				CODE_SIGN_ENTITLEMENTS = Blendate/Blendate.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 26;
+				CURRENT_PROJECT_VERSION = 27;
 				DEVELOPMENT_ASSET_PATHS = "\"Blendate/Preview Content\"";
 				DEVELOPMENT_TEAM = QLFXX64RR2;
 				ENABLE_PREVIEWS = YES;
@@ -1056,7 +1060,7 @@
 				CODE_SIGN_ENTITLEMENTS = Blendate/Blendate.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 26;
+				CURRENT_PROJECT_VERSION = 27;
 				DEVELOPMENT_ASSET_PATHS = "\"Blendate/Preview Content\"";
 				DEVELOPMENT_TEAM = QLFXX64RR2;
 				ENABLE_PREVIEWS = YES;

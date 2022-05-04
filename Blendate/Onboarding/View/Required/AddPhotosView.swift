@@ -18,38 +18,40 @@ struct AddPhotosView: View {
     }
     
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             if !signup {
                 Spacer()
             }
             HStack {
                 VStack {
                     Text("Profile Photo")
-                        .fontType(.regular, 16, .DarkBlue)
+                        .fontType(.semibold, 16, .DarkBlue)
                     PhotoView(photo(0), isCell: true)
                 }
                 VStack {
                     Text("Cover Photo")
-                        .fontType(.regular, 16, .DarkBlue)
+                        .fontType(.semibold, 16, .DarkBlue)
                     PhotoView(photo(1), isCell: true)
                 }
-            }.padding(.vertical, 60)
+            }
             .foregroundColor(.DarkBlue)
+            .padding(.top)
             Spacer()
             HStack {
                 Spacer()
                 Text("Add up to 6 photos to your gallery")
                     .fontType(.regular, 16, signup ? .white:.clear)
                 Spacer()
-            }.padding(.vertical)
+            }
             ScrollView(.horizontal) {
                 HStack(spacing: 10) {
                     ForEach(2..<8) { i in
                         PhotoView(photo(i), isCell: true)
+                            .padding(.vertical)
                     }
                 }
-            }.padding(.bottom, 70)
-            Spacer()
+            }
+            .padding(.bottom, 30)
             Text("As part of our Community Guidelines; pictures of minors are prohibited, unless accompanied by an adult")
                 .fontType(.regular, 12, signup ? .white:.DarkBlue)
                 .multilineTextAlignment(.center)
@@ -59,94 +61,12 @@ struct AddPhotosView: View {
     }
 }
 
-extension Array where Element == Photo {
-    mutating func tapItem(_ element: Element) {
-        if let index = firstIndex(of: element) {
-            remove(at: index)
-            append(element)
-        } else {
-            append(element)
-        }
-    }
-}
-
-//struct EmptyPhoto: View {
-//    @State var photo: Photo
-//
-//    @State var showPicker = false
-//    @State var image: UIImage?
-//
-//    var action: (_ photo: Photo) -> Void
-//
-//
-//    var body: some View {
-//        let index = photo.placement
-//        Group {
-//            if let image = image {
-//                    Image(uiImage: image)
-//                    .resizable()
-//                    .scaledToFill()
-//                    .frame(width: index < 2 ? 160:100, height: index < 2 ? 210:132)
-//                    .clipShape(RoundedRectangle(cornerRadius: 15))
-//            } else {
-//                AsyncImage(url: photo.url) { image in
-//                    image
-//                        .resizable()
-//                        .scaledToFill()
-//                        .frame(width: index < 2 ? 160:100, height: index < 2 ? 210:132)
-//                        .clipShape(RoundedRectangle(cornerRadius: 12))
-//                } placeholder: {
-//                    ZStack {
-//                        Rectangle()
-//                            .foregroundColor((photo.id == 0 || photo.id == 1) ? Color.Blue.opacity(0.8) : Color.white)
-//                            .cornerRadius(15)
-//                        Circle()
-//                            .frame(width: 50)
-//                            .foregroundColor(.LightGray)
-//                        Image(systemName: "plus")
-//                            .foregroundColor(.DarkBlue)
-//                    }
-//                    .frame(width: index < 2 ? 160:100, height: index < 2 ? 210:132)
-//                }
-//                .frame(width: index < 2 ? 160:100, height: index < 2 ? 210:132)
-//
-//            }
-//        }
-//        .onTapGesture {
-//            showPicker = true
-//        }
-//        .sheet(isPresented: $showPicker, onDismiss: {
-//            Task {
-//                do {
-//                    let photo = try await returnImage()
-//                    self.photo = photo
-//                    action(photo)
-//                } catch {
-//                    print(error.localizedDescription)
-//                }
-//            }
-//        }) {
-//            ImagePicker(selectedImage: $image)
-//        }
-//
-//    }
-//
-//    private func returnImage() async throws -> Photo {
-//        guard let image = image,
-//              let data = image.jpegData(compressionQuality: 0.5)
-//        else { throw FirebaseError.generic("Could Not Upload Image to Server") }
-//
-//        return try await PhotoService.uploadPhoto(at: photo.placement, data)
-//
-//    }
-//}
-
-
 
 #if DEBUG
 struct AddPhotosView_Previews: PreviewProvider {
     static var previews: some View {
-        PreviewSignup(.photos)
+//        PreviewSignup(.photos)
+        AddPhotosView(photos: dev.$bindingMichael.details.photos, signup: false)
     }
 }
 #endif
