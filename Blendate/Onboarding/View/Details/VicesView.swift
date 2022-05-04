@@ -12,10 +12,13 @@ struct VicesView: View {
     let columns = [ GridItem(.flexible()), GridItem(.flexible())]
 
     var body: some View {
-        ScrollView(.vertical) {
-            LazyVGrid(columns: columns, alignment: .center) {
-                ForEach(Vices.allCases, id: \.self) { item in
-                    ItemArray($vices, item)
+        VStack {
+            SignupTitle(.vices)
+            ScrollView(.vertical) {
+                LazyVGrid(columns: columns, alignment: .center) {
+                    ForEach(Vices.allCases, id: \.self) { item in
+                        ItemArray($vices, item)
+                    }
                 }
             }
         }

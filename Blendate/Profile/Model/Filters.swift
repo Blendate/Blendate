@@ -11,7 +11,7 @@ enum PropType:Codable { case detail, filter }
 
 let kOpenString:String = "Open to all"
 let KAgeRange: IntRange = IntRange(18,76)
-let KKidAge: IntRange = IntRange(0,19)
+let KKidAge: IntRange = IntRange(0,22)
 let kEmailKey: String = "kEmailKey"
 
 struct Filters: Codable {    

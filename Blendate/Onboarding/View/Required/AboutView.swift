@@ -22,7 +22,7 @@ struct AboutView: View {
                 .fontType(.regular, 20, .DarkBlue)
                 .multilineTextAlignment(.center)
                 .frame(width: 300, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                .padding(.bottom)
+                .padding(.vertical)
             TextEditor(text: $about)
                     .padding()
                     .background(Color.LightGray)
@@ -37,6 +37,7 @@ struct AboutView: View {
                         .padding(.bottom,20)
                         .padding(.trailing,30)
                         , alignment: .bottomTrailing)
+            Spacer()
         }
     }
     

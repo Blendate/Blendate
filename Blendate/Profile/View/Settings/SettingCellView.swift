@@ -24,15 +24,17 @@ struct SettingCellView: View {
         HStack {
             VStack(alignment: .leading){
                 Text(title)
-                if !subtitle.isEmpty {
-                    Text(subtitle)
-                        .font(.caption)
-                        .foregroundColor(.gray)
-                }
+                    .fontType(.semibold, 16, .DarkBlue)
+//                if !subtitle.isEmpty {
+//                    Text(subtitle)
+//                        .font(.caption)
+//                        .foregroundColor(.gray)
+//                }
             }
+            .padding(.vertical, 12)
             Spacer()
             content()
-        }.padding(.vertical, 5)
+        }
     }
     
     @ViewBuilder func content() -> some View {
@@ -73,7 +75,7 @@ enum SettingCell: String, Identifiable, Equatable, CaseIterable {
     case invisble = "Invisible Blending"
     case notifications = "Notifications"
     case community = "Community"
-    case auth = "Signin"
+    case auth = "Authentication"
     case help = "Help Center"
     case privacy = "Privacy Policy"
     case about = "About Us"
@@ -97,15 +99,12 @@ enum SettingCell: String, Identifiable, Equatable, CaseIterable {
     enum Groups: String, Identifiable, Equatable, CaseIterable {
         var id: String {self.rawValue}
         case account = "Account"
-        case auth = "Authenticated"
-        case legal = "About Blendate"
+        case legal = "About"
         
         var cells: [SettingCell] {
             switch self {
             case .account:
-                return [.membership, .invisble, .notifications, .community]
-            case .auth:
-                return [.auth]
+                return [.membership, .invisble, .notifications, .community, .auth]
             case .legal:
                 return [.help, .privacy, .about]
             }

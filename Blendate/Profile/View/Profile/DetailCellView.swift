@@ -61,9 +61,11 @@ extension DetailCellView {
         case .isParent:
             Toggle("", isOn: $details.info.isParent).tint(.Blue)
         case .children:
-            TextField("", text: children)
-                .multilineTextAlignment(.trailing)
+            TextField("1", text: children)
+                .multilineTextAlignment(.center)
                 .keyboardType(.numberPad)
+                .textFieldStyle(.roundedBorder)
+                .fixedSize()
         case .relationship:
             PropPicker( Status.self, $details.info.relationship)
         case .familyPlans:
@@ -92,14 +94,19 @@ extension DetailCellView {
             
         case .bio:
             TextEditor(text: $details.bio)
-                .multilineTextAlignment(.trailing)
+                .multilineTextAlignment(.leading)
                 .frame(height: 80)
+                .font(.caption)
         case .work:
-            TextField("", text: $details.workTitle)
-                .multilineTextAlignment(.trailing)
+            TextField("Accountant at Company", text: $details.workTitle)
+                .multilineTextAlignment(.center)
+                .textFieldStyle(.roundedBorder)
+                .fixedSize()
         case .education:
-            TextField("", text: $details.schoolTitle)
-                .multilineTextAlignment(.trailing)
+            TextField("Masters at University", text: $details.schoolTitle)
+                .multilineTextAlignment(.center)
+                .textFieldStyle(.roundedBorder)
+                .fixedSize()
         case .interests:
             NavigationLink {
                 MultiSelectPickerView(allItems: Interest.allCases.map{$0.rawValue}, selectedItems: $details.interests)

@@ -12,6 +12,7 @@ struct EducationView: View {
     
     var body: some View {
         VStack{
+            SignupTitle(.education)
             Text("What University, College, or High School did you attend?")
                 .fontType(.regular, 16, .DarkBlue)
                 .padding(.top,5)
@@ -22,6 +23,7 @@ struct EducationView: View {
                 .padding(.horizontal, 40)
                 .foregroundColor(.DarkBlue)
                 .textFieldStyle(.roundedBorder)
+            Spacer()
         }
     }
 }

@@ -12,9 +12,11 @@ struct MobilityView: View {
     
     var body: some View {
         VStack{
+            SignupTitle(.mobility)
             ItemButton($mobility, Mobility.notWilling).padding(.bottom)
             ItemButton($mobility, Mobility.willing).padding(.bottom)
             ItemButton($mobility, Mobility.dontCare)
+            Spacer()
         }
     }
 }

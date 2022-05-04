@@ -12,12 +12,10 @@ struct WantKidsView: View {
     
     var body: some View {
         VStack{
-            HStack{
-                Spacer()
-                ItemButton($wantKids, FamilyPlans.wantMore).padding(.trailing)
-                ItemButton($wantKids, FamilyPlans.dontWant)
-                Spacer()
-            }
+            SignupTitle(.familyPlans)
+            ItemButton($wantKids, FamilyPlans.wantMore).padding(.trailing)
+            ItemButton($wantKids, FamilyPlans.dontWant)
+            Spacer()
         }
     }
 }

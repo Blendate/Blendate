@@ -26,6 +26,7 @@ struct LocationView: View {
     
     var body: some View {
         VStack{
+            SignupTitle(.location)
             VStack {
                 Text("Only neighborhood name will be shown")
                     .fontType(.regular, 18, .DarkBlue.opacity(0.65))

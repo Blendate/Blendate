@@ -13,12 +13,6 @@ import FacebookCore
 @main
 struct BlendateApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-
-    @StateObject var notification = NotificationModel()
-    init() {
-//      FirebaseApp.configure()
-        
-    }
     
     var body: some Scene {
         WindowGroup {
@@ -45,22 +39,3 @@ struct BlendateApp: App {
     }
 }
 
-class NotificationModel: NSObject, ObservableObject, UNUserNotificationCenterDelegate, MessagingDelegate {
-        func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-            if let fcm = fcmToken {
-                printD(fcm)
-                UserDefaults.standard.set(fcm, forKey: "fcm")
-            }
-        }
-    
-    
-        func userNotificationCenter(_ center: UNUserNotificationCenter,
-                                  didReceive response: UNNotificationResponse,
-                                  withCompletionHandler completionHandler: @escaping () -> Void) {
-            let userInfo = response.notification.request.content.userInfo
-
-            print(userInfo)
-
-            completionHandler()
-        }
-}

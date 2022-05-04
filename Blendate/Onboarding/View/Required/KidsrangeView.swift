@@ -15,15 +15,16 @@ struct KidsRangeView: View {
     
     var body: some View {
         VStack(spacing: 0) {
+            SignupTitle(.childrenRange)
             Text("From")
                 .fontType(.regular, 20, .DarkBlue)
             AgeRangeView(type: .range, pickerCount: 22, offset: $minOffset)
             Text("To")
                 .fontType(.regular, 20, .DarkBlue)
             AgeRangeView(type: .range, pickerCount: 22, offset: $maxOffset)
-
+            Spacer()
         }
-        .padding(.bottom)
+//        .padding(.bottom)
         .onChange(of: minOffset) { newValue in
             childrenRange.min = 1 + Int(newValue / AgeTick.spacing)
         }

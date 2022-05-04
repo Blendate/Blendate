@@ -12,6 +12,7 @@ struct ParentView: View {
         
     var body: some View {
         VStack {
+            SignupTitle(.isParent)
             HStack {
                 Item(title: "Yes", active: isParent) {
                     isParent = true
@@ -20,29 +21,12 @@ struct ParentView: View {
                     isParent = false
                 }.padding(.horizontal)
             }.padding(.bottom, 100)
+            Spacer()
         }
     }
 }
 
-struct Item: View {
-    let title: String
-    let active: Bool
-    var action: ()->Void
-    var body: some View {
-        Button(action: action) {
-            Text(title)
-                .fontType(.regular, 18, active ? .white:.Blue)
-                .padding(.horizontal)
-                .padding()
-                .background(active ? Color.Blue:Color.white)
-                .clipShape(Capsule())
-                .overlay(
-                    Capsule()
-                        .stroke(Color.Blue, lineWidth: 2)
-                )
-        }
-    }
-}
+
 
 #if DEBUG
 struct ParentView_Previews: PreviewProvider {

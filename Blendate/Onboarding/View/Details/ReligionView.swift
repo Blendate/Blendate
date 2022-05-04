@@ -12,10 +12,13 @@ struct ReligionView: View {
     let columns = [ GridItem(.flexible()), GridItem(.flexible())]
 
     var body: some View {
-        ScrollView(.vertical) {
-            LazyVGrid(columns: columns, alignment: .center) {
-                ForEach(Religion.allCases, id: \.self) { item in
-                    ItemButton($religion, item)
+        VStack {
+            SignupTitle(.religion)
+            ScrollView(.vertical) {
+                LazyVGrid(columns: columns, alignment: .center) {
+                    ForEach(Religion.allCases, id: \.self) { item in
+                        ItemButton($religion, item)
+                    }
                 }
             }
         }

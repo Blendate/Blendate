@@ -19,7 +19,8 @@ struct NameView: View {
                 .fontType(.regular, 12, .gray)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 60)
-        }
+            Spacer()
+        }.padding(.top)
     }
 }
 

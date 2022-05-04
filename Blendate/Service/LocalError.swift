@@ -70,16 +70,32 @@ extension View {
 //    }
 //
     
-    func errorAlert(error: Binding<AlertError?>) -> some View {
+    func errorAlert(error: Binding<AlertError?>, retry: (() ->Void)? = nil) -> some View {
         let localizedAlertError = error.wrappedValue
         return alert(
             isPresented: .constant(localizedAlertError != nil),
             error: localizedAlertError,
             actions: { error in
-                if let suggestion = error.recoverySuggestion {
-                    Button(suggestion, action: {
-                        // Recover from an error
-                    })
+                if let suggestion = error.recoverySuggestion, let retry = retry {
+                    Button(suggestion, action: retry)
+                }
+            }, message: { error in
+            if let failureReason = error.failureReason {
+                Text(failureReason)
+            } else {
+                Text("Something went wrong")
+            }
+        })
+    }
+    
+    func asyncErroAlert(error: Binding<AlertError?>, retry: (() async ->Void)? = nil) -> some View {
+        let localizedAlertError = error.wrappedValue
+        return alert(
+            isPresented: .constant(localizedAlertError != nil),
+            error: localizedAlertError,
+            actions: { error in
+                if let suggestion = error.recoverySuggestion, let retry = retry {
+                    AsyncButton(suggestion, action: retry)
                 }
             }, message: { error in
             if let failureReason = error.failureReason {

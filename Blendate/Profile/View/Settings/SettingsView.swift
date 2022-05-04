@@ -32,7 +32,7 @@ struct SettingsView: View {
         NavigationView {
             List {
                 ForEach(SettingCell.Groups.allCases){ group in
-                    Section(header: Text(group.id)) {
+                    Section(header: Text(group.id).fontType(.regular, 18, .gray)) {
                         ForEach(group.cells){ cell in
                             if cell != .invisble {
                                 SettingCellView(cell, $user.settings)
@@ -43,12 +43,13 @@ struct SettingsView: View {
                             }
                         }
                     }
+                    .headerProminence(.increased)
                 }
                 LogoutButtons
-                Section(header: Text("Dev")){
-                    Toggle("Classic Tab Bar", isOn: distanceProxy)
-                    Text("May have to restart the app to show the change")
-                }
+//                Section(header: Text("Dev")){
+//                    Toggle("Classic Tab Bar", isOn: distanceProxy)
+//                    Text("May have to restart the app to show the change")
+//                }
             }
             .listStyle(.insetGrouped)
             .foregroundColor(.DarkBlue)

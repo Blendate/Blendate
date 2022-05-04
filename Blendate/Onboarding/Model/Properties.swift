@@ -8,34 +8,23 @@
 import SwiftUI
 
 protocol Property: Codable, CaseIterable, Identifiable, Hashable {
-    var title: String {get}
-    var label: String {get}
     var value: String {get}
-//    var detail: Detail {get}
-    
-//    associatedtype V: View
-//    @ViewBuilder static func getDestination(_ details: Binding<Details>)-> V
-    
 }
 
 enum Gender: String, Property {
-    
-    var title: String { "I identify as"}
-    var label: String {"Gender"}
-    var value: String {id}
-
-    var id: String { self.rawValue }
+    var id: String { rawValue }
     case male = "Male"
     case female = "Female"
     case nonBinary = "Non-Binary"
+    
+    var value: String {id}
+
 }
 
 enum Status: String, Property {
-    var title: String {"Relationship Status"}
-    var label: String {self.title}
     var value: String {id}
     
-    var id: String { self.rawValue }
+    var id: String {rawValue}
 
     case single = "Single"
     case divorced = "Divorced"
@@ -46,43 +35,25 @@ enum Status: String, Property {
 }
 
 enum FamilyPlans: String, Property {
-    var title: String {"Family Plans"}
-    var label: String {self.title}
     var value: String {id}
-//    var detail: Detail {Detail.wantKids}
 
-    var id: String { self.rawValue }
+    var id: String { rawValue }
     case wantMore = "Want more"
     case dontWant = "Don't want more"
     case dontCare = "Dont care"
-//    case none = "Open to all"
 
 }
 enum Mobility: String, Property {
-    var title: String {"Mobility"}
-    var label: String {self.title}
     var value: String {id}
-//    var detail: Detail {Detail.mobility}
-
     
     var id: String { self.rawValue }
     case notWilling = "Not Willing to Move"
     case willing = "Willing to Move"
     case dontCare = "Don't Care"
-//    case open = "Open to all"
-
-//    @ViewBuilder
-//    static func getDestination(_ details: Binding<Details>) -> some View {
-//        MobilityView(mobility: details.mobility)
-//    }
 }
 
 enum Religion: String, Property {
-    var title: String {"Religion"}
-    var label: String {self.title}
     var value: String {id}
-//    var detail: Detail {Detail.religion}
-
     
     var id: String { self.rawValue }
     case atheist = "Atheist/Agnostic"
@@ -95,19 +66,10 @@ enum Religion: String, Property {
     case islam = "Islam"
     case sikhism = "Sikhism"
     case other = "Other"
-//    case none = "Open to all"
-    
-//    @ViewBuilder
-//    static func getDestination(_ details: Binding<Details>) -> some View {
-//        VicesView(vices: details.vices)
-//    }
 }
 
 enum Politics: String, Property {
-    var title: String {"Politics"}
-    var label: String {self.title}
     var value: String {id}
-//    var detail: Detail {Detail.politics}
 
     
     var id: String { self.rawValue }
@@ -115,22 +77,12 @@ enum Politics: String, Property {
     case liberal = "Liberal"
     case centrist = "Centrist"
     case other = "Other"
-//    case none = "Open to all"
-    
-//    @ViewBuilder
-//    static func getDestination(_ details: Binding<Details>) -> some View {
-//        PoliticsView(politics: details.politics)
-//    }
 }
 
 enum Ethnicity: String, Property {
-    var title: String {"Ethnicity"}
-    var label: String {self.title}
     var value: String {id}
-//    var detail: Detail {Detail.ethnicity}
-
     
-    var id: String { self.rawValue }
+    var id: String { rawValue }
     case caucasian = "White/Caucasian"
     case islander = "Pacific Islander"
     case african = "Black/African Descent"
@@ -140,23 +92,13 @@ enum Ethnicity: String, Property {
     case indian = "Native American"
     case middleEast = "Middle Eastern"
     case other = "Other"
-//    case none = "Open to all"
-    
-//    @ViewBuilder
-//    static func getDestination(_ details: Binding<Details>) -> some View {
-//        EthnicityView(ethnicity: details.ethnicity)
-//    }
 }
 
 
 enum Vices: String, Property {
-    var title: String {"Vices"}
-    var label: String {self.title}
     var value: String {id}
-//    var detail: Detail {Detail.vices}
 
-    
-    var id: String { self.rawValue }
+    var id: String { rawValue }
     case alcohol = "Alcohol"
     case snacker = "Night snacker"
     case weed = "Marijuana"
@@ -172,22 +114,13 @@ enum Vices: String, Property {
     case shopping = "Shopping"
     case excersize = "Excercising"
     case books = "Book Worm"
-    
-//    @ViewBuilder
-//    static func getDestination(_ details: Binding<Details>) -> some View {
-//        VicesView(vices: details.vices)
-//    }
 }
 
 
 enum Interest: String, Property {
-    var title: String {"Interests"}
-    var label: String {self.title}
     var value: String {id}
-//    var detail: Detail {Detail.interests}
-
-    
-    var id: String { self.rawValue }
+    var title: String {id}
+    var id: String { rawValue }
 
     case travel = "Travel"
     case childCare = "ChildCare"
@@ -234,10 +167,12 @@ enum Interest: String, Property {
 }
 
 enum Yes: String, Property {
-    var title: String {self.rawValue}
-    var label: String {self.title}
     var value: String {id}
-//    var detail: Detail {Detail.name}
+    
+    var id: String { self.rawValue }
+    case yes = "Yes"
+    case no = "No"
+    
     var boolValue: Bool {
         switch self {
         case .yes:
@@ -246,14 +181,4 @@ enum Yes: String, Property {
             return false
         }
     }
-
-//    @ViewBuilder
-//    static func getDestination(_ details: Binding<Details>) -> some View {
-//
-//    }
-    
-    var id: String { self.title }
-    case yes = "Yes"
-    case no = "No"
-//    case open = "Open to all"
 }

@@ -33,8 +33,8 @@ struct AddPhotosView: View {
                         .fontType(.regular, 16, .DarkBlue)
                     PhotoView(photo(1), isCell: true)
                 }
-            }.padding(.bottom, 80)
-                .foregroundColor(.DarkBlue)
+            }.padding(.vertical, 60)
+            .foregroundColor(.DarkBlue)
             Spacer()
             HStack {
                 Spacer()
@@ -55,7 +55,7 @@ struct AddPhotosView: View {
                 .multilineTextAlignment(.center)
                 .padding(.bottom)
         }.padding(.horizontal)
-            .background(signup ? .clear:.LightGray)
+        .background(signup ? .clear:.LightGray)
     }
 }
 

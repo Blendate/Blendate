@@ -56,18 +56,14 @@ struct ProfileCardView: View {
 
         return ZStack(alignment: .top) {
             VStack {
-                if profileType != .session {
-                    VStack {
-                        Text(details.fullName + ", " + "\(details.age)")
-                        Text(details.info.location.name)
-                    }
-                    .fontType(.semibold, 18, .white)
-                    .padding(.bottom)
-                    .padding(.top, avatarSize/1.5)
-                } else {
-                    Rectangle().fill(Color.clear)
-                        .frame(height: avatarSize/2)
+                VStack {
+                    Text(details.fullName + ", " + "\(details.age)")
+                    Text(details.info.location.name)
                 }
+                .fontType(.semibold, 18, .white)
+                .padding(.bottom)
+                .padding(.top, avatarSize/1.5)
+
                 ProfileButtons(profileType) { swipe in
                     matchVM.swipe(on: uid, swipe)
                 }

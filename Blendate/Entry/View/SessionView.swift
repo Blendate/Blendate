@@ -24,7 +24,7 @@ struct SessionView: View {
     var body: some View {
         LoadingView(showLoading: matchVM.loading == true) {
             if session.loadingState == .noUser {
-                SignupView(user: $session.user)
+                SignupViewContainer()
             } else if session.loadingState == .user {
                 TabView(selection: $session.selectedTab) {
                     MatchProfileView()

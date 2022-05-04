@@ -29,10 +29,11 @@ struct ItemButton<T:Property>: View {
                 .padding()
                 .background(active ? Color.Blue:Color.white)
                 .clipShape(Capsule())
-                .overlay(
-                    Capsule()
-                        .stroke(Color.Blue, lineWidth: 2)
-                )
+                .shadow(color: .Blue, radius: 1, x: 0, y: 1)
+//                .overlay(
+//                    Capsule()
+//                        .stroke(Color.Blue, lineWidth: 2)
+//                )
         }
 
     }
@@ -68,16 +69,40 @@ struct ItemArray<T:Property>: View {
                 .padding()
                 .background(active ? Color.Blue:Color.white)
                 .clipShape(Capsule())
-                .overlay(
-                    Capsule()
-                        .stroke(Color.Blue, lineWidth: 2)
-                )
+                .shadow(color: .Blue, radius: 1, x: 0, y: 1)
+//                .overlay(
+//                    Capsule()
+//                        .stroke(Color.Blue, lineWidth: 2)
+//                )
+        }
+    }
+}
+
+struct Item: View {
+    let title: String
+    let active: Bool
+    var action: ()->Void
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .fontType(.regular, 18, active ? .white:.Blue)
+                .padding(.horizontal)
+                .padding()
+                .background(active ? Color.Blue:Color.white)
+                .clipShape(Capsule())
+                .shadow(color: .Blue, radius: 1, x: 0, y: 1)
+
         }
     }
 }
 
 struct ItemButton_Previews: PreviewProvider {
     static var previews: some View {
-        ItemButton(dev.$bindingMichael.details.gender, Gender.female)
+        ItemButton(.constant("Female"), Gender.female)
+            .padding()
+            .previewLayout(.sizeThatFits)
+        ItemButton(.constant("Male"), Gender.female)
+            .padding()
+            .previewLayout(.sizeThatFits)
     }
 }

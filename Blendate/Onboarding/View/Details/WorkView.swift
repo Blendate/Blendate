@@ -13,17 +13,14 @@ struct WorkView: View {
     
     var body: some View {
         VStack {
-            Text("What is your job title?")
-                .fontType(.regular, 16)
-                .foregroundColor(.DarkBlue)
-                .padding(.top,5)
-                .multilineTextAlignment(.center)
+            SignupTitle(.work)
             TextField("", text: $workTitle)
                     .fontType(.semibold, 22)
                     .padding(.horizontal, 40)
                     .foregroundColor(.DarkBlue)
                     .textFieldStyle(.roundedBorder)
-                    .shadow(radius: 5)
+                    .shadow(radius: 2)
+            Spacer()
         }
     }
 

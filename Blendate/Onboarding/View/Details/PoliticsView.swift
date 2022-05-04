@@ -12,16 +12,17 @@ struct PoliticsView: View {
     
     var body: some View {
         VStack(spacing: 20){
+            SignupTitle(.politics)
             HStack{
-                ItemButton($politics, Politics.liberal).padding(.trailing)
+                ItemButton($politics, Politics.liberal)
                 ItemButton($politics, Politics.conservative)
             }
-            
             HStack{
-                ItemButton($politics, Politics.centrist).padding(.trailing)
+                ItemButton($politics, Politics.centrist)
                 ItemButton($politics, Politics.other)
 
             }
+            Spacer()
         }
     }
 }

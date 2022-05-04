@@ -8,6 +8,8 @@
 import Foundation
 
 extension DeveloperPreview {
+    
+    static var empty = User()
     static var michael: User {
        var usr = User()
         usr.id = "123456"

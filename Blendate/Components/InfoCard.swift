@@ -97,7 +97,7 @@ enum InfoType: String, CaseIterable, Identifiable {
     case background = "Background"
     case lifestyle = "Lifestyle"
     
-    var cards: [Detail] {
+    var cards: [SignupDetail] {
         switch self {
         case .personal:
             return [.relationship, .work, .education]

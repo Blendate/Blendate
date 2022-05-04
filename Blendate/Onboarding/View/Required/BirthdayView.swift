@@ -14,12 +14,15 @@ struct BirthdayView: View {
     @State var showPicker = false
     @State var pickerSize: CGSize = .zero
     var body: some View {
-        DatePicker(selection: $birthday, displayedComponents: [.date]) {}
-        .datePickerStyle(.graphical)
-            .labelsHidden()
-            .fontType(.regular, 32)
-            .padding(.horizontal)
-            .tint(.Blue)
+        VStack {
+            DatePicker(selection: $birthday, displayedComponents: [.date]) {}
+            .datePickerStyle(.graphical)
+                .labelsHidden()
+                .fontType(.regular, 32)
+                .padding(.horizontal)
+                .tint(.Blue)
+            Spacer()
+        }
     }
 }
 

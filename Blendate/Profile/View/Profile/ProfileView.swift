@@ -31,25 +31,6 @@ struct ProfileView: View {
                     .listRowBackground(Color.clear)
                     .sheet(isPresented: $sheet.isShowing, onDismiss: save, content: sheetContent)
                     .buttonStyle(BorderlessButtonStyle())
-
-                Section {
-                    HStack {
-                        Text("Name")
-                            .fontType(.semibold, 16, .gray)
-                            .padding(.vertical, 15)
-                        Spacer()
-                        Text(details.fullName)
-                            .foregroundColor(.gray)
-                    }
-                    HStack {
-                        Text("Age")
-                            .fontType(.semibold, 16, .gray)
-                            .padding(.vertical, 15)
-                        Spacer()
-                        Text(String(details.age))
-                            .foregroundColor(.gray)
-                    }
-                }
 //                Section(header: PremiumHeader(user: $user)) {
 //                    premium
 //                }

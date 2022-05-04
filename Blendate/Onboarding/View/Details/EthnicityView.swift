@@ -14,10 +14,13 @@ struct EthnicityView: View {
 
     
     var body: some View {
-        ScrollView(.vertical) {
-            LazyVGrid(columns: columns, alignment: .center) {
-                ForEach(Ethnicity.allCases, id: \.self) { item in
-                    ItemButton($ethnicity, item)
+        VStack {
+            SignupTitle(.ethnicity)
+            ScrollView(.vertical) {
+                LazyVGrid(columns: columns, alignment: .center) {
+                    ForEach(Ethnicity.allCases, id: \.self) { item in
+                        ItemButton($ethnicity, item)
+                    }
                 }
             }
         }

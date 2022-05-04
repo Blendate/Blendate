@@ -26,6 +26,8 @@ class DeveloperPreview {
     
     var tyler: User { DeveloperPreview.tyler }
     
+    var empty: User {DeveloperPreview.empty}
+    
     var convo: Conversation { DeveloperPreview.convo }
     
     var profilesheet = ProfileSheet()
@@ -36,7 +38,7 @@ class DeveloperPreview {
     @State var bindingMichael = michael
     
     @ViewBuilder
-    func signup(_ detail: Detail) -> some View {
+    func signup(_ detail: SignupDetail) -> some View {
         PreviewSignup(detail)
     }
     
@@ -61,16 +63,33 @@ extension View {
 
 struct PreviewSignup: View {
     
-    @Binding var user: User
-    let type: Detail
+    let type: SignupDetail
+    @StateObject var session = SessionViewModel("")
     
-    init(_ type: Detail){
+    init(_ type: SignupDetail){
         self.type = type
-        self._user = .constant(DeveloperPreview.instance.michael)
     }
     var body: some View {
-        NavigationView {
-            SignupViewMod($user.details, type)
+        SignupViewPreview(type)
+            .environmentObject(session)
+            .previewDevice("iPhone 13")
+        SignupViewPreview(type)
+            .environmentObject(session)
+            .previewDevice("iPhone 8")
+        SignupViewPreview(type)
+            .environmentObject(session)
+            .previewDevice("iPhone SE (3rd generation)")
+
+    }
+    
+    struct SignupViewPreview: View {
+        let type: SignupDetail
+
+        init(_ type: SignupDetail){
+            self.type = type
+        }
+        var body: some View {
+            SignupView(type)
         }
     }
 }

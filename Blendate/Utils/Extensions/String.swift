@@ -21,4 +21,9 @@ extension String {
             return string.prefix(1).capitalized + dropFirst()
         }
     }
+    
+    var isBlank: Bool {
+      return allSatisfy({ $0.isWhitespace }) || isEmpty || self == "--"
+    }
 }
+

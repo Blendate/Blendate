@@ -18,8 +18,8 @@ struct HeightView: View {
 
     @State var offset: CGFloat = 0
     var body: some View {
-
         VStack(spacing: 0) {
+            SignupTitle(.height)
             ZStack {
                 HStack {
                     Image("Height")

@@ -12,6 +12,7 @@ struct RelationshipView: View {
 
     var body: some View {
         VStack(spacing: 20){
+            SignupTitle(.relationship)
             HStack{
                 ItemButton($relationship, Status.single).padding(.trailing)
                 ItemButton($relationship, Status.separated)
@@ -23,6 +24,7 @@ struct RelationshipView: View {
             HStack{
                 ItemButton($relationship, Status.other).padding(.trailing)
             }
+            Spacer()
         }
     }
 }

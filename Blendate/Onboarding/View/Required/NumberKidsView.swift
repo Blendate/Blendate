@@ -20,9 +20,11 @@ struct NumberKidsView: View {
     
     var body: some View {
         VStack(){
+            SignupTitle(.children)
             AgeRangeView(type: .age, pickerCount: 7, offset: $offset)
+            Spacer()
         }
-        .padding(.bottom, 50)
+//        .padding(.bottom, 50)
         .onChange(of: offset) { newValue in
             children = 1 + Int(newValue / AgeTick.spacing)
         }
