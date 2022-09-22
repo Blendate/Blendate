@@ -24,18 +24,22 @@ struct FiltersView: View {
             GeometryReader { geo in
                 List {
                     ForEach(Filter.FilterGroup.allCases){ group in
-                        Section(header: Text(group.id).foregroundColor(.DarkBlue)) {
+                        Section {
                             ForEach(group.cells(filters)) { cell in
                                 FilterCellView(filter: cell, filters: $filters, width: geo.size.width)
                             }
+                        } header: {
+                            Text(group.id)
+                                .foregroundColor(.DarkBlue)
+                                .fontType(.bold, 20, .DarkBlue)
                         }
-                        .headerProminence(.increased)
+
                     }
                 }
             }
-            .listStyle(.insetGrouped)
+            .listStyle(.plain)
             .pickerStyle(MenuPickerStyle())
-            .background(Color.LightGray)
+//            .background(Color.LightGray)
             .navigationBarTitle("Filters")
         }
     }

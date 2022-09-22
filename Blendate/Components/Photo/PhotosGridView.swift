@@ -47,7 +47,7 @@ struct PhotosGridView: View {
                         if let photo = photo(3), let _ = photo.url {
                             PhotoView(photo)
                         }
-                    }
+                    }.padding(.vertical)
                     VStack{
                         if let photo = photo(4), let _ = photo.url {
                             PhotoView(photo)
@@ -66,8 +66,7 @@ struct PhotosGridView: View {
                     }
                 }
             })
-            .padding()
-        }
+        }.padding()
     }
     
     private func photo(_ index: Int)->Photo?{

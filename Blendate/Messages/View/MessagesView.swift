@@ -32,8 +32,8 @@ struct MessagesView: View {
                 }
                 .navigationTitle("Blends")
             }
-
         }
+        .tabItem{ Image("chat") }
     }
     
     var matches: some View {

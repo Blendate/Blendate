@@ -49,6 +49,8 @@ struct TodayView: View {
         .sheet(isPresented: $showProfile) {
             MatchProfileView(user: todayUser)
         }
+        .tabItem{ Image("heart") }
+        .tag(2)
     }
     
 }

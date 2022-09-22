@@ -17,16 +17,18 @@ struct BlendateApp: App {
     var body: some Scene {
         WindowGroup {
             EntryView()
-                .onAppear(perform: UIApplication.shared.addTapGestureRecognizer)
+                .onAppear(
+                    perform: UIApplication.shared.addTapGestureRecognizer
+                )
                 .onOpenURL { url in
-                    printD(url.absoluteString)
                     firebaseSignin(with: url)
                 }
         }
     }
     
-    func firebaseSignin(with url: URL){
+    private func firebaseSignin(with url: URL){
         let link = url.absoluteString
+        printD(link)
         let firebase = FirebaseManager.instance.auth
         
         if firebase.isSignIn(withEmailLink: link){

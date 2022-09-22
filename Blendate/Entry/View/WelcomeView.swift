@@ -6,8 +6,6 @@
 //
 
 import SwiftUI
-import FirebaseEmailAuthUI
-import FirebaseAuth
 
 struct WelcomeView: View {
     @State var showEmail = false
@@ -16,15 +14,40 @@ struct WelcomeView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            Image.icon(60, .Blue)
-                .padding(.top, 10)
-            logoheader
+            header
             Spacer()
             card
             Spacer()
             terms
         }
         .errorAlert(error: $error)
+    }
+    
+    func emailTapped() async {
+        if showEmail {
+            do {
+                try await UserService().sendEmail(to: email)
+            } catch {
+                self.error = error as? AlertError
+            }
+        } else {
+            showEmail = true
+        }
+    }
+    
+
+}
+extension WelcomeView {
+    
+    var header: some View {
+        VStack(spacing: 0) {
+            Image.icon(60, .Blue)
+                .padding(.top, 10)
+            Text("Blendate")
+                .fontType(.semibold, 60, .Blue)
+            Text("Find your blended family")
+                .fontType(.semibold, 16, .Blue)
+        }
     }
     
     var card: some View {
@@ -54,6 +77,17 @@ struct WelcomeView: View {
     }
     
     
+    var terms: some View {
+        Text("By signing up, you agree to our [Terms](https://blendate.app) See what data we collect in our [Privacy Policy](https://blendate.app).")
+            .multilineTextAlignment(.center)
+            .padding(.horizontal)
+            .padding(.vertical, 6)
+            .font(.footnote)
+            .foregroundColor(Color.gray)
+    }
+    
+    
+    
     var emailField: some View {
         TextField("tyler@blendate.app", text: $email)
             .textFieldStyle(.roundedBorder)
@@ -79,74 +113,16 @@ struct WelcomeView: View {
             .cornerRadius(20)
         }
         .padding(.horizontal, 55)
-//        AsyncButton("Sign in with email", action: emailTapped)
-//        .fontType(.semibold, 14, .Blue)
-//        .tint(.white)
-//        .buttonStyle(.borderedProminent)
-//        .buttonBorderShape(.roundedRectangle(radius: 5))
-//        .controlSize(.regular)
     }
     
 
     
     var signinButtons: some View {
-        VStack {
-            SocialSigninButtons()
-                .frame(height:240)
-                .noPreview(220, 240, "Social Button")
-        }
+        SocialSigninButtons()
+            .frame(height:240)
+            .noPreview(220, 240, "Social Button")
     }
 
-    var logoheader: some View {
-        VStack(spacing: 0) {
-            Text("Blendate")
-                .fontType(.semibold, 60, .Blue)
-            Text("Find your blended family")
-                .fontType(.semibold, 16, .Blue)
-        }
-    }
-    
-    var terms: some View {
-        Text("By signing up, you agree to our [Terms](https://blendate.app) See what data we collect in our [Privacy Policy](https://blendate.app).")
-            .multilineTextAlignment(.center)
-            .padding(.horizontal)
-            .padding(.vertical, 6)
-            .font(.footnote)
-            .foregroundColor(Color.gray)
-    }
-    
-    func emailTapped() async {
-        if showEmail {
-            await sendEmail()
-        } else {
-            showEmail = true
-        }
-    }
-    
-    private func sendEmail() async {
-        guard !email.isBlank, email.isValidEmail
-            else {
-                self.error = AlertError(errorDescription: "Invalid Email", failureReason: "Please enter a valid email address", helpAnchor: "Please")
-                return
-            }
-        var actionCodeSettings: ActionCodeSettings {
-            let actionCodeSettings = ActionCodeSettings()
-            actionCodeSettings.url = URL(string: "https://blendate.page.link/email")
-            actionCodeSettings.handleCodeInApp = true
-            actionCodeSettings.setIOSBundleID(Bundle.main.bundleIdentifier!)
-            return actionCodeSettings
-        }
-        
-        do {
-            try await Auth.auth().sendSignInLink(toEmail: email, actionCodeSettings: actionCodeSettings)
-            UserDefaults.standard.set(email, forKey: kEmailKey)
-            self.error = AlertError(errorDescription: "Email Sent", failureReason: "Please check your email for a link to authenticate and sign in, if you don't have an account one will be created for you")
-        } catch {
-            self.error = error as? AlertError
-            printD(error.localizedDescription)
-        }
-
-    }
 }
 
 

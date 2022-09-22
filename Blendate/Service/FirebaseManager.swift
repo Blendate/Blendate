@@ -45,7 +45,29 @@ class FirebaseManager: NSObject {
     
     static func getUsersID(userId1: String, userId2: String) -> String {userId1 > userId2 ? userId1 + userId2 : userId2 + userId1}
     
-
+    func getProviders() -> [Provider]? {
+        guard let user = auth.currentUser else {return nil }
+        
+        var providers = [Provider]()
+        for i in user.providerData {
+            printD("Provider: \(i.providerID)\nEmail: \(i.email ?? "None")")
+            if i.providerID != "firebase" || i.providerID != "Firebase"{//.equals("facebook.com")) {
+                switch i.providerID {
+                case "apple.com":
+                    providers.append(Provider(type: .apple, email: i.email) )
+                case "facebook.com":
+                    providers.append(Provider(type: .facebook, email: i.email) )
+                case "google.com":
+                    providers.append(Provider(type: .google, email: i.email) )
+                case "twitter.com":
+                    providers.append(Provider(type: .twitter, email: i.email) )
+                default:
+                    providers.append(Provider(type: .email, email: i.email) )
+                }
+            }
+        }
+        return providers
+    }
     
     func checkUID() throws -> String {
         guard let uid = auth.currentUser?.uid else {throw FirebaseError.generic("No UID")}

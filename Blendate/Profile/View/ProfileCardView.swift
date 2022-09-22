@@ -11,12 +11,8 @@ import SwiftUI
 struct ProfileCardView: View {
     @EnvironmentObject var matchVM: MatchViewModel
     let profileType: ProfileType
-
-    var details: Details
+    let details: Details
     private let uid: String?
-    @State var showSettings = false
-    @State var showPref = false
-    @State var showEdit = false
 
     private let avatarSize:CGFloat = 100
     
@@ -28,15 +24,10 @@ struct ProfileCardView: View {
     
     
     var body: some View {
-        Group {
-            switch profileType {
-            case .view:
-                cardWithCover
-            case .match:
-                cardWithCover
-            case .session:
-                Card
-            }
+        if profileType == .session {
+            Card
+        } else {
+            cardWithCover
         }
     }
     
@@ -75,8 +66,6 @@ struct ProfileCardView: View {
         }
         .padding(.horizontal)
     }
-    
-
 }
 
 struct ProfileCarView_Previews: PreviewProvider {

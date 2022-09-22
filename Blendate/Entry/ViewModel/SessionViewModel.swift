@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+enum SessionState {case noUser, user, loading}
+
 @MainActor
 class SessionViewModel: ObservableObject {
 
@@ -89,32 +91,9 @@ extension SessionViewModel {
         var cache = user
         cache.id = uid
         cache.settings.onboarded = true
-        cache.settings.providers = getProviders() ?? []
-        //        try LocalFileManager.instance.store(user: user)
-        try FirebaseManager.instance.Users.document(uid).setData(from: cache)
+        cache.settings.providers = FirebaseManager.instance.getProviders() ?? []
+        try FirebaseManager.instance.Users.document(uid)
+            .setData(from: cache)
     }
-    
-    private func getProviders() -> [Provider]? {
-        guard let user = FirebaseManager.instance.auth.currentUser else {return nil }
-        
-        var providers = [Provider]()
-        for i in user.providerData {
-            printD("Provider: \(i.providerID)\nEmail: \(i.email ?? "None")")
-            if i.providerID != "firebase" || i.providerID != "Firebase"{//.equals("facebook.com")) {
-                switch i.providerID {
-                case "apple.com":
-                    providers.append(Provider(type: .apple, email: i.email) )
-                case "facebook.com":
-                    providers.append(Provider(type: .facebook, email: i.email) )
-                case "google.com":
-                    providers.append(Provider(type: .google, email: i.email) )
-                case "twitter.com":
-                    providers.append(Provider(type: .twitter, email: i.email) )
-                default:
-                    providers.append(Provider(type: .email, email: i.email) )
-                }
-            }
-        }
-        return providers
-    }
+
 }

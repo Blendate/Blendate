@@ -9,49 +9,32 @@ import SwiftUI
 
 
 struct ProfileView: View {
-    @Environment(\.defaultMinListRowHeight) var minRowHeight
     @StateObject var sheet = ProfileSheet()
     @Binding var user: User
-    @Binding var settings: UserSettings
-    @Binding var details: Details
     
     init(_ user: Binding<User>){
         self._user = user
-        self._settings = user.settings
-        self._details = user.details
     }
     
     var body: some View {
         NavigationView {
             List {
-                ProfileCardView(user.details, .session, user.id)
-                    .environmentObject(sheet)
-                    .padding(.vertical)
-                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                    .listRowBackground(Color.clear)
-                    .sheet(isPresented: $sheet.isShowing, onDismiss: save, content: sheetContent)
-                    .buttonStyle(BorderlessButtonStyle())
-//                Section(header: PremiumHeader(user: $user)) {
-//                    premium
-//                }
-//                .headerProminence(.increased)
+                profileCard
+                    .listRowSeparator(.hidden)
                 ForEach(EditDetail.DetailGroup.allCases){ group in
-                    if group == .general {
-                        ForEach(group.cells(details)) { cell in
-                            DetailCellView(detail: cell, details: $details)
+                    Section {
+                        ForEach(group.cells(user.details)) { cell in
+                            DetailCellView(detail: cell, details: $user.details)
                         }
-                    } else {
-                        Section(header: Text(group.id).foregroundColor(.DarkBlue)) {
-                            ForEach(group.cells(details)) { cell in
-                                DetailCellView(detail: cell, details: $details)
-                            }
+                    } header: {
+                        if group != .general {
+                            Text(group.id)
+                                .fontType(.bold, 20, .DarkBlue)
                         }
-                        .headerProminence(.increased)
                     }
-
                 }
             }
-            .listStyle(.insetGrouped)
+            .listStyle(.plain)
             .background(Color.LightGray)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -68,32 +51,29 @@ struct ProfileView: View {
             }
             .navigationBarTitleDisplayMode(.inline)
         }
+        .tabItem{ Image("profile") }
 
+    }
+    
+    var profileCard: some View {
+        ProfileCardView(user.details, .session, user.id)
+            .environmentObject(sheet)
+            .padding(.vertical)
+            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+            .listRowBackground(Color.clear)
+            .sheet(isPresented: $sheet.isShowing, onDismiss: save, content: sheetContent)
+            .buttonStyle(BorderlessButtonStyle())
     }
     
     var premium: some View {
         Group {
-            ColorPicker("Profile Card", selection: $details.color, supportsOpacity: false)
-            Toggle("Hide Age", isOn: $settings.hideAge).tint(.Blue)
+            ColorPicker("Profile Card", selection: $user.details.color, supportsOpacity: false)
+            Toggle("Hide Age", isOn: $user.settings.hideAge).tint(.Blue)
         }
-        .disabled(!settings.premium)
-        .foregroundColor(settings.premium ? .DarkBlue:.gray)
+        .disabled(!user.settings.premium)
+        .foregroundColor(user.settings.premium ? .DarkBlue:.gray)
 
     }
-}
-
-
-
-struct EditProfile_Previews: PreviewProvider {
-    @State static var show = true
-    static var previews: some View {
-        ProfileView(dev.$bindingMichael)
-            .environmentObject(ProfileSheet())
-    }
-}
-
-
-extension ProfileView {
 
     private func save() {
         do {
@@ -115,6 +95,14 @@ extension ProfileView {
         default:
             EmptyView()
         }
+    }
+}
+
+struct EditProfile_Previews: PreviewProvider {
+    @State static var show = true
+    static var previews: some View {
+        ProfileView(dev.$bindingMichael)
+            .environmentObject(ProfileSheet())
     }
 }
 

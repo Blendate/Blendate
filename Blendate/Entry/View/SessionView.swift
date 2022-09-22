@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-enum SessionState {case noUser, user, loading}
 
 struct SessionView: View {
     
@@ -27,30 +26,10 @@ struct SessionView: View {
                 SignupViewContainer()
             } else if session.loadingState == .user {
                 TabView(selection: $session.selectedTab) {
-                    MatchProfileView()
-                        .transition(.opacity)
-                        .tabItem{
-                            Image("icon-2")
-                        }
-                        .tag(0)
-                    MessagesView()
-                        .tabItem{
-                            Image("chat")
-                        }
-                        .tag(1)
-
-                    TodayView()
-                        .tabItem{
-                            Image("heart")
-                        }
-                        .tag(2)
-
-                    ProfileView($session.user)
-                        .tabItem{
-                            Image("profile")
-                        }
-                        .tag(3)
-
+                    MatchProfileView().tag(0)
+                    MessagesView().tag(1)
+                    CommunityView().tag(2)
+                    ProfileView($session.user).tag(3)
                 }.task {
                     await session.checkNotification()
                 }
@@ -59,16 +38,12 @@ struct SessionView: View {
         .environmentObject(session)
         .environmentObject(matchVM)
         .environmentObject(messageVM)
-
         .task {
             await session.getUserDoc()
             await matchVM.getLineup()
         }
     }
-
 }
-
-
 
 
 struct SessionView_Previews: PreviewProvider {

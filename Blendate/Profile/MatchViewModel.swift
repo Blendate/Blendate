@@ -18,8 +18,6 @@ class MatchViewModel: ObservableObject {
     
     let service = MatchService()
     
-    
-    
     func getLineup() async {
         do {
             self.lineup = try await service.fetchLineup()

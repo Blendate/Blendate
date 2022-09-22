@@ -179,6 +179,16 @@ struct FilterCellView: View {
 struct FilterCellView_Previews: PreviewProvider {
     static var previews: some View {
         FilterCellView(filter: .ethnicity, filters: dev.$bindingMichael.filters, width: 300)
+            .previewLayout(.sizeThatFits)
+        FilterCellView(filter: .height, filters: dev.$bindingMichael.filters, width: 300)
+            .previewLayout(.sizeThatFits)
+
+        FilterCellView(filter: .maxDistance, filters: dev.$bindingMichael.filters, width: 300)
+            .previewLayout(.sizeThatFits)
+        
+        FilterCellView(filter: .ageRange, filters: dev.$bindingMichael.filters, width: 300)
+            .previewLayout(.sizeThatFits)
+
     }
 }
 struct Cell<Content, Accessory> where Content: View, Accessory: View {

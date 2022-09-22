@@ -7,6 +7,8 @@
 
 import Foundation
 import FirebaseFirestore
+import FirebaseEmailAuthUI
+
 import SwiftUI
 
 class UserService {
@@ -47,6 +49,29 @@ class UserService {
             return cache
         }
         else { throw FirebaseError.decode }
+    }
+    
+    func sendEmail(to email: String) async throws {
+        guard !email.isBlank, email.isValidEmail
+            else {
+                throw AlertError(errorDescription: "Invalid Email", failureReason: "Please enter a valid email address", helpAnchor: "Please")
+            }
+        var actionCodeSettings: ActionCodeSettings {
+            let actionCodeSettings = ActionCodeSettings()
+            actionCodeSettings.url = URL(string: "https://blendate.page.link/email")
+            actionCodeSettings.handleCodeInApp = true
+            actionCodeSettings.setIOSBundleID(Bundle.main.bundleIdentifier!)
+            return actionCodeSettings
+        }
+        
+        do {
+            try await Auth.auth().sendSignInLink(toEmail: email, actionCodeSettings: actionCodeSettings)
+            UserDefaults.standard.set(email, forKey: kEmailKey)
+            throw AlertError(errorDescription: "Email Sent", failureReason: "Please check your email for a link to authenticate and sign in, if you don't have an account one will be created for you")
+        } catch {
+            printD(error.localizedDescription)
+            throw AlertError(errorDescription: "Send Error", failureReason: "There was a problem sending your email link, please check the address and try again", recoverySuggestion: "Try Again")
+        }
     }
 
 }

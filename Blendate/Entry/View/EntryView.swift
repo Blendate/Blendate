@@ -8,34 +8,39 @@
 import SwiftUI
 
 struct EntryView: View {
-    @StateObject var loadingState: FirebaseAuthState
-    init(){ self._loadingState = StateObject(wrappedValue: FirebaseAuthState()) }
+    
+    @StateObject var loadingState = FirebaseAuthState()
+    
     
     var body: some View {
-        Group {
-            switch loadingState.state {
-            case .loading:
-                LaunchView()
-            case .noUser:
-                WelcomeView()
-            case .uid(let uid):
-                SessionView(uid)
-            }
+        switch loadingState.state {
+        case .loading:
+            LaunchView()
+        case .noUser:
+            WelcomeView()
+        case .uid(let uid):
+            SessionView(uid)
         }
     }
 }
 
-enum FirebaseState { case loading, noUser, uid(String) }
 
 @MainActor
 class FirebaseAuthState: ObservableObject {
+    
+    enum FirebaseState {
+        case loading, noUser, uid(String)
+    }
 
     @Published var state:FirebaseState = .loading
         
     init(){
-        FirebaseManager.instance.auth.addStateDidChangeListener { (_,user) in
-            if let uid = user?.uid { self.state = .uid(uid) }
-            else { self.state = .noUser }
+        FirebaseManager.instance.auth.addStateDidChangeListener { (auth,user) in
+            if let uid = user?.uid {
+                self.state = .uid(uid)
+            } else {
+                self.state = .noUser
+            }
         }
     }
 }

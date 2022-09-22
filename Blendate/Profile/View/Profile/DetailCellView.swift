@@ -53,72 +53,78 @@ extension DetailCellView {
     
     @ViewBuilder
     var value: some View {
-        switch detail {
-        case .childrenRange:
-            RangeSlider(range: childrenRange, in: KKidAge.min...KKidAge.max, step: 1)
-        case .height:
-            Slider(value: height, in: 52...84, step: 1.0)
-        case .isParent:
-            Toggle("", isOn: $details.info.isParent).tint(.Blue)
-        case .children:
-            TextField("1", text: children)
-                .multilineTextAlignment(.center)
-                .keyboardType(.numberPad)
-                .textFieldStyle(.roundedBorder)
-                .fixedSize()
-        case .relationship:
-            PropPicker( Status.self, $details.info.relationship)
-        case .familyPlans:
-            PropPicker( FamilyPlans.self, $details.info.familyPlans)
-        case .mobility:
-            PropPicker( Mobility.self, $details.info.mobility)
-        case .religion:
-            PropPicker( Religion.self, $details.info.religion)
-        case .politics:
-            PropPicker( Politics.self, $details.info.politics)
-        case .ethnicity:
-            PropPicker( Ethnicity.self, $details.info.ethnicity)
-        case .vices:
-            NavigationLink {
-                MultiSelectPickerView(allItems: Vices.allCases.map{$0.rawValue}, selectedItems: $details.info.vices)
-            } label: {
-                HStack {
-                    Spacer()
-                    Text(stringArrayValue(details.info.vices))
+        if #available(iOS 16.0, *) {
+            switch detail {
+            case .childrenRange:
+                RangeSlider(range: childrenRange, in: KKidAge.min...KKidAge.max, step: 1)
+            case .height:
+                Slider(value: height, in: 52...84, step: 1.0)
+            case .isParent:
+                Toggle("", isOn: $details.info.isParent).tint(.Blue)
+            case .children:
+                TextField("1", text: children)
+                    .multilineTextAlignment(.center)
+                    .keyboardType(.numberPad)
+                    .textFieldStyle(.roundedBorder)
+                    .fixedSize()
+            case .relationship:
+                PropPicker( Status.self, $details.info.relationship)
+            case .familyPlans:
+                PropPicker( FamilyPlans.self, $details.info.familyPlans)
+            case .mobility:
+                PropPicker( Mobility.self, $details.info.mobility)
+            case .religion:
+                PropPicker( Religion.self, $details.info.religion)
+            case .politics:
+                PropPicker( Politics.self, $details.info.politics)
+            case .ethnicity:
+                PropPicker( Ethnicity.self, $details.info.ethnicity)
+            case .vices:
+                NavigationLink {
+                    MultiSelectPickerView(allItems: Vices.allCases.map{$0.rawValue}, selectedItems: $details.info.vices)
+                } label: {
+                    HStack {
+                        Spacer()
+                        Text(stringArrayValue(details.info.vices))
+                    }
                 }
+            case .photos:
+                NavigationLink {
+                    AddPhotosView(photos: $details.photos, signup: false)
+                } label: {EmptyView()}.tint(.Blue)
+                
+            case .bio:
+                TextField("About Me", text: $details.bio, axis: .vertical)
+                
+                //            TextEditor(text: $details.bio)
+                    .multilineTextAlignment(.leading)
+                //                .frame(height: 80)
+                    .font(.caption)
+                //                .background(Color(uiColor: .systemBackground))
+                    .shadow(radius: 1)
+            case .work:
+                TextField("Accountant at Company", text: $details.workTitle)
+                    .multilineTextAlignment(.trailing)
+                    .textFieldStyle(.roundedBorder)
+                    .fixedSize()
+            case .education:
+                TextField("Masters at University", text: $details.schoolTitle)
+                    .multilineTextAlignment(.trailing)
+                    .textFieldStyle(.roundedBorder)
+                    .fixedSize()
+            case .interests:
+                NavigationLink {
+                    MultiSelectPickerView(allItems: Interest.allCases.map{$0.rawValue}, selectedItems: $details.interests)
+                } label: {
+                    HStack {
+                        Spacer()
+                        Text(stringArrayValue(details.interests))
+                    }
+                }.buttonStyle(.plain)
+                
             }
-        case .photos:
-            NavigationLink {
-                AddPhotosView(photos: $details.photos, signup: false)
-            } label: {EmptyView()}.tint(.Blue)
-            
-        case .bio:
-            TextEditor(text: $details.bio)
-                .multilineTextAlignment(.leading)
-                .frame(height: 80)
-                .font(.caption)
-                .background(Color(uiColor: .systemBackground))
-                .shadow(radius: 1)
-        case .work:
-            TextField("Accountant at Company", text: $details.workTitle)
-                .multilineTextAlignment(.center)
-                .textFieldStyle(.roundedBorder)
-                .fixedSize()
-        case .education:
-            TextField("Masters at University", text: $details.schoolTitle)
-                .multilineTextAlignment(.center)
-                .textFieldStyle(.roundedBorder)
-                .fixedSize()
-        case .interests:
-            NavigationLink {
-                MultiSelectPickerView(allItems: Interest.allCases.map{$0.rawValue}, selectedItems: $details.interests)
-            } label: {
-                HStack {
-                    Spacer()
-                    Text(stringArrayValue(details.interests))
-                }
-            }.buttonStyle(.plain)
-
+        } else {
+            // Fallback on earlier versions
         }
     }
     
@@ -256,6 +262,12 @@ struct DetailCellView_Previews: PreviewProvider {
 
     static var previews: some View {
         DetailCellView(detail: .relationship, details: dev.$bindingMichael.details)
+            .previewLayout(.sizeThatFits)
+        
+        DetailCellView(detail: .mobility, details: dev.$bindingMichael.details)
+            .previewLayout(.sizeThatFits)
+        
+        DetailCellView(detail: .education, details: dev.$bindingMichael.details)
             .previewLayout(.sizeThatFits)
     }
 }
