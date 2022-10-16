@@ -8,28 +8,29 @@
 import SwiftUI
 
 struct ConvoCellView: View {
-    @Binding var conversation: Conversation
+    let conversation: Conversation
     @State var user: User?
 
     var body: some View {
         
         NavigationLink {
-            ChatView(conversation, user)
+            ChatView(conversation, with: $user)
         } label: {
-            HStack{
-                PhotoView.Avatar(request: user?.details.photos[0].request, size: 64, isCell: true)
+            HStack(spacing: 0){
+                PhotoView.Avatar(request: user?.details.photos[0].request, size: 75, isCell: true)
                 VStack(alignment: .leading) {
                     Text(user?.details.firstname ?? "")
-                        .fontType(.semibold, 16)
+                        .fontType(.semibold, .title3)
                         .foregroundColor(.DarkBlue)
-                    Text(conversation.lastMessage.count < 21 ? conversation.lastMessage:conversation.lastMessage.prefix(20) + "...")
-                        .fontType(.semibold, 16)
+                    Text(conversation.lastMessage)
                         .foregroundColor(.gray)
                         .opacity(0.5)
-                }.padding(.leading)
+                }
+                .padding(.leading)
                 Spacer()
             }
         }
+        .buttonStyle(.plain)
         .task {
             await fetchUser()
         }
@@ -46,6 +47,6 @@ struct ConvoCellView: View {
 
 struct ConvoCellView_Previews: PreviewProvider {
     static var previews: some View {
-        ConvoCellView(conversation: .constant(dev.conversation))
+        ConvoCellView(conversation: dev.conversation)
     }
 }

@@ -22,6 +22,7 @@ class MatchService {
             .compactMap { document in
                 try? document.data(as: User.self)
         }
+        print("Fetched Lineup: \(users.count) users")
         return users
     }
     
@@ -34,6 +35,7 @@ class MatchService {
             .compactMap { $0.documentID }) ?? []
         
         let combine = likes + passes
+        print("Fetched \(likes.count) Likes and \(passes.count) Passes")
         return combine.isEmpty ? ["empty"] : combine
         
     }

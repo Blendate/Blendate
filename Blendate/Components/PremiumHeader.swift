@@ -30,7 +30,7 @@ struct PremiumHeader: View {
         }.disabled(premium)
         .sheet(isPresented: $showMembership) {
             do {
-                try UserService().updateUser(with: user)
+                try UserService().update(user)
             } catch {
                 print("There was a problem saving your settings, please check your connection and try again")
             }

@@ -22,9 +22,9 @@ class MessageService {
         
         let chatMessage = ChatMessage(author: uid, text: message)
         try document.setData(from: chatMessage)
+        try await documentReference.updateData(["lastMessage":message])
+        print("Message Sent: \(chatMessage.timestamp)")
         
-        try? await documentReference.updateData(["lastMessage":message])
-
     }
 
 }

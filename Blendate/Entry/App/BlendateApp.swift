@@ -6,22 +6,17 @@
 //
 
 import SwiftUI
+import Firebase
 import UIKit
-import FirebaseCore
+import FacebookCore
 
 @main
 struct BlendateApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    @StateObject var loadingState = FirebaseAuthState()
-
-    init(){
-//        FirebaseApp.configure()
-    }
     
     var body: some Scene {
         WindowGroup {
             EntryView()
-                .environmentObject(loadingState)
                 .onAppear(
                     perform: UIApplication.shared.addTapGestureRecognizer
                 )
@@ -33,7 +28,7 @@ struct BlendateApp: App {
     
     private func firebaseSignin(with url: URL){
         let link = url.absoluteString
-        printD(link)
+        printD("Open URL: \(link)")
         let firebase = FirebaseManager.instance.auth
         
         if firebase.isSignIn(withEmailLink: link){
@@ -41,7 +36,7 @@ struct BlendateApp: App {
                 firebase.signIn(withEmail: email, link: link)
             }
         } else {
-//            FBSDKCoreKit.ApplicationDelegate.shared.application(UIApplication.shared, open: url, sourceApplication: nil, annotation: UIApplication.OpenURLOptionsKey.annotation)
+            FBSDKCoreKit.ApplicationDelegate.shared.application(UIApplication.shared, open: url, sourceApplication: nil, annotation: UIApplication.OpenURLOptionsKey.annotation)
         }
     }
 }

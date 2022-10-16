@@ -21,6 +21,8 @@ struct TagCloudView: View {
             }
         }
         .frame(height: totalHeight)// << variant for ScrollView/List
+        .padding(.horizontal)
+
         //.frame(maxHeight: totalHeight) // << variant for VStack
     }
 

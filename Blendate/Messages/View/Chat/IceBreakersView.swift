@@ -29,6 +29,7 @@ struct IceBreakersView: View {
             }
             Text("Tap on a prompt to send a message")
                 .padding(.top, 2)
+                .foregroundColor(.gray)
         }
         .onReceive(timer) { _ in
             withAnimation(.spring()) {

@@ -37,36 +37,38 @@ struct PhotosGridView: View {
     }
     #warning("fix this to a grid with 2 collumns alternating")
     var body: some View {
-        VStack{
-            ScrollView(.horizontal, showsIndicators: false, content: {
-                HStack{
-                    VStack{
-                        if let photo = photo(2), let _ = photo.url {
-                            PhotoView(photo)
+        if !photos.isEmpty {
+            VStack{
+                ScrollView(.horizontal, showsIndicators: false, content: {
+                    HStack{
+                        VStack{
+                            if let photo = photo(2), let _ = photo.url {
+                                PhotoView(photo)
+                            }
+                            if let photo = photo(3), let _ = photo.url {
+                                PhotoView(photo)
+                            }
+                        }.padding(.vertical)
+                        VStack{
+                            if let photo = photo(4), let _ = photo.url {
+                                PhotoView(photo)
+                            }
+                            if let photo = photo(5), let _ = photo.url {
+                                PhotoView(photo)
+                            }
                         }
-                        if let photo = photo(3), let _ = photo.url {
-                            PhotoView(photo)
-                        }
-                    }.padding(.vertical)
-                    VStack{
-                        if let photo = photo(4), let _ = photo.url {
-                            PhotoView(photo)
-                        }
-                        if let photo = photo(5), let _ = photo.url {
-                            PhotoView(photo)
+                        VStack{
+                            if let photo = photo(6), let _ = photo.url {
+                                PhotoView(photo)
+                            }
+                            if let photo = photo(7), let _ = photo.url {
+                                PhotoView(photo)
+                            }
                         }
                     }
-                    VStack{
-                        if let photo = photo(6), let _ = photo.url {
-                            PhotoView(photo)
-                        }
-                        if let photo = photo(7), let _ = photo.url {
-                            PhotoView(photo)
-                        }
-                    }
-                }
-            })
-        }.padding()
+                })
+            }.padding()
+        }
     }
     
     private func photo(_ index: Int)->Photo?{

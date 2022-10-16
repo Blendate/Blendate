@@ -10,17 +10,16 @@ import SwiftUI
 struct MatchedView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var vm: MatchViewModel
+    
     let circleSize: CGFloat = 200
     let imageSize: CGFloat = 150
     @State var showChat = false
+    
     @Binding var show: Bool
     var user: User
     var matchedWith: User
         
     var body: some View {
-        let userPhoto = user.details.photos.first(where: {$0.placement == 0})?.request
-        let matchedWithPhoto = matchedWith.details.photos.first(where: {$0.placement == 0})?.request
-
         if !showChat {
             VStack{
                 VStack(spacing: 15) {
@@ -33,39 +32,20 @@ struct MatchedView: View {
                 .fontType(.regular, 42, .Blue)
                 VStack(spacing: 0) {
                     HStack{
-                        ZStack{
-                            Circle()
-                                .stroke(Color.DarkBlue, lineWidth: 8)
-                                .frame(width: circleSize, height: circleSize)
-                                .shadow(radius: 10)
-                            PhotoView.Avatar(request: userPhoto, size: imageSize, isCell: true)
-//                            Circle()
-//                                .frame(width: imageSize, height: imageSize)
-                                .shadow(radius: 5)
-                        }
+                        userCircle
                         Spacer()
-
-                    }.padding(.horizontal,50)
-                        .padding()
+                    }
+                    .padding(.horizontal,50)
+                    .padding()
                     HStack {
                         Spacer()
-                        ZStack {
-                            Circle()
-                                .stroke(Color.DarkPink, lineWidth: 8)
-                                .frame(width: circleSize, height: circleSize)
-                                .offset(y: -60)
-                                .shadow(radius: 5)
-
-                            PhotoView.Avatar(request: matchedWithPhoto, size: imageSize, isCell: true)
-//                                .frame(width: imageSize, height: imageSize)
-                                .offset(y: -60)
-                                .shadow(radius: 10)
-
-                        }
+                        matchedCircle
                     }.padding(.horizontal, 50)
                 }
                 Button("Start Chatting"){
-                    showChat = true
+                    withAnimation(.spring()) {
+                        showChat = true
+                    }
                 }
                 .fontType(.semibold, 22)
                 .tint(.Blue)
@@ -77,13 +57,44 @@ struct MatchedView: View {
         } else {
             if !(vm.newConvo.id?.isEmpty ?? true) {
                 NavigationView {
-                    ChatView(vm.newConvo, matchedWith)
+                    ChatView(vm.newConvo, with: .constant(matchedWith))
                         .padding(.top)
                 }
             }
         }
     }
     
+    var userCircle: some View {
+        let userPhoto = user.details.photos.first(where: {$0.placement == 0})?.request
+
+        return ZStack{
+            Circle()
+                .stroke(Color.DarkBlue, lineWidth: 8)
+                .frame(width: circleSize, height: circleSize)
+                .shadow(radius: 10)
+            PhotoView.Avatar(request: userPhoto, size: imageSize, isCell: true)
+//                            Circle()
+//                                .frame(width: imageSize, height: imageSize)
+                .shadow(radius: 5)
+        }
+    }
+    
+    var matchedCircle: some View {
+        let matchedWithPhoto = matchedWith.details.photos.first(where: {$0.placement == 0})?.request
+        return ZStack {
+            Circle()
+                .stroke(Color.DarkPink, lineWidth: 8)
+                .frame(width: circleSize, height: circleSize)
+                .offset(y: -60)
+                .shadow(radius: 5)
+
+            PhotoView.Avatar(request: matchedWithPhoto, size: imageSize, isCell: true)
+//                                .frame(width: imageSize, height: imageSize)
+                .offset(y: -60)
+                .shadow(radius: 10)
+
+        }
+    }
 
 }
 

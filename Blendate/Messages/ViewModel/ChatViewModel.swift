@@ -14,30 +14,26 @@ class ChatViewModel: ObservableObject {
     @Published var chatMessages = [ChatMessage]()
     @Published var count = 0
     
-    let convo: Conversation
+    let cid: String?
     
     let service = MessageService()
-    let firebase = FirebaseManager.instance
 
         
-    init(convo: Conversation){
-        self.convo = convo
+    init(cid: String?){
+        self.cid = cid
         self.count += 1
         fetchMessages()
     }
     
     private func fetchMessages(){
-        printD("Fetching Messages")
-        guard let fromID = try? firebase.checkUID() else {return}
-        guard let toID = convo.users.first(where: {$0 != fromID}) else {return}
-        
-        let cid = FirebaseManager.getUsersID(userId1: fromID, userId2: toID)
-        firebase.Chats.document(cid)
+        guard let cid = self.cid else {return}
+        print("Fetching Messages for Convo ID: \(cid)")
+        FirebaseManager.instance.Chats.document(cid)
             .collection("chats")
             .order(by: "timestamp")
             .addSnapshotListener { snapshot, error in
                 guard error == nil else {
-                    printD(error!.localizedDescription)
+                    print("Fetch Messages Error: \(error?.localizedDescription)")
                     return
                 }
  
@@ -46,7 +42,7 @@ class ChatViewModel: ObservableObject {
                         if let message = try? change.document.data(as: ChatMessage.self){
                             self.chatMessages.append(message)
                         } else {
-                            printD("Decode Error For: \(change.document.documentID)")
+                            print("Decode Error For: \(change.document.documentID)")
                         }
                     }
                 })
@@ -54,12 +50,13 @@ class ChatViewModel: ObservableObject {
     }
     
     func sendMessage() async {
+        guard let cid = cid else {return}
         do {
-            try await service.sendMessage(conversationID: convo.id, message: text)
+            try await service.sendMessage(conversationID: cid, message: text)
             self.text = ""
             self.count += 1
         } catch {
-            printD(error.localizedDescription)
+            print("Send Message Error: \(error.localizedDescription)")
         }
     }
 

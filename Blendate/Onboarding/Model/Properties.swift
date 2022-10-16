@@ -16,7 +16,6 @@ enum Gender: String, Property {
     case male = "Male"
     case female = "Female"
     case nonBinary = "Non-Binary"
-    
     var value: String {id}
 
 }

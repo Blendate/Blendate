@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct EmptyLineupView: View {
-    @EnvironmentObject var session: SessionViewModel
 
     @State var showPref = false
     @Binding var sessionUser: User
@@ -37,9 +36,9 @@ struct EmptyLineupView: View {
         }
 //        .elipseBackground(true)
         .sheet(isPresented: $showPref, onDismiss: {
-            try? UserService().updateUser(with: sessionUser)
+            try? UserService().update(sessionUser)
         }) {
-            FiltersView($sessionUser.filters)
+            FiltersView(user: $sessionUser)
         }
     }
 }

@@ -17,7 +17,7 @@ class SheetState<State>: ObservableObject {
 
 class ProfileSheet: SheetState<ProfileSheet.State> {
     enum State: String, CaseIterable {
-        case edit = "View"
+        case edit = "Edit"
         case filter = "Filters"
         case settings = "Settings"
         

@@ -25,59 +25,20 @@ class SessionViewModel: ObservableObject {
     }
     
     func getUserDoc() async {
-        printD("Fetching Doc for: \(uid)")
         do {
             self.user = try await userService.fetchUser(from: uid)
             withAnimation(.spring()) {
                 self.loadingState = user.settings.onboarded ? .user : .noUser
             }
         } catch {
-            printD(error.localizedDescription)
+            print("UserDoc Error: \(error.localizedDescription)")
             withAnimation(.spring()) {
                 loadingState = .noUser
             }
         }
     }
-    
-    func checkNotification() async {
-        do {
-            let notificationCenter = UNUserNotificationCenter.current()
-            let authStatus:UNAuthorizationStatus = await notificationCenter.notificationSettings().authorizationStatus
-            let fcm = UserDefaults.standard.string(forKey: "fcm")
-            printD("FCM: \(fcm ?? "NONE")")
-            switch authStatus {
-            case .notDetermined:
-                print("Not Determined")
-                let approved = try await notificationCenter.requestAuthorization(options: [.badge, .alert, .sound])
-                if let fcm = fcm, approved {
-                    user.settings.notifications = Notifications(isOn: true)
-                    user.fcm = fcm
-                    try userService.updateUser(with: user)
-                } else {
-                    print("NO FCM")
-                }
-            case .authorized:
-                print("Authorized")
 
-                if let fcm = fcm {
-                    print("Valid fcm attempting to set: ")
-                    user.fcm = fcm
-                    try userService.updateUser(with: user)
-                } else {
-                    print("User: \(user.fcm)")
-                }
-            default:
-                print("Othjer")
-            }
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-}
-
-extension SessionViewModel {
-    
-    func creasteUserDoc() throws {
+    func createUserDoc() throws {
         var cache = user
         cache.settings.onboarded = true
         try createDoc(from: cache)
@@ -94,6 +55,35 @@ extension SessionViewModel {
         cache.settings.providers = FirebaseManager.instance.getProviders() ?? []
         try FirebaseManager.instance.Users.document(uid)
             .setData(from: cache)
+    }
+    
+    func checkNotification() async {
+        do {
+            let notificationCenter = UNUserNotificationCenter.current()
+            let authStatus:UNAuthorizationStatus = await notificationCenter.notificationSettings().authorizationStatus
+            let fcm = UserDefaults.standard.string(forKey: "fcm")
+            switch authStatus {
+            case .notDetermined:
+                let approved = try await notificationCenter.requestAuthorization(options: [.badge, .alert, .sound])
+                if let fcm = fcm, approved {
+                    user.settings.notifications = Notifications(isOn: true)
+                    user.fcm = fcm
+                    try userService.update(user)
+                } else {
+                }
+            case .authorized:
+                if let fcm = fcm {
+                    user.fcm = fcm
+                    print("Updating FCM")
+                    try userService.update(user)
+                } else {
+                }
+            default:
+                break
+            }
+        } catch {
+            print(error.localizedDescription)
+        }
     }
 
 }

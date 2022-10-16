@@ -7,46 +7,55 @@
 
 import SwiftUI
 
-
 struct SessionView: View {
     
     @StateObject var session: SessionViewModel
-    @StateObject var matchVM: MatchViewModel
-    @StateObject var messageVM: MessagesViewModel
+    @StateObject var matchVM = MatchViewModel()
 
     init(_ uid: String){
         self._session = StateObject(wrappedValue: SessionViewModel(uid))
-        self._matchVM = StateObject(wrappedValue: MatchViewModel())
-        self._messageVM = StateObject(wrappedValue: MessagesViewModel())
     }
     
     var body: some View {
-//        LoadingView(showLoading: matchVM.loading == true) {
-//
-//        }
-        Group {
-            if session.loadingState == .noUser {
-                SignupViewContainer()
-            } else if session.loadingState == .user {
-                Text("Yoo")
-//                TabView(selection: $session.selectedTab) {
-//                    MatchProfileView().tag(0)
-//                    MessagesView().tag(1)
-//                    CommunityView().tag(2)
-//                    ProfileView($session.user).tag(3)
-//                }.task {
-//                    await session.checkNotification()
-//                }
-            } else {
+        LoadingView(showLoading: matchVM.loading == true) {
+            switch session.loadingState {
+            case .user:
+                tabView
+            case .noUser:
+                signupView
+            case .loading:
                 Text("Loading")
             }
         }
         .environmentObject(session)
         .environmentObject(matchVM)
-        .environmentObject(messageVM)
         .task {
             await session.getUserDoc()
-            await matchVM.getLineup()
+        }
+    }
+    
+    var signupView: some View {
+        NavigationView {
+            PropertyView(.name, signup: true)
+        }
+    }
+    
+    var tabView: some View {
+        TabView(selection: $session.selectedTab) {
+            MatchProfileView()
+                .tag(0)
+                .tabItem{ Image("icon-2") }
+            MessagesView()
+                .tag(1)
+                .tabItem{ Image("chat") }
+            CommunityView()
+                .tag(2)
+                .tabItem{Image(systemName: "person.3")}
+            ProfileView($session.user)
+                .tag(3)
+                .tabItem{ Image("profile") }
+        }.task {
+            await session.checkNotification()
         }
     }
 }

@@ -8,39 +8,35 @@
 import SwiftUI
 
 struct FiltersView: View {
-    @Binding var filters: Filters
+    @Environment(\.dismiss) private var dismiss
+    @Binding var user: User
     
-    init(_ filters: Binding<Filters>) {
-        ColorNavbar()
-        self._filters = filters
-    }
-
     @State var drinking: String = "Open to all"
     @State var smoking: String = "Open to all"
     @State var cannabis: String = "Open to all"
 
     var body: some View {
         NavigationView{
-            GeometryReader { geo in
-                List {
-                    ForEach(Filter.FilterGroup.allCases){ group in
-                        Section {
-                            ForEach(group.cells(filters)) { cell in
-                                FilterCellView(filter: cell, filters: $filters, width: geo.size.width)
-                            }
-                        } header: {
-                            Text(group.id)
-                                .foregroundColor(.DarkBlue)
-                                .fontType(.bold, 20, .DarkBlue)
+            List {
+                ForEach(Detail.FilterGroup.allCases){ group in
+                    Section {
+                        ForEach(group.cells(isParent: user.filters.isParent)) { cell in
+                            DetailCellView(detail: cell, user: $user, type: .filter)
                         }
+                    } header: {
+                        Text(group.id)
+                    }.textCase(nil)
 
-                    }
                 }
             }
-            .listStyle(.plain)
-            .pickerStyle(MenuPickerStyle())
-//            .background(Color.LightGray)
+            .toolbar {
+                ToolbarItem(placment: .navigationBarTrailing, title: "Done") {
+                    dismiss()
+                }
+            }
+            .listStyle(.grouped)
             .navigationBarTitle("Filters")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
     
@@ -51,7 +47,7 @@ struct FiltersView: View {
 
 struct PreferencesView_Previews: PreviewProvider {
     static var previews: some View {
-        FiltersView(dev.$bindingMichael.filters)
+        FiltersView(user: dev.$bindingMichael)
 
     }
 }

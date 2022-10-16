@@ -9,7 +9,7 @@ import SwiftUI
 
 struct GenderView: View {
     @Binding var gender: String
-    let detail: SignupDetail
+    let detail: Detail
 
     var body: some View {
         VStack{
@@ -35,23 +35,17 @@ struct GenderView_Previews: PreviewProvider {
 }
 
 struct SignupTitle: View {
-    let detail: SignupDetail
+    let detail: Detail
 
-    init(_ detail: SignupDetail){
+    init(_ detail: Detail){
         self.detail = detail
     }
 
     var body: some View {
-        if detail.hasTitle {
-            Text(detail.title)
-                .fontType(.semibold, 32, .DarkBlue)
-                .multilineTextAlignment(.center)
-                .padding(.vertical)
-                .padding(.horizontal)
-        } else {
-            Text(" ")
-                .fontType(.semibold, 32)
-                .padding(.vertical)
-        }
+        Text(detail.title)
+            .fontType(.semibold, 32, .DarkBlue)
+            .multilineTextAlignment(.center)
+            .padding(.vertical)
+            .padding(.horizontal)
     }
 }

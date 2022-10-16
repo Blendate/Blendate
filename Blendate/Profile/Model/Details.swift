@@ -8,8 +8,6 @@
 import SwiftUI
 import CoreLocation
 struct Details: Codable {
-
-    var type: PropType = .detail
         
     var firstname: String = ""
     var lastname: String = ""
@@ -20,7 +18,8 @@ struct Details: Codable {
     var schoolTitle: String = ""
     var interests: [String] = []
     
-    var info: Filters = Filters(.detail)
+    var info: Stats = Stats(.detail)
+    
     var photos: [Photo] = {
         var array: [Photo] = []
         for i in 0..<8 {
@@ -30,7 +29,6 @@ struct Details: Codable {
     }()
     
     var color: Color = .Blue
-    
 
 }
 
@@ -45,54 +43,7 @@ extension Details {
 
 
 
-enum EditDetail: String, Identifiable, CaseIterable {
-    var id: String {rawValue}
-    
-    case photos, bio, work, education, height, relationship, isParent, children, childrenRange, familyPlans, religion, ethnicity, politics, mobility, vices, interests
-    
-    var label: String {
-        switch self {
-        case .isParent:
-            return "Parent"
-        case .childrenRange:
-            return "Children Age Range"
-        case .bio:
-            return "About"
-        case .familyPlans:
-            return "Family Plans"
-        default: return rawValue.camelCaseToWords()
-        }
-        
-    }
-    
-    enum DetailGroup: String, Identifiable, Equatable, CaseIterable {
-        var id: String {self.rawValue}
-        case general = ""
-        case personal = "Personal"
-        case children = "Children"
-        case background = "Background"
-        case other = "Other"
 
-        func cells(_ details: Details) -> [EditDetail] {
-            switch self {
-            case .general:
-                return [.photos]
-            case .personal:
-                return [.bio, .work, .education, .height, .relationship]
-            case .children:
-                if details.info.isParent {
-                    return [.isParent, .children, .childrenRange, .familyPlans]
-                } else {
-                    return [.isParent, .familyPlans]
-                }
-            case .background:
-                return [.religion, .ethnicity, .politics]
-            case .other:
-                return [.mobility, .vices, .interests]
-            }
-        }
-    }
-}
 struct IntRange: Codable {
     var min: Int
     var max: Int
@@ -115,7 +66,9 @@ struct Location: Codable, Identifiable, Equatable {
     var name: String
     let lat: Double
     let lon: Double
-    func coordinate()->CLLocationCoordinate2D {
+    
+    var coordinate: CLLocationCoordinate2D {
         return CLLocationCoordinate2D(latitude: lat, longitude: lon)
     }
+
 }

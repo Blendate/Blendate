@@ -18,7 +18,7 @@ struct MatchAvatarView: View {
 
     var body: some View {
         NavigationLink {
-            ChatView(match, user)
+            ChatView(match, with: $user)
         } label: {
             VStack {
                 ZStack{

@@ -9,43 +9,46 @@ import SwiftUI
 import MapKit
 
 struct MessagesView: View {
-    @StateObject var vm: MessagesViewModel
-
-    init(){
-        ColorNavbar()
-        self._vm = StateObject(wrappedValue: MessagesViewModel())
-
-    }
+    @StateObject var vm = MessagesViewModel()
+    
     var body: some View {
         NavigationView {
-            if vm.allConvos.isEmpty {
-                VStack {
-                    Spacer()
+            Group {
+                if vm.allConvos.isEmpty {
                     noConvos
+                } else {
+                    VStack{
+                        matches
+                        messages
+                        Spacer()
+                    }
                 }
-                .navigationTitle("Blends")
-            } else {
-                VStack{
-                    matches
-                    messages
-                    Spacer()
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Image.icon(40).foregroundColor(.Blue)
                 }
-                .navigationTitle("Blends")
             }
         }
-        .tabItem{ Image("chat") }
     }
     
     var matches: some View {
-        let matches = vm.allConvos.filter({ $0.lastMessage.isEmpty })
-        return Group {
-            if matches.isEmpty {
+        VStack {
+            HStack {
+                Text("Matches")
+                    .fontType(.bold, .title3, .DarkBlue)
+                    .padding(.leading)
+                Spacer()
+            }
+            if vm.matches.isEmpty {
                 emptyMatches
             }
             else {
                 ScrollView(.horizontal, showsIndicators: false){
                     LazyHStack(spacing: 20){
-                        ForEach(matches, id:\.self.timestamp){ match in
+                        likedYou
+                        ForEach(vm.matches.sorted(by: {$0.timestamp > $1.timestamp})){ match in
                             MatchAvatarView(match)
                         }
                     }
@@ -54,26 +57,45 @@ struct MessagesView: View {
                 .frame(height: 120, alignment: .center)
                 .padding(.leading)
             }
+        }.padding(.vertical)
+    }
+    
+    var likedYou: some View {
+        Button {
+            
+        } label: {
+            VStack {
+                ZStack {
+                    Circle().fill(Color.Blue)
+                        .frame(width: 70, height: 70)
+                    Text("10")
+                        .fontType(.semibold, .title3, .white)
+                        .fixedSize()
+                }
+                Text("Likes")
+            }
         }
+
     }
     
 
     
     var messages: some View {
-        let conversations = $vm.allConvos.filter({ !$0.lastMessage.wrappedValue.isEmpty })
-
-        return Group {
-            if conversations.isEmpty {
+        VStack {
+            HStack {
+                Text("Messages")
+                    .fontType(.bold, .title3, .DarkBlue)
+                    .padding(.leading)
+                Spacer()
+            }
+            if vm.conversations.isEmpty {
                 noConvos
             } else {
-                VStack {
-                    messageDivider
-                    List {
-                        ForEach(conversations, id: \.id) { conversation in
-                            ConvoCellView(conversation: conversation)
-                        }
-                    }.listStyle(.plain)
-                }
+                List {
+                    ForEach(vm.conversations, id: \.id) { conversation in
+                        ConvoCellView(conversation: conversation)
+                    }
+                }.listStyle(.plain)
             }
         }
     }
@@ -83,27 +105,38 @@ struct MessagesView: View {
 extension MessagesView {
     
     var emptyMatches: some View {
-        Text("Match with profiles to Blend with others")
-            .fontType(.semibold, 18, .DarkBlue)
-            .frame(height: 120, alignment: .center)
-            .padding(.horizontal)
+        HStack(alignment: .top) {
+            likedYou
+            Text("Match with profiles to Blend with others")
+                .fontType(.semibold, 18, .DarkBlue)
+            Spacer()
+        }.padding(.leading)
     }
     
     var noConvos: some View {
-        let message = vm.allConvos.isEmpty ? "Start matching with profiles to blend with others and start conversations":"Tap on any of your matches to start a conversation"
-        return VStack{
-            Divider()
-            Image("Interested")
-                .resizable()
-                .scaledToFill()
-                .frame(width: 270, height: 226 , alignment: .center)
-            Text(message)
-                .fontType(.semibold, 18, .DarkBlue)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal)
-                .padding(.top)
+        let message = vm.allConvos.isEmpty ?
+            "Start matching with profiles to blend with others and start conversations":
+            "Tap on any of your matches to start a conversation"
+        
+        return VStack {
             Spacer()
+            VStack{
+                Divider()
+                Image("Interested")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 270, height: 226 , alignment: .center)
+                Text(message)
+                    .fontType(.semibold, 18, .DarkBlue)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal)
+                    .padding(.top)
+                Spacer()
+            }
         }
+        .navigationTitle("Blends")
+        
+
     }
     
     

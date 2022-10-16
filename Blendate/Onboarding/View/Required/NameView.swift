@@ -20,12 +20,13 @@ struct NameView: View {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 60)
             Spacer()
-        }.padding(.top)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(systemName: "chevron.left", action: FirebaseManager.instance.signout)
-                }
+        }
+        .padding(.top)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(systemName: "chevron.left", action: FirebaseManager.instance.signout)
             }
+        }
     }
 }
 
@@ -46,11 +47,18 @@ struct TFView: View {
     }
 }
 
-#if DEBUG
 struct NameView_Previews: PreviewProvider {
     static var previews: some View {
-        PreviewSignup(.name)
+        NavigationView {
+            NameView(
+                firstname: dev.$bindingMichael.details.firstname,
+                lastname: dev.$bindingMichael.details.lastname
+            )
+        }
+        NameView(
+            firstname: dev.$bindingMichael.details.firstname,
+            lastname: dev.$bindingMichael.details.lastname
+        )
     }
 }
-#endif
 

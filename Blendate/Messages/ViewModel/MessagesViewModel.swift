@@ -9,10 +9,14 @@ import Foundation
 
 @MainActor
 class MessagesViewModel: ObservableObject {
-        
     @Published var allConvos = [Conversation]()
+    
     var conversations: [Conversation] {
-        return self.allConvos.filter({ !$0.lastMessage.isEmpty })
+        allConvos.filter({ !$0.lastMessage.isEmpty }).sorted(by: {$0.lastDate > $1.lastDate})
+    }
+    
+    var matches: [Conversation] {
+        allConvos.filter({ $0.lastMessage.isEmpty })
     }
 
     init(){
@@ -20,23 +24,20 @@ class MessagesViewModel: ObservableObject {
     }
     
     private func fetchConvos(){
-        guard let uid = FirebaseManager.instance.auth.currentUser?.uid else {return}
+        guard let uid = try? FirebaseManager.instance.checkUID() else {return}
         FirebaseManager.instance.Chats
             .whereField("users", arrayContains: uid)
             .addSnapshotListener { snapshot, error in
                 if let error = error {
-                    printD(error.localizedDescription)
+                    print("Fetch Convo Error: \(error.localizedDescription)")
                     return
                 }
                 snapshot?.documentChanges.forEach({ change in
                     if change.type == .added {
                         if let convo = try? change.document.data(as: Conversation.self) {
                             self.allConvos.append(convo)
-
                         }
-                    }
-                    else if change.type == .modified {
-                        printD("Message Modified")
+                    } else if change.type == .modified {
                         if let convo = try? change.document.data(as: Conversation.self) {
                             if let index = self.allConvos.firstIndex(where: {$0.id == convo.id}) {
                                 self.allConvos[index] = convo
@@ -44,6 +45,9 @@ class MessagesViewModel: ObservableObject {
                         }
 
                     }
+                    print("Fetched \(self.conversations.count) Conversations")
+                    print("Fetched \(self.matches.count) Matches")
+
                 })
             }
     }

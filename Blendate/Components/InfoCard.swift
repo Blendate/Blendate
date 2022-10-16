@@ -7,6 +7,33 @@
 
 import SwiftUI
 
+struct InfoCards: View {
+    let details: Details
+    
+    var body: some View {
+        if !noInfo() {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(alignment: .top) {
+                    ForEach(InfoType.allCases){ type in
+                        if type.show(details){
+                            InfoCard(type, details)
+                        }
+                    }
+                }.padding()
+            }
+        }
+    }
+    
+    private func noInfo()->Bool{
+        for group in InfoType.allCases {
+            if group.show(details) {
+                return false
+            }
+        }
+        return true
+    }
+}
+
 
 struct InfoCard: View {
     let userPreferences: Details
@@ -32,6 +59,7 @@ struct InfoCard: View {
         VStack(alignment:.leading){
             HStack {
                 Text(type.rawValue)
+                    .fixedSize()
                     .fontType(.semibold, 18, .DarkBlue)
                 Image(icon)
                     .renderingMode(.template)
@@ -97,7 +125,7 @@ enum InfoType: String, CaseIterable, Identifiable {
     case background = "Background"
     case lifestyle = "Lifestyle"
     
-    var cards: [SignupDetail] {
+    var cards: [Detail] {
         switch self {
         case .personal:
             return [.relationship, .work, .education]

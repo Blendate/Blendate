@@ -35,8 +35,10 @@ extension DeveloperPreview {
         usr.details.interests = [Vices.alcohol.rawValue, Vices.smoke.rawValue, Vices.chocolate.rawValue, Vices.books.rawValue]
         usr.details.photos = {
             var arr = [Photo]()
-            for i in 0...7 {
-                arr.append(Photo(url: URL(string: "https://google.com")!, placement: i))
+            arr.append(Photo(url: URL(string: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80"), placement: 0))
+            arr.append(Photo(url: URL(string: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"), placement: 1))
+            for i in 2...7 {
+                arr.append(Photo(url: URL(string: "https://google.com"), placement: i))
             }
             return arr
         }()

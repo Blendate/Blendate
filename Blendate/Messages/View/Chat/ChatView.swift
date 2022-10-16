@@ -1,97 +1,49 @@
 //
-//  ChatView2.swift
+//  ChatView.swift
 //  Blendate
 //
-//  Created by Michael on 7/6/21.
+//  Created by Michael on 10/1/22.
 //
 
 import SwiftUI
 
 struct ChatView: View {
-    @StateObject var vm: ChatViewModel
-    @State private var showProfile = false
-    
-    let withUser: User?
-    
-    init(_ conversation: Conversation, _ withUser: User? = nil){
-        self._vm = StateObject(wrappedValue: ChatViewModel(convo: conversation))
-        self.withUser = withUser
+    @StateObject var model: ChatViewModel
+    @Binding var withUser: User?
+
+    init(_ convo: Conversation, with: Binding<User?>){
+        self._model = StateObject(wrappedValue: ChatViewModel(cid: convo.id))
+        self._withUser = with
     }
     
     var body: some View {
         VStack {
-            if !vm.chatMessages.isEmpty {
-                ScrollView {
-                    ScrollViewReader { scrollProxy in
-                        VStack {
-                            ForEach(vm.chatMessages, id: \.self.timestamp){ chat in
-                                ChatBubbleView(chat)
-                            }
-                            empty
-                        }
-                        .onReceive(vm.$count) { _ in
-                            withAnimation(.easeOut(duration: 0.5)){
-                                scrollProxy.scrollTo("Empty", anchor: .bottom)
-                            }
+            VStack {
+                ChatHeader(user: $withUser)
+                    .background(Color.Blue)
+                if !model.chatMessages.isEmpty {
+                    ScrollView {
+                        ForEach(model.chatMessages) { message in
+                            MessageBubble(message, received: message.author == withUser?.id)
                         }
                     }
-                }.padding(.top,4)
-            } else {
-                IceBreakersView(noChats: $vm.chatMessages, chatText: $vm.text)
+                    .padding(.top, 10)
+                    .background(.white)
+                    .cornerRadius(30, corners: [.topLeft, .topRight])
+                } else {
+                    IceBreakersView(noChats: $model.chatMessages, chatText: $model.text)
+                }
             }
-            
-            ChatTextField(newMessage: $vm.text, send: vm.sendMessage)
+            ChatTextField(newMessage: $model.text, send: model.sendMessage)
+//            MessageField(message: $model.text)
         }
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                profilebutton
-            }
-            ToolbarItem(placement: .navigationBarTrailing) {
-                actionsbutton
-            }
-        }
-        .sheet(isPresented: $showProfile) {
-            if let user = withUser { MatchProfileView(user: user) }
-        }
+        .toolbar(.hidden)
     }
 }
-
-extension ChatView {
-    var profilebutton: some View {
-        Button {
-            showProfile = true
-        } label: {
-            Text(withUser?.details.firstname ?? "")
-                .fontType(.bold, 18, .DarkBlue)
-                .padding(.bottom, 8)
-        }.disabled(withUser == nil)
-    }
-    
-    var actionsbutton: some View {
-        Button(action: {}) {
-            VStack(spacing: 4) {
-                Circle()
-                    .frame(width: 6, height: 6)
-                Circle()
-                    .frame(width: 6, height: 6)
-            }
-        }
-    }
-    
-    var empty: some View {
-        HStack {Spacer()}.id("Empty")
-    }
-}
-
 
 
 struct ChatView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationView {
-            ChatView(dev.convo)
-        }
+        ChatView(dev.conversation, with: .constant(dev.michael))
     }
 }
-
-

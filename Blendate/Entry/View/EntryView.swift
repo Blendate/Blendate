@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct EntryView: View {
-    @EnvironmentObject var loadingState: FirebaseAuthState
+    
+    @StateObject var loadingState = FirebaseAuthState()
     
     var body: some View {
         switch loadingState.state {
@@ -23,17 +24,21 @@ struct EntryView: View {
 }
 
 
+import FirebaseAuth
 @MainActor
 class FirebaseAuthState: ObservableObject {
     
     enum FirebaseState {
         case loading, noUser, uid(String)
     }
-
+    
+    @Published var firUser: FirebaseAuth.User?
     @Published var state:FirebaseState = .loading
-        
+    
     init(){
-        FirebaseManager.instance.auth.addStateDidChangeListener { (auth,user) in
+        Auth.auth().addStateDidChangeListener { (auth,user) in
+            print("Auth Changed: \(user?.uid ?? "No User")")
+            self.firUser = user
             if let uid = user?.uid {
                 self.state = .uid(uid)
             } else {
@@ -41,5 +46,4 @@ class FirebaseAuthState: ObservableObject {
             }
         }
     }
-
 }

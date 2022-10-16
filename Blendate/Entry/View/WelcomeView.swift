@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct WelcomeView: View {
-    @StateObject var model = WelcomeViewModel()
+    @State var showEmail = false
     @State var email: String = ""
     @State var error: AlertError?
     
@@ -22,7 +22,20 @@ struct WelcomeView: View {
         }
         .errorAlert(error: $error)
     }
-
+    
+    func emailTapped() async {
+        if showEmail {
+            do {
+                try await UserService().sendEmail(to: email)
+            } catch {
+                self.error = error as? AlertError
+            }
+        } else {
+            withAnimation(.spring()) {
+                showEmail = true
+            }
+        }
+    }
     
 
 }
@@ -41,18 +54,10 @@ extension WelcomeView {
     
     var card: some View {
         VStack {
-            emailField
-            emailButton
-            HStack {
-                Rectangle().fill(Color.LightGray)
-                    .frame(height: 1)
-                Text("or")
-                    .foregroundColor(.LightGray)
-                Rectangle().fill(Color.LightGray)
-                    .frame(height: 1)
+            emailInput
+            if showEmail {
+                or
             }
-            .padding(.horizontal)
-            .padding([.horizontal,.top])
             signinButtons
         }
         .background(Color.Blue)
@@ -61,52 +66,30 @@ extension WelcomeView {
         .padding(.horizontal, 30)
         .shadow(radius: 10)
     }
-
     
-    
-    var emailField: some View {
-        TextField("name@email.com", text: $email)
-            .textFieldStyle(.roundedBorder)
-            .padding()
-            .padding(.top)
-            .padding(.horizontal, 16)
-            .keyboardType(.emailAddress)
-            .autocapitalization(.none)
-            .disableAutocorrection(true)
-    }
-    
-    var emailButton: some View {
-        AsyncButton(action: emailTapped) {
-            HStack {
-                Image(systemName: "envelope.fill")
-                    .foregroundColor(.Blue)
-                Text("Sign in with email")
-                    .fontType(.semibold, 14, .Blue)
-                Spacer()
+    var emailInput: some View {
+        VStack(spacing: 24) {
+            if showEmail {
+                emailField
             }
-            .padding(.vertical, 10)
-            .padding(.leading, 10)
-            .background(Color.white)
-            .cornerRadius(20)
+            emailButton
         }
-        .padding(.horizontal, 32)
+        .padding(.top, 40)
+        .padding(.horizontal, 56)
     }
     
-
-    
-    var signinButtons: some View {
-//        SocialSigninButtons()
-        VStack {
-            GoogleSignInButton()
-              .padding()
-              .onTapGesture {
-                  model.googleSignIn()
-              }
+    var or: some View {
+        HStack {
+            Rectangle().fill(Color.LightGray)
+                .frame(height: 1)
+            Text("or")
+                .foregroundColor(.LightGray)
+            Rectangle().fill(Color.LightGray)
+                .frame(height: 1)
         }
-            .frame(height:240)
-            .noPreview(220, 240, "Social Button")
+        .padding(.horizontal)
+        .padding([.horizontal,.top])
     }
-    
     
     
     var terms: some View {
@@ -118,21 +101,49 @@ extension WelcomeView {
             .foregroundColor(Color.gray)
     }
     
-}
-
-extension WelcomeView {
     
-    func emailTapped() async {
-        do {
-            try await FirebaseManager.instance.sendEmail(to: email)
-        } catch {
-            self.error = error as? AlertError
+    
+    var emailField: some View {
+        TextField("tyler@blendate.app", text: $email)
+            .textFieldStyle(.roundedBorder)
+            .keyboardType(.emailAddress)
+            .autocapitalization(.none)
+            .disableAutocorrection(true)
+    }
+    
+    var emailButton: some View {
+        AsyncButton(action: emailTapped) {
+            HStack {
+                Image(systemName: "envelope.fill")
+                    .foregroundColor(.Blue)
+                Text("Sign in with Email")
+                    .fontType(.semibold, 12, .Blue)
+                Spacer()
+            }
+            .padding(.vertical, 10)
+            .padding(.leading, 10)
+            .background(Color.white)
+            .cornerRadius(20)
         }
     }
+    
+
+    
+    var signinButtons: some View {
+        SocialSigninButtons()
+//        Rectangle().fill(Color.gray)
+            .frame(height:240)
+            .noPreview(220, 240, "Social Button")
+    }
+
 }
+
 
 struct WelcomeView_Previews: PreviewProvider {
     static var previews: some View {
-        WelcomeView()
+        WelcomeView(showEmail: true)
     }
 }
+
+
+

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Firebase
 import FirebaseFirestoreSwift
 
 struct Conversation: Codable, Identifiable {
@@ -26,6 +27,10 @@ struct Conversation: Codable, Identifiable {
         return users.first(where: {$0 != uid})
     }
     
+    var lastDate: Date {
+        latest()?.timestamp ?? Date()
+    }
+    
 }
 
 extension Conversation: Equatable {
@@ -36,7 +41,8 @@ extension Conversation: Equatable {
     
 }
 
-struct ChatMessage: Codable {
+struct ChatMessage: Codable, Identifiable {
+    @DocumentID var id: String?
     var author: String
     var text = ""
     var timestamp: Date

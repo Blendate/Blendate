@@ -86,8 +86,8 @@ struct PhotoView: View {
                 self.photo = photo
                 isLoading = false
             } catch {
+                print("Photo Upload Error: \(error.localizedDescription)")
                 isLoading = false
-                printD(error.localizedDescription)
             }
         }
 
@@ -194,6 +194,7 @@ extension PhotoView {
                     .scaledToFill()
                     .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/2.2)
                     .clipped()
+                    .cornerRadius(16, corners: [.topLeft, .topRight])
             } placeholder: {
                 Rectangle().foregroundColor(.gray)
                     .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/2.2)

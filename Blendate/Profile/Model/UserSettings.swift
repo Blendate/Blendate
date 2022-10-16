@@ -14,8 +14,6 @@ struct UserSettings: Codable {
     var providers: [Provider] = []
     var onboarded = false
     var hideAge: Bool = false
-    
-    var dev: Dev? = Dev()
 }
 
 struct Provider: Codable, Identifiable, Equatable{
@@ -34,6 +32,8 @@ struct Notifications: Codable {
     var matches: Bool = true
     
     var isOn: Bool
+    var fcm: String = ""
+
 }
 
 
@@ -45,9 +45,4 @@ enum AuthType: String, Codable, Identifiable, Hashable, CaseIterable {
     case facebook = "Facebook"
     case twitter = "Twitter"
     case email = "Email"
-}
-
-
-struct Dev: Codable {
-    var classicTab = false
 }

@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct ProfileButtons: View {
     @EnvironmentObject var sheet: ProfileSheet
     let profileType: ProfileType
@@ -18,12 +17,7 @@ struct ProfileButtons: View {
         self.profileType = profileType
         self.action = didSwipe
     }
-//    
-//    init(_ profileType: ProfileType){
-//        self.profileType = profileType
-//        self.action = Swipe.like -> ()
-//    }
-    
+
     var body: some View {
         switch profileType {
         case .session:
@@ -80,16 +74,12 @@ extension ProfileButtons {
 
         var body: some View {
             Button(action:{
-                printD(type.rawValue)
                 state = type
-                printD(state?.rawValue ?? "NONE")
-
-                
             }){
                 VStack(alignment: .center){
                     Text(type.rawValue)
                     if type == .edit {
-                        Image(systemName: "person")
+                        Image(systemName: "pencil")
                             .resizable()
                             .foregroundColor(.white)
                             .frame(width: 30, height: 30)
@@ -144,19 +134,3 @@ struct ProfileButtons_Previews: PreviewProvider {
         
     }
 }
-
-
-//                ZStack{
-//                    Capsule()
-//                        .fill(Color.white)
-//                        .frame(width: 160, height: 60, alignment: .center)
-//                    HStack {
-//                        Image(blend ? "icon":"noMatch")
-//                            .renderingMode(.template)
-//                            .resizable()
-//                            .foregroundColor(color)
-//                            .frame(width: blend ? 30:40, height: 40)
-//                        Text(blend ? "BLEND":"NEXT")
-//                            .fontType(.regular, 16, color)
-//                    }
-//                }

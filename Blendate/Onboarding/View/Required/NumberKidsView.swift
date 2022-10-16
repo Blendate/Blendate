@@ -36,6 +36,7 @@ struct NumberKidsView: View {
 struct NumberKidsView_Previews: PreviewProvider {
     static var previews: some View {
         PreviewSignup(.children)
+            .environmentObject(dev.session)
     }
 }
 #endif

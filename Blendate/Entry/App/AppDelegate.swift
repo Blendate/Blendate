@@ -6,9 +6,8 @@
 //
 
 import SwiftUI
-import FirebaseCore
-import FirebaseMessaging
-//import FacebookCore
+import Firebase
+import FacebookCore
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     let gcmMessageIDKey = "gcm.message_id"
@@ -17,10 +16,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         
         // Firebase Setup
         FirebaseApp.configure()
-//        Messaging.messaging().delegate = self
-//        FBSDKCoreKit.ApplicationDelegate.shared.application(application,
-//                         didFinishLaunchingWithOptions: launchOptions )
-        
+        Messaging.messaging().delegate = self
+        FBSDKCoreKit.ApplicationDelegate.shared
+            .application(application,
+                         didFinishLaunchingWithOptions: launchOptions )
         UNUserNotificationCenter.current().delegate = self
         return true
     }
@@ -29,16 +28,17 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
 
-//    userInfo[gcmMessageIDKey]
-    func application(_ application: UIApplication,
-                     didReceiveRemoteNotification userInfo: [AnyHashable: Any],
-                     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        // userInfo[gcmMessageIDKey]
       completionHandler(UIBackgroundFetchResult.newData)
     }
     
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-      completionHandler()
-    }
+  func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+      
+//    let userInfo = response.notification.request.content.userInfo
+      
+    completionHandler()
+  }
 }
 
 extension AppDelegate: MessagingDelegate {

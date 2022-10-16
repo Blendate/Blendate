@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Firebase
 
 extension PreviewProvider {
     static var dev: DeveloperPreview {
@@ -18,7 +19,7 @@ class DeveloperPreview {
     private init() { }
     
     var emptyUser: User {
-        return User(id: "12345", details: Details(), filters: Filters(.filter), settings: UserSettings(), fcm: "")
+        return User(id: "12345", details: Details(), filters: Stats(.filter), settings: UserSettings(), fcm: "")
     }
     
     var michael: User { DeveloperPreview.michael }
@@ -31,16 +32,29 @@ class DeveloperPreview {
     
     var profilesheet = ProfileSheet()
     
-    let conversation = Conversation(id: "1234", users: ["1234", "5678"], chats: [], lastMessage: "Message", timestamp: Date() )
+    @StateObject var session = SessionViewModel(user: michael)
+
+    
+    var conversation: Conversation { Conversation(id: "1234", users: ["1234", ""], chats: [chatmessage, longChatMessage], lastMessage: "Message", timestamp: Date() ) }
     let chatmessage = ChatMessage(author: "1234", text: "Testing a short message")
+    let longChatMessage = ChatMessage(author: "", text: String(lorem.prefix(140)))
+
+    static let lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
     
     @State var bindingMichael = michael
     
     @ViewBuilder
-    func signup(_ detail: SignupDetail) -> some View {
+    func signup(_ detail: Detail) -> some View {
         PreviewSignup(detail)
     }
     
+}
+
+extension SessionViewModel {
+    convenience init(user: User) {
+        self.init(user.id ?? "")
+        self.user = user
+    }
 }
 
 
@@ -61,36 +75,15 @@ extension View {
 }
 
 struct PreviewSignup: View {
-    
-    let type: SignupDetail
-    @StateObject var session = SessionViewModel("")
-    
-    init(_ type: SignupDetail){
+
+    let type: Detail
+
+    init(_ type: Detail){
         self.type = type
     }
     var body: some View {
-        SignupViewPreview(type)
-            .environmentObject(session)
-            .previewDevice("iPhone 13")
-        SignupViewPreview(type)
-            .environmentObject(session)
-            .previewDevice("iPhone 8")
-        SignupViewPreview(type)
-            .environmentObject(session)
-            .previewDevice("iPhone SE (3rd generation)")
-
-    }
-    
-    struct SignupViewPreview: View {
-        let type: SignupDetail
-
-        init(_ type: SignupDetail){
-            self.type = type
-        }
-        var body: some View {
-            NavigationView {
-                SignupView(type)
-            }
+        NavigationView {
+            PropertyView(type, signup: true)
         }
     }
 }
@@ -130,7 +123,7 @@ extension View {
 public func printD(_ object: Any){
     #if DEBUG
     let line = "--------------------------------------"
-    let newLine = "\n\n\n"
+    let newLine = ""
     
     Swift.print(line + newLine)
     Swift.print(object)

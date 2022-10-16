@@ -60,6 +60,7 @@ struct TextEditorView: View {
         
     }
     
+    @MainActor
     private func sendMessage() async {
         await send()
         string = ""

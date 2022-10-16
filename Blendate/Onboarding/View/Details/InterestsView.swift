@@ -43,8 +43,8 @@ struct InterestsView: View {
     
     private func startTapped(){
         do {
-            try session.creasteUserDoc()
-        }catch let error as AlertError {
+            try session.createUserDoc()
+        } catch let error as AlertError {
            self.error = error
         } catch {
             self.error = AlertError(errorDescription: "Server Error", failureReason: "There was an error creating your account", recoverySuggestion: "Try again", helpAnchor: error.localizedDescription)

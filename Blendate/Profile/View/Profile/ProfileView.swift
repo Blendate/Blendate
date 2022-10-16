@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct ProfileView: View {
     @StateObject var sheet = ProfileSheet()
     @Binding var user: User
@@ -18,78 +17,82 @@ struct ProfileView: View {
     
     var body: some View {
         NavigationView {
-            List {
-                profileCard
-                    .listRowSeparator(.hidden)
-                ForEach(EditDetail.DetailGroup.allCases){ group in
-                    Section {
-                        ForEach(group.cells(user.details)) { cell in
-                            DetailCellView(detail: cell, details: $user.details)
-                        }
-                    } header: {
-                        if group != .general {
-                            Text(group.id)
-                                .fontType(.bold, 20, .DarkBlue)
-                        }
-                    }
-                }
+            VStack(spacing: 22) {
+                ProfileCardView(user.details, .session)
+                    .padding(.top)
+                Spacer()
+                upgrade
+                likes
+                Spacer()
             }
-            .listStyle(.plain)
-            .background(Color.LightGray)
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        try? UserService().updateUser(with: user)
-                    } label: {
-                        Text("Save")
-                            .fontType(.bold, 18, .Blue)
-                    }
-                }
-                ToolbarItem(placement: .principal) {
-                    Image.icon(40, .Blue)
+                ToolbarItem(placement: .principal){
+                    Image.icon(40).foregroundColor(.Blue)
                 }
             }
+            .environmentObject(sheet)
+            .fullScreenCover(isPresented: $sheet.isShowing, onDismiss: save, content: sheetContent)
+//            .sheet(isPresented: $sheet.isShowing, onDismiss: save, content: sheetContent)
             .navigationBarTitleDisplayMode(.inline)
         }
-        .tabItem{ Image("profile") }
 
     }
     
-    var profileCard: some View {
-        ProfileCardView(user.details, .session, user.id)
-            .environmentObject(sheet)
-            .padding(.vertical)
-            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-            .listRowBackground(Color.clear)
-            .sheet(isPresented: $sheet.isShowing, onDismiss: save, content: sheetContent)
-            .buttonStyle(BorderlessButtonStyle())
-    }
-    
-    var premium: some View {
-        Group {
-            ColorPicker("Profile Card", selection: $user.details.color, supportsOpacity: false)
-            Toggle("Hide Age", isOn: $user.settings.hideAge).tint(.Blue)
+    var upgrade: some View {
+        HStack {
+            Image.icon(25)
+                .foregroundColor(.Blue)
+                .padding()
+                .background(.white)
+                .clipShape(Circle())
+            Text("Premium Membership")
+                .fontType(.semibold, .title2, .white)
+                .fixedSize()
+                .padding(.leading)
         }
-        .disabled(!user.settings.premium)
-        .foregroundColor(user.settings.premium ? .DarkBlue:.gray)
-
+        .padding()
+        .background(Color.Blue)
+        .cornerRadius(16)
     }
+    
+    var likes: some View {
+        HStack {
+            Image(systemName: "star.fill")
+                .resizable()
+                .frame(width: 25, height: 25)
+                .foregroundColor(.DarkBlue)
+                .padding()
+                .background(.white)
+                .clipShape(Circle())
+            Text("Get more Super Likes")
+                .fontType(.semibold, .title2, .white)
+                .fixedSize()
+                .padding(.leading)
 
+        }
+        .padding()
+        .background(Color.DarkBlue)
+        .cornerRadius(16)
+    }
+}
+
+extension ProfileView {
+    
     private func save() {
         do {
-            try UserService().updateUser(with: user)
+            try UserService().update(user)
         } catch {
-            printD(error.localizedDescription)
-            print("SAVE ERROR: error saving user")
+            #warning("Add Popup")
         }
     }
+    
     @ViewBuilder
     private func sheetContent() -> some View {
         switch sheet.state {
         case .edit:
-            MatchProfileView(user: user)
+            EditProfileView(user: $user)
         case .filter:
-            FiltersView($user.filters)
+            FiltersView(user: $user)
         case .settings:
             SettingsView(user: $user)
         default:
@@ -102,7 +105,6 @@ struct EditProfile_Previews: PreviewProvider {
     @State static var show = true
     static var previews: some View {
         ProfileView(dev.$bindingMichael)
-            .environmentObject(ProfileSheet())
     }
 }
 

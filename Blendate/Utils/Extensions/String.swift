@@ -33,4 +33,21 @@ extension String {
         return emailPred.evaluate(with: self)
     }
 }
+extension [String] {
+    func stringArrayValue() -> String {
+        var array = self
+        guard !array.isEmpty else {return "--"}
+        if array.count >= 2 {
+            let first = array.map({$0}).prefix(upTo: 2).joined(separator:", ")
+            let moreAmount = array.count - 2
+
+            let more = moreAmount < 1 ? "":" +\(moreAmount) more"
+
+            return first + more
+        } else {
+            return array.first ?? "T"
+        }
+    }
+}
+
 
