@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-
-
 struct LaunchView: View {
     var body: some View {
         ZStack {
@@ -82,8 +80,9 @@ struct LoadingView<Content: View>: View {
 
 struct LoadingView_Previews: PreviewProvider {
     static var previews: some View {
-        LoadingView(showLoading: true) {
-            
-        }
+        LaunchView()
+//        LoadingView(showLoading: true) {
+//            
+//        }
     }
 }

@@ -6,8 +6,9 @@
 //
 
 import SwiftUI
-import Firebase
-import FacebookCore
+import FirebaseCore
+import FirebaseMessaging
+//import FacebookCore
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     let gcmMessageIDKey = "gcm.message_id"
@@ -16,10 +17,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         
         // Firebase Setup
         FirebaseApp.configure()
-        Messaging.messaging().delegate = self
-        FBSDKCoreKit.ApplicationDelegate.shared
-            .application(application,
-                         didFinishLaunchingWithOptions: launchOptions )
+//        Messaging.messaging().delegate = self
+//        FBSDKCoreKit.ApplicationDelegate.shared.application(application,
+//                         didFinishLaunchingWithOptions: launchOptions )
+        
         UNUserNotificationCenter.current().delegate = self
         return true
     }
@@ -28,19 +29,16 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
 
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-//      if let messageID = userInfo[gcmMessageIDKey] {
-//          print("Message ID: \(messageID)")
-//      }
+//    userInfo[gcmMessageIDKey]
+    func application(_ application: UIApplication,
+                     didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+                     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
       completionHandler(UIBackgroundFetchResult.newData)
     }
     
-  func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-      
-//    let userInfo = response.notification.request.content.userInfo
-      
-    completionHandler()
-  }
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+      completionHandler()
+    }
 }
 
 extension AppDelegate: MessagingDelegate {

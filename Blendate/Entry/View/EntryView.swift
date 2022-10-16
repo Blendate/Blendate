@@ -8,9 +8,7 @@
 import SwiftUI
 
 struct EntryView: View {
-    
-    @StateObject var loadingState = FirebaseAuthState()
-    
+    @EnvironmentObject var loadingState: FirebaseAuthState
     
     var body: some View {
         switch loadingState.state {
@@ -43,4 +41,5 @@ class FirebaseAuthState: ObservableObject {
             }
         }
     }
+
 }

@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Firebase
 import FirebaseFirestoreSwift
 
 struct Conversation: Codable, Identifiable {

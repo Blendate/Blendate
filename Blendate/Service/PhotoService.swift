@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import FirebaseStorageSwift
+import FirebaseStorage
 
 
 struct PhotoService {
@@ -15,7 +15,7 @@ struct PhotoService {
     func uploadPhoto(at index: Int, _ photo: Data) async throws -> Photo {
         guard let uid = FirebaseManager.instance.auth.currentUser?.uid else {throw FirebaseError.generic("No ID")}
 
-        let imageRef = firebase.StorageRef.child("\(uid)/\(index).jpg")
+        let imageRef = firebase.storage.reference().child("\(uid)/\(index).jpg")
         let metadata = try await imageRef.putDataAsync(photo)
         print(metadata)
         let url = try await imageRef.downloadURL()

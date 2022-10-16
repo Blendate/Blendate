@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Firebase
 
 extension PreviewProvider {
     static var dev: DeveloperPreview {

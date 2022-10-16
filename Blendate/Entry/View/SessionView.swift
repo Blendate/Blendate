@@ -21,18 +21,24 @@ struct SessionView: View {
     }
     
     var body: some View {
-        LoadingView(showLoading: matchVM.loading == true) {
+//        LoadingView(showLoading: matchVM.loading == true) {
+//
+//        }
+        Group {
             if session.loadingState == .noUser {
                 SignupViewContainer()
             } else if session.loadingState == .user {
-                TabView(selection: $session.selectedTab) {
-                    MatchProfileView().tag(0)
-                    MessagesView().tag(1)
-                    CommunityView().tag(2)
-                    ProfileView($session.user).tag(3)
-                }.task {
-                    await session.checkNotification()
-                }
+                Text("Yoo")
+//                TabView(selection: $session.selectedTab) {
+//                    MatchProfileView().tag(0)
+//                    MessagesView().tag(1)
+//                    CommunityView().tag(2)
+//                    ProfileView($session.user).tag(3)
+//                }.task {
+//                    await session.checkNotification()
+//                }
+            } else {
+                Text("Loading")
             }
         }
         .environmentObject(session)
