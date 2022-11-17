@@ -35,12 +35,18 @@
 			</array>
 		</dict>
 	</array>
+	<key>FacebookAdvertiserIDCollectionEnabled</key>
+	<true/>
 	<key>FacebookAppID</key>
 	<string>1030392904251168</string>
+	<key>FacebookAutoLogAppEventsEnabled</key>
+	<false/>
 	<key>FacebookClientToken</key>
 	<string>b9d71a394fd9aa7c08c96d3c5909c4ce</string>
 	<key>FacebookDisplayName</key>
 	<string>Blendate</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<true/>
 	<key>FirebaseOpenAppQueryItemEmailName</key>
 	<string>email</string>
 	<key>FirebaseOpenAppScheme</key>

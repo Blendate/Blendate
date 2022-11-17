@@ -16,7 +16,7 @@ struct EntryView: View {
         case .loading:
             LaunchView()
         case .noUser:
-            WelcomeView()
+            WelcomeView2()
         case .uid(let uid):
             SessionView(uid)
         }

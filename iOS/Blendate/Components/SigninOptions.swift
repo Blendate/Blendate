@@ -10,19 +10,23 @@ import FirebaseEmailAuthUI
 import FirebaseOAuthUI
 import FirebaseGoogleAuthUI
 import FirebaseFacebookAuthUI
+import FirebasePhoneAuthUI
 
 class MyAuthViewController : FUIAuthPickerViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .clear
-
+        
         for each in view.subviews[0].subviews[0].subviews[0].subviews {
             if let button = each as? UIButton {
                 button.layer.cornerRadius = 20.0
                 button.layer.masksToBounds = true
-//                button.layer.backgroundColor = UIColor.white.cgColor
-//                button.setTitleColor(UIColor.black, for: .normal)
+                button.layer.backgroundColor = UIColor.clear.cgColor
+                button.layer.borderWidth = 1
+                button.layer.borderColor = UIColor.white.cgColor
+                button.setTitleColor(UIColor.white, for: .normal)
+                button.layer.shadowOpacity = 0.0
             }
         }
 
@@ -58,14 +62,27 @@ class AuthManager : NSObject{
     override init(){
         super.init()
         guard let authUI = FUIAuth.defaultAuthUI() else {return}
+        let phoneAuth: FUIPhoneAuth = {
+            let auth = FUIPhoneAuth(authUI: authUI, whitelistedCountries: ["US"])
+            auth.buttonAlignment = .center
+            return auth
+        }()
+        
+        let facebookAuth: FUIFacebookAuth = {
+            let auth = FUIFacebookAuth(authUI: authUI, permissions: ["email", "public_profile"])
+            auth.buttonAlignment = .center
+            return auth
+        }()
+
+        
             let providers: [FUIAuthProvider] = [
 //                FUIEmailAuth(authAuthUI: authUI, signInMethod: EmailLinkAuthSignInMethod, forceSameDevice: false, allowNewEmailAccounts: true, actionCodeSetting: actionCodeSettings),
 //                FUIEmailAuth(),
                 FUIOAuth.appleAuthProvider(),
-                FUIGoogleAuth(authUI: authUI),
-                FUIFacebookAuth(authUI: authUI, permissions: ["email", "public_profile"]),
+//                FUIGoogleAuth(authUI: authUI),
+                facebookAuth,
 //                FUIFacebookAuth(authUI: authUI),
-
+                phoneAuth
 //                FUIOAuth.twitterAuthProvider(withAuthUI: authUI),
             ]
         authUI.providers = providers

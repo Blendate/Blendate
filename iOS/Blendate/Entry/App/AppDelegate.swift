@@ -17,26 +17,44 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         // Firebase Setup
         FirebaseApp.configure()
         Messaging.messaging().delegate = self
+        
+        // FaceBook Init
         FBSDKCoreKit.ApplicationDelegate.shared
             .application(application,
                          didFinishLaunchingWithOptions: launchOptions )
+        // Notification Delegate
         UNUserNotificationCenter.current().delegate = self
+//        let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+//        UNUserNotificationCenter.current().requestAuthorization(
+//          options: authOptions,
+//          completionHandler: {_, _ in })
+        application.registerForRemoteNotifications()
         return true
     }
 
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
+    
 
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        // userInfo[gcmMessageIDKey]
-      completionHandler(UIBackgroundFetchResult.newData)
+        print("[NOTIFICATION] Remote Notification")
+
+        if let messageID = userInfo[gcmMessageIDKey] {
+          print("Message ID: \(messageID)")
+        }
+
+        print(userInfo)
+        completionHandler(UIBackgroundFetchResult.newData)
     }
     
   func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
       
-//    let userInfo = response.notification.request.content.userInfo
-      
+    let userInfo = response.notification.request.content.userInfo
+    print("[NOTIFICATION] Did Receive Notification")
+    print(userInfo)
+
+
     completionHandler()
   }
 }
@@ -45,6 +63,7 @@ extension AppDelegate: MessagingDelegate {
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
         
         if let fcm = fcmToken {
+            print("[FCM] \(fcm)")
             UserDefaults.standard.set(fcm, forKey: "fcm")
         }
     }
