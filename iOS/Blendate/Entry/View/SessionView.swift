@@ -45,14 +45,17 @@ struct SessionView: View {
             MatchProfileView()
                 .tag(0)
                 .tabItem{ Image("icon-2") }
-            MessagesView()
+            Text("For You")
                 .tag(1)
+                .tabItem{Image(systemName: "star")}
+            MessagesView()
+                .tag(2)
                 .tabItem{ Image("chat") }
             CommunityView()
-                .tag(2)
+                .tag(3)
                 .tabItem{Image(systemName: "person.3")}
             ProfileView($session.user)
-                .tag(3)
+                .tag(4)
                 .tabItem{ Image("profile") }
         }.task {
             await session.checkNotification()

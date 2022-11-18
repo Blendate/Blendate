@@ -22,7 +22,7 @@ struct ConvoCellView: View {
                     Text(user?.details.firstname ?? "")
                         .fontType(.semibold, .title3)
                         .foregroundColor(.DarkBlue)
-                    Text(conversation.lastMessage)
+                    Text(conversation.lastMessage?.text ?? "")
                         .foregroundColor(.gray)
                         .opacity(0.5)
                 }

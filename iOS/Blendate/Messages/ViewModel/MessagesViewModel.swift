@@ -12,11 +12,11 @@ class MessagesViewModel: ObservableObject {
     @Published var allConvos = [Conversation]()
     
     var conversations: [Conversation] {
-        allConvos.filter({ !$0.lastMessage.isEmpty }).sorted(by: {$0.lastDate > $1.lastDate})
+        allConvos.filter({ $0.lastMessage != nil }).sorted(by: {$0.lastDate > $1.lastDate})
     }
     
     var matches: [Conversation] {
-        allConvos.filter({ $0.lastMessage.isEmpty })
+        allConvos.filter({ $0.lastMessage == nil })
     }
 
     init(){

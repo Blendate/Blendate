@@ -13,7 +13,7 @@ struct Conversation: Codable, Identifiable {
     @DocumentID var id: String?
     var users: [String]
     var chats: [ChatMessage]
-    var lastMessage: String = ""
+    var lastMessage: ChatMessage?
     let timestamp: Date
 
     func latest()->ChatMessage? {

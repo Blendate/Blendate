@@ -35,7 +35,7 @@ class DeveloperPreview {
     @StateObject var session = SessionViewModel(user: michael)
 
     
-    var conversation: Conversation { Conversation(id: "1234", users: ["1234", ""], chats: [chatmessage, longChatMessage], lastMessage: "Message", timestamp: Date() ) }
+    var conversation: Conversation { Conversation(id: "1234", users: ["1234", ""], chats: [chatmessage, longChatMessage], lastMessage: longChatMessage, timestamp: Date() ) }
     let chatmessage = ChatMessage(author: "1234", text: "Testing a short message")
     let longChatMessage = ChatMessage(author: "", text: String(lorem.prefix(140)))
 

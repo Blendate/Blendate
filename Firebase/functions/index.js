@@ -9,44 +9,83 @@ const MATCH_TITLE = "You have a new Blend!";
 const MATCH_BODY = "You Blended with ";
 
 exports.iosMatchNotifications = functions.firestore
-    .document("matches/{uid}")
-    .onWrite(async (event) => {
-        console.log("New Match Triggered")
-      const users = event.after.get("users");
+    .document("chats/{uid}")
+    .onCreate(async (snapshot, event) => {
+      console.log("New Match Triggered")
+      const conversation = snapshot.data();
+      let users = []
+      users = conversation.users
       await sendMessages(users, true);
     });
 
 
 exports.iosChatNotifications = functions.firestore
     .document("chats/{uid}")
-    .onWrite(async (event) => {
-        console.log("New Chat Triggered")
-      const users = event.after.get("users");
-      await sendMessages(users, false);
+    .onUpdate(async (change, event) => {
+      console.log("New Chat Triggered")
+      const conversation = change.after.data();
+      let users = []
+      users = conversation.users
+
+      const sendUID = arr.find(element => {
+        return element != conversation.lastMessage.author;
+      })
+
+      if (sendUID) {
+        const user = getUser(sendUID)
+        const message = {
+          notification: {
+            title: MESSAGE_TITLE,
+            body: MESSAGE_BODY + user.name,
+          },
+          token: user.fcm,
+        };
+
+        admin.messaging().send(message)
+        .then((response) => {
+          console.log('Successfully sent push notification message:', response);
+          return;
+        })
+        .catch((error) => {
+          console.log('Error sending message:', error);
+          return;
+        });
+      }
     });
 
 
     const sendMessages = async (users, isMatch) => {
-        const messages = [];
-      
-        for (const uid of users) {
-          const user = await getUser(uid);
-          if (user) {
-            const title = isMatch ? MATCH_TITLE : MESSAGE_TITLE;
-            const body = isMatch ? MATCH_BODY : MESSAGE_BODY;
-      
-            const message = {
-              notification: {
-                title: title,
-                body: body + user.name,
-              },
-              token: user.fcm,
-            };
-            messages.push(message);
+        const user1 = await getUser(users[0])
+        const user2 = await getUser(users[1])
+
+        const message1 = {
+          notification: {
+            title: MATCH_TITLE,
+            body: MATCH_BODY + user2.name,
+          },
+          token: user1.fcm,
+        };
+
+        const message2 = {
+          notification: {
+            title: MATCH_TITLE,
+            body: MATCH_BODY + user1.name,
+          },
+          token: user2.fcm,
+        };
+        const messages = [message1, message2];
+
+        admin.messaging().sendAll(messages)
+        .then((response) => {
+          for (r in response) {
+            console.log('Successfully sent push notification message:', r);
           }
-        }
-        const response = await admin.messaging().sendAll(messages);
-        console.log(response);
+          return;
+        })
+        .catch((error) => {
+          console.log('Error sending message:', error);
+          return;
+        });
       };
       
       const getUser = async (uid) => {
@@ -62,10 +101,10 @@ exports.iosChatNotifications = functions.firestore
         }
       };
 
-      exports.helloFirestore = (event, context) => {
-        const resource = context.resource;
-        // log out the resource string that triggered the function
-        console.log('Function triggered by change to: ' +  resource);
-        // now log the full event object
-        console.log(JSON.stringify(event));
-      };
+      // exports.helloFirestore = (event, context) => {
+      //   const resource = context.resource;
+      //   // log out the resource string that triggered the function
+      //   console.log('Function triggered by change to: ' +  resource);
+      //   // now log the full event object
+      //   console.log(JSON.stringify(event));
+      // };

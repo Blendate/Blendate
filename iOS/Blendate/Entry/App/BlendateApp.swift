@@ -17,12 +17,12 @@ struct BlendateApp: App {
     var body: some Scene {
         WindowGroup {
             EntryView()
-                .onAppear(
-                    perform: UIApplication.shared.addTapGestureRecognizer
-                )
-                .onOpenURL { url in
-                    firebaseSignin(with: url)
-                }
+//                .onAppear(
+//                    perform: UIApplication.shared.addTapGestureRecognizer
+//                )
+//                .onOpenURL { url in
+//                    firebaseSignin(with: url)
+//                }
         }
     }
     
