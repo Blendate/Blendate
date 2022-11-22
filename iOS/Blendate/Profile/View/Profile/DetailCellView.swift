@@ -11,7 +11,7 @@ import Sliders
 
 struct DetailCellView: View {
     let detail: Detail
-    @Binding var user: User
+    @Binding var details: Details
     let type: PropType
     
     var body: some View {
@@ -42,7 +42,7 @@ struct DetailCellView: View {
             HStack {
                 label
                 Spacer()
-                Text("\(user.filters.maxDistance) mi")
+                Text("\(details.filters.maxDistance) mi")
                     .fontType(.semibold, 16, .DarkBlue)
             }
             Slider(value: maxDistance, in: 1...50, step: 1.0)
@@ -54,7 +54,7 @@ struct DetailCellView: View {
             HStack {
                 label
                 Spacer()
-                Text( user.filters.ageRange.label(max: KAgeRange.max) )
+                Text( details.filters.ageRange.label(max: KAgeRange.max) )
                     .fontType(.semibold, 16, .DarkBlue)
             }
             RangeSlider(range: ageRange, in: KAgeRange.min...KAgeRange.max, step: 1)
@@ -62,7 +62,7 @@ struct DetailCellView: View {
     }
     
     var value: some View {
-        Text(user.valueLabel(for: detail, type))
+        Text(details.valueLabel(for: detail, type))
             .fontType(.semibold, 16, .DarkBlue)
     }
     
@@ -74,20 +74,20 @@ struct DetailCellView: View {
 extension DetailCellView {
     var ageRange: Binding<ClosedRange<Int>> {
         .init {
-            user.filters.ageRange.min...user.filters.ageRange.max
+            details.filters.ageRange.min...details.filters.ageRange.max
         } set: { newValue in
-            if let min = newValue.min(), min < user.filters.ageRange.max {
-                user.filters.ageRange.min = min
+            if let min = newValue.min(), min < details.filters.ageRange.max {
+                details.filters.ageRange.min = min
             }
             if let max = newValue.max() {
-                user.filters.ageRange.max = max
+                details.filters.ageRange.max = max
             }
         }
     }
     
     var maxDistance: Binding<Double> { .init {
-        Double(user.filters.maxDistance) }
-        set: { user.filters.maxDistance = Int($0) }
+        Double(details.filters.maxDistance) }
+        set: { details.filters.maxDistance = Int($0) }
     }
 }
 
@@ -95,12 +95,81 @@ struct DetailCellView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             List {
-                DetailCellView(detail: .maxDistance, user: dev.$bindingMichael, type: .filter)
-                DetailCellView(detail: .ageRange, user: dev.$bindingMichael, type: .filter)
-                DetailCellView(detail: .gender, user: dev.$bindingMichael, type: .detail)
-                DetailCellView(detail: .seeking, user: dev.$bindingMichael, type: .filter)
+                DetailCellView(detail: .maxDistance, details: .constant(dev.details), type: .filter)
+                DetailCellView(detail: .ageRange, details: .constant(dev.details), type: .filter)
+                DetailCellView(detail: .gender, details: .constant(dev.details), type: .detail)
+                DetailCellView(detail: .seeking, details: .constant(dev.details), type: .filter)
             }
         }
+    }
+}
 
+
+extension Details {
+    func valueLabel(for detail: Detail, _ type: PropType) -> String {
+        let valueType: Stats = type == .filter ? filters : info
+        
+        switch detail {
+        case .photos:
+            return String(photos.count)
+        case .bio:
+            return String(bio.prefix(25)) + "..."
+        case .work:
+            return workTitle
+        case .education:
+            return schoolTitle
+        case .height:
+            let value = valueType.height
+            return value.cmToInches
+        case .relationship:
+            let value = valueType.relationship
+            return value
+        case .isParent:
+            let value = valueType.isParent
+            return value ? "Yes":"No"
+        case .children:
+            let value = valueType.children
+            return String(value)
+        case .childrenRange:
+            let value = valueType.childrenRange
+            return "\(value.min) - \(value.max)"
+        case .familyPlans:
+            let value = valueType.familyPlans
+            return value
+        case .religion:
+            let value = valueType.religion
+            return value
+        case .ethnicity:
+            let value = valueType.ethnicity
+            return value
+        case .politics:
+            let value = valueType.politics
+            return value
+        case .mobility:
+            let value = valueType.mobility
+            return value
+        case .vices:
+            let value = valueType.vices
+            return value.stringArrayValue()
+        case .interests:
+            return interests.stringArrayValue()
+        case .name:
+            return fullName
+        case .birthday:
+            return birthday.description
+        case .gender:
+            return gender
+        case .location:
+            return info.location.name
+        case .seeking:
+            let value = valueType.seeking
+            return value
+        case .maxDistance:
+            let value = valueType.maxDistance
+            return value.description
+        case .ageRange:
+            let value = valueType.ageRange
+            return value.label(max: 70)
+        }
     }
 }

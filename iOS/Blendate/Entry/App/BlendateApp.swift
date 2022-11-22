@@ -29,15 +29,16 @@ struct BlendateApp: App {
     private func firebaseSignin(with url: URL){
         let link = url.absoluteString
         printD("Open URL: \(link)")
-        let firebase = FirebaseManager.instance.auth
+        FBSDKCoreKit.ApplicationDelegate.shared.application(UIApplication.shared, open: url, sourceApplication: nil, annotation: UIApplication.OpenURLOptionsKey.annotation)
         
-        if firebase.isSignIn(withEmailLink: link){
-            if let email = UserDefaults.standard.string(forKey: kEmailKey) {
-                firebase.signIn(withEmail: email, link: link)
-            }
-        } else {
-            FBSDKCoreKit.ApplicationDelegate.shared.application(UIApplication.shared, open: url, sourceApplication: nil, annotation: UIApplication.OpenURLOptionsKey.annotation)
-        }
+        
+//        if firebase.isSignIn(withEmailLink: link){
+//            if let email = UserDefaults.standard.string(forKey: kEmailKey) {
+//                firebase.signIn(withEmail: email, link: link)
+//            }
+//        } else {
+//            FBSDKCoreKit.ApplicationDelegate.shared.application(UIApplication.shared, open: url, sourceApplication: nil, annotation: UIApplication.OpenURLOptionsKey.annotation)
+//        }
     }
 }
 

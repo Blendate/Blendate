@@ -8,9 +8,7 @@
 import SwiftUI
 
 struct EmptyLineupView: View {
-
-    @State var showPref = false
-    @Binding var sessionUser: User
+    @Binding var showFilters: Bool
     
     var body: some View {
         VStack {
@@ -24,7 +22,7 @@ struct EmptyLineupView: View {
                 .fontType(.regular, 24, .DarkBlue)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
-            Button(action: {showPref.toggle()}) {
+            Button(action: {showFilters.toggle()}) {
                 Text("Filters")
                     .fontType(.semibold, 18, .white)
                     .padding()
@@ -35,16 +33,12 @@ struct EmptyLineupView: View {
             Spacer()
         }
 //        .elipseBackground(true)
-        .sheet(isPresented: $showPref, onDismiss: {
-            try? UserService().update(sessionUser)
-        }) {
-            FiltersView(user: $sessionUser)
-        }
+
     }
 }
 
 struct EmptyLineupView_Previews: PreviewProvider {
     static var previews: some View {
-        EmptyLineupView(sessionUser: .constant(dev.michael))
+        EmptyLineupView(showFilters: .constant(false))
     }
 }

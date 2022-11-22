@@ -76,7 +76,7 @@ extension PropertyView {
         let all = Detail.allCases
         let idx = all.firstIndex(of: detail)!
         if detail == .isParent {
-            if !session.user.details.info.isParent {
+            if !session.details.info.isParent {
                 return .location
             }
         }
@@ -108,10 +108,10 @@ extension PropertyView {
 extension PropertyView {
     
     var valueValid: Bool {
-        let details = session.user.details
+        let details = session.details
         switch detail {
         case .name: return (details.firstname.count > 2) && !details.firstname.isBlank
-        case .birthday: return details.age >= 18
+        case .birthday: return details.birthday.age >= 18
         case .gender: return !details.gender.isEmpty
         case .isParent: return true
         case .children: return details.info.children > 0
@@ -136,8 +136,8 @@ extension PropertyView {
 
     @ViewBuilder
     func getDestination() -> some View {
-        let details = $session.user.details
-        let filters = $session.user.filters
+        let details = $session.details
+        let filters = $session.details.filters
         let isFilter = type == .filter
         switch detail {
         case .name:

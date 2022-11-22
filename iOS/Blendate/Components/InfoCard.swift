@@ -163,7 +163,7 @@ enum InfoType: String, CaseIterable, Identifiable {
 struct InfoCard_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(InfoType.allCases) {type in
-            InfoCard(type, dev.tyler.details)
+            InfoCard(type, dev.details)
                 .previewLayout(.sizeThatFits)
         }
         

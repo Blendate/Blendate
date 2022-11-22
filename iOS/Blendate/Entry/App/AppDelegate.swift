@@ -44,10 +44,11 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 extension AppDelegate: MessagingDelegate {
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-
-        if let fcm = fcmToken {
-            print("[FCM] \(fcm)")
-            UserDefaults.standard.set(fcm, forKey: "fcm")
+        guard let fcmToken = fcmToken else {return}
+        let oldFCM = UserDefaults.standard.string(forKey: String.kFCMstring)
+        
+        if oldFCM != fcmToken {
+            UserDefaults.standard.set(fcmToken, forKey: String.kFCMstring)
         }
     }
 }
@@ -91,6 +92,9 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
 
     completionHandler()
   }
+}
+extension String {
+    static public var kFCMstring: String { "fcm" }
 }
 
 //class AppDelegate: NSObject, UIApplicationDelegate {

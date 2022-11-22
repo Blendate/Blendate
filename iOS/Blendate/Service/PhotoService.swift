@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import FirebaseStorageSwift
+import FirebaseStorage
 
 
 struct PhotoService {

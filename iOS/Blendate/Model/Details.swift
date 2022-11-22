@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import FirebaseFirestoreSwift
 import CoreLocation
-struct Details: Codable {
-        
+
+struct Details: Codable, Identifiable {
+    @DocumentID var id: String?
     var firstname: String = ""
     var lastname: String = ""
     var birthday: Date = Date()
@@ -19,7 +21,8 @@ struct Details: Codable {
     var interests: [String] = []
     
     var info: Stats = Stats(.detail)
-    
+    var filters = Stats(.filter)
+
     var photos: [Photo] = {
         var array: [Photo] = []
         for i in 0..<8 {
@@ -36,33 +39,11 @@ extension Details {
     var fullName: String {
         lastname.isBlank ? firstname : firstname +  " \(lastname)"
     }
-    var age: Int {
-        return Calendar.current.dateComponents([.year], from: birthday, to: Date()).year!
-    }
+
 }
-
-
-
-
-struct IntRange: Codable {
-    var min: Int
-    var max: Int
-    
-    
-    init(_ min: Int, _ max: Int){
-        self.min = min
-        self.max = max
-    }
-    
-    func label(max maxValue: Int) -> String {
-        let maxLabel = max > (maxValue - 1) ? "\(max - 1)+" : String(max)
-        return "\(min) - \(maxLabel)"
-    }
-}
-
 
 struct Location: Codable, Identifiable, Equatable {
-    var id:String = UUID().uuidString
+    var id:String { "\(lat),\(lon)"}
     var name: String
     let lat: Double
     let lon: Double

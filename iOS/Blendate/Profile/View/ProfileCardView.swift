@@ -29,7 +29,7 @@ struct ProfileCard: View {
         ZStack(alignment: .top) {
             VStack {
                 VStack {
-                    Text(details.firstname + ", " + "\(details.age)")
+                    Text(details.firstname + ", " + "\(details.birthday.age)")
                         .fontType(.semibold, .title, .white)
                     Text(details.info.location.name)
                         .fontType(.semibold, .body, .white)
@@ -83,15 +83,15 @@ struct ProfileCardView: View {
 struct ProfileCarView_Previews: PreviewProvider {
     
     static var previews: some View {
-        ProfileCardView(dev.michael.details, .view)
+        ProfileCardView(dev.details, .view)
             .environmentObject(dev.profilesheet)
             .previewLayout(.sizeThatFits)
             .previewDisplayName("View")
-        ProfileCardView(dev.michael.details, .match)
+        ProfileCardView(dev.details, .match)
             .environmentObject(dev.profilesheet)
             .previewLayout(.sizeThatFits)
             .previewDisplayName("Match")
-        ProfileCardView(dev.michael.details, .session)
+        ProfileCardView(dev.details, .session)
             .environmentObject(dev.profilesheet)
             .previewLayout(.sizeThatFits)
             .previewDisplayName("Session")

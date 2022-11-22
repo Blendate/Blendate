@@ -51,13 +51,13 @@ struct NameView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             NameView(
-                firstname: dev.$bindingMichael.details.firstname,
-                lastname: dev.$bindingMichael.details.lastname
+                firstname: .constant(dev.details.firstname),
+                lastname:.constant(dev.details.firstname)
             )
         }
         NameView(
-            firstname: dev.$bindingMichael.details.firstname,
-            lastname: dev.$bindingMichael.details.lastname
+            firstname: .constant(dev.details.firstname),
+            lastname:.constant(dev.details.firstname)
         )
     }
 }

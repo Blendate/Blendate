@@ -66,7 +66,7 @@ struct AddPhotosView: View {
 struct AddPhotosView_Previews: PreviewProvider {
     static var previews: some View {
 //        PreviewSignup(.photos)
-        AddPhotosView(photos: dev.$bindingMichael.details.photos, signup: false)
+        AddPhotosView(photos: .constant(dev.details.photos), signup: false)
     }
 }
 #endif

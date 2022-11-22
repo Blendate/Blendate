@@ -9,7 +9,12 @@ import SwiftUI
 import MapKit
 
 struct MessagesView: View {
-    @StateObject var vm = MessagesViewModel()
+    @StateObject var vm: MessagesViewModel
+    @EnvironmentObject var session: SessionViewModel
+    
+    init(uid: String){
+        self._vm = StateObject(wrappedValue: MessagesViewModel(uid: uid))
+    }
     
     var body: some View {
         NavigationView {
@@ -35,12 +40,6 @@ struct MessagesView: View {
     
     var matches: some View {
         VStack {
-            HStack {
-                Text("Matches")
-                    .fontType(.bold, .title3, .DarkBlue)
-                    .padding(.leading)
-                Spacer()
-            }
             if vm.matches.isEmpty {
                 emptyMatches
             }
@@ -49,7 +48,7 @@ struct MessagesView: View {
                     LazyHStack(spacing: 20){
                         likedYou
                         ForEach(vm.matches.sorted(by: {$0.timestamp > $1.timestamp})){ match in
-                            MatchAvatarView(match)
+                            MatchAvatarView(match, uid: vm.uid)
                         }
                     }
                     .padding(.leading)
@@ -62,7 +61,7 @@ struct MessagesView: View {
     
     var likedYou: some View {
         Button {
-            
+            session.selectedTab = .likes
         } label: {
             VStack {
                 ZStack {
@@ -78,12 +77,11 @@ struct MessagesView: View {
 
     }
     
-
     
     var messages: some View {
         VStack {
             HStack {
-                Text("Messages")
+                Text(Self.Messages)
                     .fontType(.bold, .title3, .DarkBlue)
                     .padding(.leading)
                 Spacer()
@@ -107,16 +105,14 @@ extension MessagesView {
     var emptyMatches: some View {
         HStack(alignment: .top) {
             likedYou
-            Text("Match with profiles to Blend with others")
+            Text(Self.EmptyMatches)
                 .fontType(.semibold, 18, .DarkBlue)
             Spacer()
         }.padding(.leading)
     }
     
     var noConvos: some View {
-        let message = vm.allConvos.isEmpty ?
-            "Start matching with profiles to blend with others and start conversations":
-            "Tap on any of your matches to start a conversation"
+        let message = vm.allConvos.isEmpty ? Self.NoMatches : Self.NoConversations
         
         return VStack {
             Spacer()
@@ -134,30 +130,13 @@ extension MessagesView {
                 Spacer()
             }
         }
-        .navigationTitle("Blends")
-        
-
-    }
-    
-    
-    var messageDivider: some View {
-        VStack(spacing:0){
-            HStack{
-                Text("Messages")
-                    .fontType(.bold, 28, .DarkBlue)
-                    .padding(.bottom, 4)
-                Spacer()
-            }.padding(.leading)
-            Rectangle()
-                .fill(Color.DarkBlue)
-                .frame(width: getRect().width * 0.9, height: 1)
-        }.padding(.bottom, 10)
+        .navigationTitle(Self.Title)
     }
 }
 
 
 struct MessagesView_Previews: PreviewProvider {
     static var previews: some View {
-        MessagesView()
+        MessagesView(uid: dev.tyler.id!)
     }
 }

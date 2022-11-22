@@ -15,11 +15,7 @@ struct WelcomeView2: View {
             header
             Spacer()
             terms
-            if siginTapped {
-                signinButtons
-            } else {
-                buttons
-            }
+            button
         }
         .padding(.horizontal, 32)
         .background(Color.Blue)
@@ -39,6 +35,36 @@ struct WelcomeView2: View {
         }
     }
     
+    var button: some View {
+        Group {
+            if siginTapped {
+                signinButtons
+            } else {
+                accountButtons
+            }
+        }
+    }
+
+    
+    var terms: some View {
+        Group {
+            Text("By tapping Create Accout/Sign in, you agree to our ") +
+            Text("[Terms](https://blendate.app) ").fontWeight(.semibold).underline() +
+            Text(" See how we proccess your data in our ") +
+            Text("[Privacy Policy](https://blendate.app)").fontWeight(.semibold).underline() +
+            Text(" and ") +
+            Text("[Cookies Policy](https://blendate.app)").fontWeight(.semibold).underline()
+        }
+            .multilineTextAlignment(.center)
+            .font(.caption2)
+            .foregroundColor(Color.white)
+            .accentColor(.white)
+            .padding(.bottom)
+    }
+}
+
+extension WelcomeView2 {
+    
     var signinButtons: some View {
         VStack {
             SocialSigninButtons()
@@ -57,7 +83,7 @@ struct WelcomeView2: View {
         }
     }
     
-    var buttons: some View {
+    var accountButtons: some View {
         VStack(spacing: 16) {
             Button {
                 
@@ -95,22 +121,6 @@ struct WelcomeView2: View {
 
         }
         .padding(.bottom)
-    }
-    
-    var terms: some View {
-        Group {
-            Text("By tapping Create Accout/Sign in, you agree to our ") +
-            Text("[Terms](https://blendate.app) ").fontWeight(.semibold).underline() +
-            Text(" See how we proccess your data in our ") +
-            Text("[Privacy Policy](https://blendate.app)").fontWeight(.semibold).underline() +
-            Text(" and ") +
-            Text("[Cookies Policy](https://blendate.app)").fontWeight(.semibold).underline()
-        }
-            .multilineTextAlignment(.center)
-            .font(.footnote)
-            .foregroundColor(Color.white)
-            .accentColor(.white)
-            .padding(.bottom)
     }
 }
 

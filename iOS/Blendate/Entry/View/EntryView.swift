@@ -25,6 +25,7 @@ struct EntryView: View {
 
 
 import FirebaseAuth
+
 @MainActor
 class FirebaseAuthState: ObservableObject {
     
@@ -37,7 +38,7 @@ class FirebaseAuthState: ObservableObject {
     
     init(){
         Auth.auth().addStateDidChangeListener { (auth,user) in
-            print("Auth Changed: \(user?.uid ?? "No User")")
+            print("🔥 [Auth] Changed: \(user?.uid ?? "No User")")
             self.firUser = user
             if let uid = user?.uid {
                 self.state = .uid(uid)

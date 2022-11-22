@@ -10,10 +10,11 @@ import SwiftUI
 struct SessionView: View {
     
     @StateObject var session: SessionViewModel
-    @StateObject var matchVM = MatchViewModel()
+    @StateObject var matchVM: MatchViewModel
 
     init(_ uid: String){
         self._session = StateObject(wrappedValue: SessionViewModel(uid))
+        self._matchVM = StateObject(wrappedValue: MatchViewModel(uid))
     }
     
     var body: some View {
@@ -22,42 +23,39 @@ struct SessionView: View {
             case .user:
                 tabView
             case .noUser:
-                signupView
+                NavigationView {
+                    PropertyView(.name, signup: true)
+                }
             case .loading:
                 Text("Loading")
             }
         }
         .environmentObject(session)
-        .environmentObject(matchVM)
         .task {
-            await session.getUserDoc()
-        }
-    }
-    
-    var signupView: some View {
-        NavigationView {
-            PropertyView(.name, signup: true)
+            await session.fetchFirebase()
         }
     }
     
     var tabView: some View {
         TabView(selection: $session.selectedTab) {
             MatchProfileView()
-                .tag(0)
-                .tabItem{ Image("icon-2") }
+                .tag(Tab.match)
+                .tabItem{ Tab.match.image }
             Text("For You")
-                .tag(1)
-                .tabItem{Image(systemName: "star")}
-            MessagesView()
-                .tag(2)
-                .tabItem{ Image("chat") }
+                .tag(Tab.likes)
+                .tabItem{Tab.likes.image}
+            MessagesView(uid: session.uid)
+                .tag(Tab.messages)
+                .tabItem{ Tab.messages.image }
             CommunityView()
-                .tag(3)
-                .tabItem{Image(systemName: "person.3")}
-            ProfileView($session.user)
-                .tag(4)
-                .tabItem{ Image("profile") }
-        }.task {
+                .tag(Tab.community)
+                .tabItem{Tab.community.image}
+            ProfileView(user: $session.user, details: $session.details)
+                .tag(Tab.profile)
+                .tabItem{ Tab.profile.image }
+        }
+        .environmentObject(matchVM)
+        .task {
             await session.checkNotification()
         }
     }

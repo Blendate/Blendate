@@ -12,11 +12,13 @@ struct CommunityChatView: View {
     @StateObject var model: ChatViewModel
     
     let topic: CommunityTopic
-    let uid = try? FirebaseManager.instance.checkUID()
+    let uid: String
     
+    #warning("fix this")
     init(topic: CommunityTopic) {
         self._model = StateObject(wrappedValue: ChatViewModel(cid: topic.cid))
         self.topic = topic
+        self.uid = ""
     }
     
     var body: some View {

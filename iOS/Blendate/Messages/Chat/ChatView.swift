@@ -9,9 +9,9 @@ import SwiftUI
 
 struct ChatView: View {
     @StateObject var model: ChatViewModel
-    @Binding var withUser: User?
+    @Binding var withUser: Details?
 
-    init(_ convo: Conversation, with: Binding<User?>){
+    init(_ convo: Conversation, with: Binding<Details?>){
         self._model = StateObject(wrappedValue: ChatViewModel(cid: convo.id))
         self._withUser = with
     }
@@ -19,7 +19,7 @@ struct ChatView: View {
     var body: some View {
         VStack {
             VStack {
-                ChatHeader(user: $withUser)
+                ChatHeader(details: $withUser)
                     .background(Color.Blue)
                 if !model.chatMessages.isEmpty {
                     ScrollView {
@@ -44,6 +44,6 @@ struct ChatView: View {
 
 struct ChatView_Previews: PreviewProvider {
     static var previews: some View {
-        ChatView(dev.conversation, with: .constant(dev.michael))
+        ChatView(dev.conversation, with: .constant(dev.details))
     }
 }

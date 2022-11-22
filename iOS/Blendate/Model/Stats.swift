@@ -7,6 +7,9 @@
 
 import Foundation
 
+
+
+
 struct Stats: Codable {    
     var isParent: Bool = true
     var children: Int = 0
@@ -38,6 +41,18 @@ struct Stats: Codable {
             ethnicity = kOpenString
             childrenRange = IntRange(0,19)
         }
+    }
+}
+
+
+struct IntRange: Codable {
+    var min, max: Int
+    
+    init(_ min: Int, _ max: Int) { self.min = min; self.max = max }
+    
+    func label(max maxValue: Int) -> String {
+        let maxLabel = max > (maxValue - 1) ? "\(max - 1)+" : String(max)
+        return "\(min) - \(maxLabel)"
     }
 }
 

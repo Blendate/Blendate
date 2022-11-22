@@ -9,18 +9,18 @@ import SwiftUI
 
 struct MatchedView: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var vm: MatchViewModel
+//    @EnvironmentObject var vm: MatchViewModel
     
     let circleSize: CGFloat = 200
     let imageSize: CGFloat = 150
     @State var showChat = false
-    
-    @Binding var show: Bool
-    var user: User
-    var matchedWith: User
-        
+//    @Binding var show: Bool
+    var details: Details
+    var matchedWith: Details
+    let newConvo: Conversation
+
     var body: some View {
-        if !showChat {
+        NavigationStack {
             VStack{
                 VStack(spacing: 15) {
                     Text("It's A Blend!")
@@ -42,30 +42,36 @@ struct MatchedView: View {
                         matchedCircle
                     }.padding(.horizontal, 50)
                 }
-                Button("Start Chatting"){
-                    withAnimation(.spring()) {
-                        showChat = true
+                if let newConvo = newConvo {
+                    NavigationLink {
+                        ChatView(newConvo, with: .constant(matchedWith))
+                            .padding(.top)
+                    } label: {
+                        Text("Start Chatting")
+                            .font(.system(size: 22, weight: .semibold))
+                            .foregroundColor(.white)
+                            .padding()
+                            .background(Color.Blue)
                     }
                 }
-                .fontType(.semibold, 22)
-                .tint(.Blue)
-                .buttonStyle(.borderedProminent)
-                .buttonBorderShape(.capsule)
-                .controlSize(.large)
+
+//                Button("Start Chatting"){
+//                    withAnimation(.spring()) {
+//                        showChat = true
+//                    }
+//                }
+//                .fontType(.semibold, 22)
+//                .tint(.Blue)
+//                .buttonStyle(.borderedProminent)
+//                .buttonBorderShape(.capsule)
+//                .controlSize(.large)
                 Spacer()
-            }
-        } else {
-            if !(vm.newConvo.id?.isEmpty ?? true) {
-                NavigationView {
-                    ChatView(vm.newConvo, with: .constant(matchedWith))
-                        .padding(.top)
-                }
             }
         }
     }
-    
+
     var userCircle: some View {
-        let userPhoto = user.details.photos.first(where: {$0.placement == 0})?.request
+        let userPhoto = details.photos.first(where: {$0.placement == 0})?.request
 
         return ZStack{
             Circle()
@@ -80,7 +86,7 @@ struct MatchedView: View {
     }
     
     var matchedCircle: some View {
-        let matchedWithPhoto = matchedWith.details.photos.first(where: {$0.placement == 0})?.request
+        let matchedWithPhoto = matchedWith.photos.first(where: {$0.placement == 0})?.request
         return ZStack {
             Circle()
                 .stroke(Color.DarkPink, lineWidth: 8)
@@ -100,6 +106,6 @@ struct MatchedView: View {
 
 struct MatchedView_Previews: PreviewProvider {
     static var previews: some View {
-        MatchedView(show: .constant(true), user: dev.michael, matchedWith: dev.tyler)
+        MatchedView(details: dev.details, matchedWith: dev.details, newConvo: dev.convo)
     }
 }

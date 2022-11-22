@@ -12,33 +12,30 @@ import FirebaseFirestoreSwift
 struct Conversation: Codable, Identifiable {
     @DocumentID var id: String?
     var users: [String]
-    var chats: [ChatMessage]
-    var lastMessage: ChatMessage?
+    var lastMessage: ChatMessage = ChatMessage(author: "", text: "")
     let timestamp: Date
+}
 
-    func latest()->ChatMessage? {
-        return chats.max(by: {
-           $0.timestamp < $1.timestamp
-        })
-    }
-    
+extension Conversation {
     func withUserID(_ uid: String?)->String?{
         guard let uid = uid else {return nil}
         return users.first(where: {$0 != uid})
     }
-    
-    var lastDate: Date {
-        latest()?.timestamp ?? Date()
-    }
-    
+    //    func latest()->ChatMessage? {
+    //        return chats.max(by: {
+    //           $0.timestamp < $1.timestamp
+    //        })
+    //    }
+    //
+    //    var lastDate: Date {
+    //        latest()?.timestamp ?? Date()
+    //    }
 }
 
 extension Conversation: Equatable {
     static func == (lhs: Conversation, rhs: Conversation) -> Bool {
         return lhs.id == rhs.id
     }
-    
-    
 }
 
 struct ChatMessage: Codable, Identifiable {
@@ -51,5 +48,11 @@ struct ChatMessage: Codable, Identifiable {
         self.author = author
         self.text = text
         self.timestamp = Date()
+    }
+}
+
+extension ChatMessage {
+    var isEmpty: Bool {
+        author.isEmpty && text.isEmpty
     }
 }

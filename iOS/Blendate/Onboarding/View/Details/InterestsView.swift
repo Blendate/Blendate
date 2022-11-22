@@ -40,18 +40,7 @@ struct InterestsView: View {
             .errorAlert(error: $error, retry: startTapped)
 
     }
-    
-    private func startTapped(){
-        do {
-            try session.createUserDoc()
-        } catch let error as AlertError {
-           self.error = error
-        } catch {
-            self.error = AlertError(errorDescription: "Server Error", failureReason: "There was an error creating your account", recoverySuggestion: "Try again", helpAnchor: error.localizedDescription)
-        }
-    }
-    
-    
+        
     @ViewBuilder
     func cell(_ interest: Interest) -> some View {
         let active = interests.contains(interest.value)
@@ -70,6 +59,16 @@ struct InterestsView: View {
             .background(active ? Color.Blue:Color.white)
             .cornerRadius(18)
             .shadow(color: .Blue, radius: 1, x: 0, y: 1)
+        }
+    }
+    
+    private func startTapped(){
+        do {
+            try session.createUserDoc()
+        } catch let error as AlertError {
+           self.error = error
+        } catch {
+            self.error = AlertError(errorDescription: "Server Error", failureReason: "There was an error creating your account", recoverySuggestion: "Try again", helpAnchor: error.localizedDescription)
         }
     }
     

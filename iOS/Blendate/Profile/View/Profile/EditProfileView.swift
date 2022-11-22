@@ -10,7 +10,7 @@ import SwiftUI
 struct EditProfileView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @Binding var user: User
+    @Binding var details: Details
     @State private var edit = true
     var body: some View {
         NavigationView {
@@ -19,11 +19,11 @@ struct EditProfileView: View {
                 Divider()
                 if edit {
                     List {
-                        details
+                        detailsView
                     }.listStyle(.grouped)
                     Spacer()
                 } else {
-                    ViewProfileView(user: user)
+                    ViewProfileView(details: details)
                 }
             }
             .toolbar {
@@ -34,11 +34,11 @@ struct EditProfileView: View {
         }
     }
     
-    var details: some View {
+    var detailsView: some View {
         ForEach(Detail.DetailGroup.allCases){ group in
             Section {
-                ForEach(group.cells(isParent: user.details.info.isParent)) { cell in
-                    DetailCellView(detail: cell, user: $user, type: .detail)
+                ForEach(group.cells(isParent: details.info.isParent)) { cell in
+                    DetailCellView(detail: cell, details: $details, type: .detail)
                 }
             } header: {
                 Text(group.id)
@@ -63,6 +63,6 @@ struct EditProfileView: View {
 
 struct EditProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        EditProfileView(user: .constant(dev.michael))
+        EditProfileView(details: .constant(dev.details))
     }
 }

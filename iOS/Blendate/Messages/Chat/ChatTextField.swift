@@ -78,7 +78,7 @@ struct TextEditorView: View {
 
 struct ChatTextField_Previews: PreviewProvider {
     static var previews: some View {
-        ChatTextField(newMessage: dev.$bindingMichael.fcm){
+        ChatTextField(newMessage: .constant("")){
             
         }
     }

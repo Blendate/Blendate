@@ -121,9 +121,9 @@ struct RangeSliderView_Previews: PreviewProvider {
                     HStack {
                         Text("Label")
                         Spacer()
-                        Text(dev.bindingMichael.filters.ageRange.label(max: KAgeRange.max))
+                        Text(dev.filters.ageRange.label(max: KAgeRange.max))
                     }
-                    RangeSliderView(range: dev.$bindingMichael.filters.ageRange, totalWidth: geo.size.width, slider: KAgeRange)
+                    RangeSliderView(range: .constant(dev.filters.ageRange), totalWidth: geo.size.width, slider: KAgeRange)
                 }
             }
         }

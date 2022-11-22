@@ -27,6 +27,6 @@ struct ProfileBio: View {
 
 struct ProfileBio_Previews: PreviewProvider {
     static var previews: some View {
-        ProfileBio(bio: dev.tyler.details.bio)
+        ProfileBio(bio: dev.details.bio)
     }
 }

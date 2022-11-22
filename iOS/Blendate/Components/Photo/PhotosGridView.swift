@@ -79,6 +79,6 @@ struct PhotosGridView: View {
 
 struct PhotosGridView_Previews: PreviewProvider {
     static var previews: some View {
-        PhotosGridView(dev.michael.details.photos)
+        PhotosGridView(dev.details.photos)
     }
 }

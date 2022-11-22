@@ -10,11 +10,11 @@ import CachedAsyncImage
 
 struct ChatHeader: View {
     @Environment(\.dismiss) private var dismiss
-    @Binding var user: User?
+    @Binding var details: Details?
     @State private var showProfile = false
     
-    var name: String { user?.details.fullName ?? "Fullname" }
-    var url: URL? { user?.details.photos.first{$0.placement == 0}?.url }
+    var name: String { details?.fullName ?? "Fullname" }
+    var url: URL? { details?.photos.first{$0.placement == 0}?.url }
     
     var body: some View {
         HStack(spacing: 10) {
@@ -24,8 +24,8 @@ struct ChatHeader: View {
         }
         .padding()
         .sheet(isPresented: $showProfile) {
-            if let user = user {
-                ViewProfileView(user: user)
+            if let details = details {
+                ViewProfileView(details: details)
             }
         }
     }
@@ -82,7 +82,7 @@ struct ChatHeader: View {
 
 struct ChatHeader_Previews: PreviewProvider {
     static var previews: some View {
-        ChatHeader(user: .constant(dev.michael))
+        ChatHeader(details: .constant(dev.details))
             .previewDisplayName("ChatHeader")
             .background(Color.Blue)
             .previewLayout(.sizeThatFits)

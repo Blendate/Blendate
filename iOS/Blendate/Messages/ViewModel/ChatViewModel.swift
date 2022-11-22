@@ -49,10 +49,12 @@ class ChatViewModel: ObservableObject {
             }
     }
     
+    #warning("FIX THIS FOR UID")
+    
     func sendMessage() async {
         guard let cid = cid else {return}
         do {
-            try await service.sendMessage(conversationID: cid, message: text)
+            try await service.sendMessage(cid: cid, message: text, author: "UID")
             self.text = ""
             self.count += 1
         } catch {

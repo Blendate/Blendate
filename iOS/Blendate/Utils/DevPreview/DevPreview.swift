@@ -18,30 +18,22 @@ class DeveloperPreview {
     static let instance = DeveloperPreview()
     private init() { }
     
-    var emptyUser: User {
-        return User(id: "12345", details: Details(), filters: Stats(.filter), settings: UserSettings(), fcm: "")
+    var empty: User {
+        return User(id: "12345", settings: UserSettings(), fcm: "")
     }
-    
-    var michael: User { DeveloperPreview.michael }
-    
-    var tyler: User { DeveloperPreview.tyler }
-    
-    var empty: User {DeveloperPreview.empty}
-    
-    var convo: Conversation { DeveloperPreview.convo }
+    var michael:User = DeveloperPreview.michael_
     
     var profilesheet = ProfileSheet()
     
-    @StateObject var session = SessionViewModel(user: michael)
-
+    @StateObject var session = SessionViewModel(user: DeveloperPreview.michael_)
     
-    var conversation: Conversation { Conversation(id: "1234", users: ["1234", ""], chats: [chatmessage, longChatMessage], lastMessage: longChatMessage, timestamp: Date() ) }
+    var conversation: Conversation { Conversation(id: "1234", users: ["1234", ""], lastMessage: longChatMessage, timestamp: Date() ) }
     let chatmessage = ChatMessage(author: "1234", text: "Testing a short message")
     let longChatMessage = ChatMessage(author: "", text: String(lorem.prefix(140)))
 
     static let lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
     
-    @State var bindingMichael = michael
+    @State var bindingMichael = michael_
     
     @ViewBuilder
     func signup(_ detail: Detail) -> some View {

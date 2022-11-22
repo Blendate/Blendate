@@ -9,20 +9,20 @@ import SwiftUI
 
 struct ConvoCellView: View {
     let conversation: Conversation
-    @State var user: User?
+    @State var details: Details?
 
     var body: some View {
         
         NavigationLink {
-            ChatView(conversation, with: $user)
+            ChatView(conversation, with: $details)
         } label: {
             HStack(spacing: 0){
-                PhotoView.Avatar(request: user?.details.photos[0].request, size: 75, isCell: true)
+                PhotoView.Avatar(request: details?.photos[0].request, size: 75, isCell: true)
                 VStack(alignment: .leading) {
-                    Text(user?.details.firstname ?? "")
+                    Text(details?.firstname ?? "")
                         .fontType(.semibold, .title3)
                         .foregroundColor(.DarkBlue)
-                    Text(conversation.lastMessage?.text ?? "")
+                    Text(conversation.lastMessage.text)
                         .foregroundColor(.gray)
                         .opacity(0.5)
                 }
@@ -38,10 +38,7 @@ struct ConvoCellView: View {
     
     func fetchUser() async {
         guard let withUID = conversation.withUserID(FirebaseManager.instance.auth.currentUser?.uid) else {return}
-        self.user = try? await FirebaseManager.instance.Users
-            .document(withUID)
-            .getDocument()
-            .data(as: User.self)
+        self.details = try? await DetailService().fetch(fid: withUID)
     }
 }
 

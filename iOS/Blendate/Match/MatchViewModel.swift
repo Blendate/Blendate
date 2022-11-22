@@ -6,26 +6,31 @@
 //
 
 import SwiftUI
-enum Swipe: String { case pass = "passes", like = "likes" }
 
 @MainActor
 class MatchViewModel: ObservableObject {
     
-    @Published var lineup: [User] = []
-    @Published var matched = false
+    @Published var lineup: [Details] = []
     @Published var loading = true
-    @Published var newConvo = Conversation(users: [], chats: [], timestamp: Date())
+    @Published var newConvo: Conversation?
     
-    let service = MatchService()
-    
-    init(){
+    private let detailService: DetailService
+    private let chatService: MessageService
+    private let uid: String
+    init(_ uid: String,
+         _ chat: MessageService = MessageService(),
+         _ detail: DetailService = DetailService()
+    ){
+        self.uid = uid
+        self.chatService = chat
+        self.detailService = detail
         getLineup()
     }
     
     func getLineup() {
         Task { @MainActor in
             do {
-                self.lineup = try await service.fetchLineup()
+                self.lineup = try await detailService.fetchLineup(for: uid)
                 withAnimation(.spring()) {
                     loading = false
                 }
@@ -41,9 +46,8 @@ class MatchViewModel: ObservableObject {
 
     func swipe(on swipedUID: String?, _ swipe: Swipe) {
         Task {
-            if let convo = try await service.swiped(swipe, on: swipedUID) {
+            if let convo = try await chatService.swiped(uid: uid, on: swipedUID, swipe) {
                 self.newConvo = convo
-                self.matched = true
             } else {
                 self.lineup.removeFirst()
             }

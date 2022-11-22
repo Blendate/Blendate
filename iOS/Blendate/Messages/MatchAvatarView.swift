@@ -10,24 +10,28 @@ import SwiftUI
 struct MatchAvatarView: View {
     var match: Conversation
     @State var startConvo = false
-    @State var user: User?
+    @State var details: Details?
+    
+    let service = DetailService()
+    private let uid: String
 
-    init(_ match: Conversation){
+    init(_ match: Conversation, uid: String){
         self.match = match
+        self.uid = uid
     }
 
     var body: some View {
         NavigationLink {
-            ChatView(match, with: $user)
+            ChatView(match, with: $details)
         } label: {
             VStack {
                 ZStack{
                     Circle()
                         .stroke( Color.DarkBlue,lineWidth: 2)
                         .frame(width: 80, height: 80, alignment: .center)
-                    PhotoView.Avatar(request: user?.details.photos[0].request, size: 70, isCell: true)
+                    PhotoView.Avatar(request: details?.photos[0].request, size: 70, isCell: true)
                 }
-                Text(user?.details.firstname ?? "")
+                Text(" ")
             }
         }
         .buttonStyle(.plain)
@@ -36,18 +40,17 @@ struct MatchAvatarView: View {
         }
     }
     
+    @MainActor
     func fetchUser() async {
-        guard let withUID = match.withUserID(FirebaseManager.instance.auth.currentUser?.uid) else {return}
-        self.user = try? await FirebaseManager.instance.Users
-            .document(withUID)
-            .getDocument()
-            .data(as: User.self)
+        guard let withUID = match.withUserID(uid) else {return}
+        self.details = try? await service.fetch(fid: withUID)
+
     }
 }
 
 
 struct MatchAvatarView_Previews: PreviewProvider {
     static var previews: some View {
-        MatchAvatarView(dev.conversation)
+        MatchAvatarView(dev.conversation, uid: dev.tyler.id!)
     }
 }

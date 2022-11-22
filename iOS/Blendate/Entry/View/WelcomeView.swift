@@ -24,17 +24,17 @@ struct WelcomeView: View {
     }
     
     func emailTapped() async {
-        if showEmail {
-            do {
-                try await UserService().sendEmail(to: email)
-            } catch {
-                self.error = error as? AlertError
-            }
-        } else {
-            withAnimation(.spring()) {
-                showEmail = true
-            }
-        }
+//        if showEmail {
+//            do {
+//                try await UserService().sendEmail(to: email)
+//            } catch {
+//                self.error = error as? AlertError
+//            }
+//        } else {
+//            withAnimation(.spring()) {
+//                showEmail = true
+//            }
+//        }
     }
     
 

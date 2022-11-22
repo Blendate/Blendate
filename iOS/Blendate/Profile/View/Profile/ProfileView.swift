@@ -10,15 +10,12 @@ import SwiftUI
 struct ProfileView: View {
     @StateObject var sheet = ProfileSheet()
     @Binding var user: User
-    
-    init(_ user: Binding<User>){
-        self._user = user
-    }
-    
+    @Binding var details: Details
+
     var body: some View {
         NavigationView {
             VStack(spacing: 22) {
-                ProfileCardView(user.details, .session)
+                ProfileCardView(details, .session)
                     .padding(.top)
                 Spacer()
                 upgrade
@@ -80,7 +77,7 @@ extension ProfileView {
     
     private func save() {
         do {
-            try UserService().update(user)
+            try DetailService().update(details)
         } catch {
             #warning("Add Popup")
         }
@@ -90,9 +87,9 @@ extension ProfileView {
     private func sheetContent() -> some View {
         switch sheet.state {
         case .edit:
-            EditProfileView(user: $user)
+            EditProfileView(details: $details)
         case .filter:
-            FiltersView(user: $user)
+            FiltersView()
         case .settings:
             SettingsView(user: $user)
         default:
@@ -104,7 +101,7 @@ extension ProfileView {
 struct EditProfile_Previews: PreviewProvider {
     @State static var show = true
     static var previews: some View {
-        ProfileView(dev.$bindingMichael)
+        ProfileView(user: .constant(dev.michael), details: .constant(dev.details))
     }
 }
 

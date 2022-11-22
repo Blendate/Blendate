@@ -11,27 +11,38 @@ import Foundation
 class MessagesViewModel: ObservableObject {
     @Published var allConvos = [Conversation]()
     
-    var conversations: [Conversation] {
-        allConvos.filter({ $0.lastMessage != nil }).sorted(by: {$0.lastDate > $1.lastDate})
-    }
+    let uid: String
     
-    var matches: [Conversation] {
-        allConvos.filter({ $0.lastMessage == nil })
-    }
-
-    init(){
+    let service: MessageService
+    
+    init(uid: String, _ service: MessageService = MessageService()){
+        self.uid = uid
+        self.service = service
         fetchConvos()
     }
     
+    var conversations: [Conversation] {
+        allConvos.filter({ !$0.lastMessage.isEmpty })//.sorted(by: {$0.lastDate > $1.lastDate})
+    }
+    
+    var matches: [Conversation] {
+        allConvos.filter({ $0.lastMessage.isEmpty })
+    }
+
+    
     private func fetchConvos(){
-        guard let uid = try? FirebaseManager.instance.checkUID() else {return}
-        FirebaseManager.instance.Chats
+        service.collection
             .whereField("users", arrayContains: uid)
             .addSnapshotListener { snapshot, error in
                 if let error = error {
                     print("Fetch Convo Error: \(error.localizedDescription)")
                     return
                 }
+//                snapshot?.documents.forEach({ snapshot in
+//                    if let convo = try? snapshot.data(as: Conversation.self) {
+//                        self.allConvos.append(convo)
+//                    }
+//                })
                 snapshot?.documentChanges.forEach({ change in
                     if change.type == .added {
                         if let convo = try? change.document.data(as: Conversation.self) {

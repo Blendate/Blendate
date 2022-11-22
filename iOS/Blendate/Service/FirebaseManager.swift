@@ -9,6 +9,7 @@ import Foundation
 import Firebase
 import FirebaseAuth
 import FirebaseFirestore
+import FirebaseStorage
 
 
 class FirebaseManager: NSObject {
@@ -136,3 +137,119 @@ enum FirebaseError: LocalizedError{
         }
     }
 }
+
+
+
+class FirebaseService<Object: Codable> where Object: Identifiable {
+    
+    let collection: CollectionReference
+    let firebase: Firestore = FirebaseManager.instance.firestore
+    private let serviceName: String
+    
+    var Users: CollectionReference {
+        firebase.collection("users")
+    }
+    
+    func Swipes(for uid: String, _ swipe: Swipe) -> CollectionReference {
+        return Users.document(uid).collection(swipe.rawValue)
+        
+    }
+    
+    init(collection: String){
+        self.collection = firebase.collection(collection)
+        self.serviceName = collection.capitalized
+    }
+    
+    private func fid(_ object: Object?, _ id: String?) throws -> String {
+        let fid = id ?? object?.id as? String
+        guard let fid = fid else { throw ErrorInfo() }
+        return fid
+    }
+    
+    func create(_ object: Object) throws {
+        let id = collection.document().documentID
+        try update(object, id)
+    }
+    
+    func update(_ object: Object, _ id: String? = nil) throws {
+        let fid: String = try fid(object, id)
+        devPrint("Updating \(Object.Type.self) \(fid)")
+        do {
+            try collection.document(fid).setData(from: object)
+        } catch {
+            devPrint("Update Error \(Object.Type.self) \(fid)")
+            print(error)
+            throw ErrorInfo(
+                errorDescription: "Server Error",
+                failureReason: "There was an error accessing your device's online storage",
+                recoverySuggestion: "Try again"
+            )
+        }
+    }
+    
+    func fetch(fid id: String? = nil) async throws -> Object {
+        let fid: String = try fid(nil,id)
+        
+        devPrint("Fetching \(Object.Type.self) \(fid)")
+        do {
+            let document = try await collection.document(fid).getDocument()
+            let object = try document.data(as: Object.self)
+            
+            devPrint("Fetched \(Object.Type.self) \(fid)")
+            return object
+        } catch {
+            throw FirebaseError.decode
+        }
+    }
+    
+    func getHistory(for uid: String, _ swipe: Swipe) async -> [String] {
+        let documents = try? await Swipes(for: uid, .like).getDocuments().documents
+        let array = documents?.compactMap{$0.documentID} ?? []
+        return array
+    }
+    
+    func allSwipes(for uid: String) async -> [String] {
+        let likes = await getHistory(for: uid, .like)
+        let passes = await getHistory(for: uid, .pass)
+        let combine = likes + passes
+        return combine.isEmpty ? ["empty"] : combine
+    }
+    
+    func devPrint(_ string: String){
+        let devString = "🔥 [\(serviceName)Service] "
+        print(devString + string)
+    }
+    
+}
+
+extension FirebaseService {
+    static func getUsersID(userId1: String, userId2: String) -> String {
+        userId1 > userId2 ? userId1 + userId2 : userId2 + userId1
+    }
+}
+
+
+//
+//func sendEmail(to email: String) async throws {
+//    guard !email.isBlank, email.isValidEmail
+//        else {
+//            throw AlertError(errorDescription: "Invalid Email", failureReason: "Please enter a valid email address", helpAnchor: "Please")
+//        }
+//    var actionCodeSettings: ActionCodeSettings {
+//        let actionCodeSettings = ActionCodeSettings()
+//        actionCodeSettings.url = URL(string: "https://blendate.page.link/email")
+//        actionCodeSettings.handleCodeInApp = true
+//        actionCodeSettings.setIOSBundleID(Bundle.main.bundleIdentifier!)
+//        return actionCodeSettings
+//    }
+//
+//    print("Sending Email to \(email)")
+//    do {
+//        try await Auth.auth().sendSignInLink(toEmail: email, actionCodeSettings: actionCodeSettings)
+//        UserDefaults.standard.set(email, forKey: kEmailKey)
+//        throw AlertError(errorDescription: "Email Sent", failureReason: "Please check your email for a link to authenticate and sign in, if you don't have an account one will be created for you")
+//    } catch {
+//        print("Email Link Error: \(error.localizedDescription)")
+//        throw AlertError(errorDescription: "Send Error", failureReason: "There was a problem sending your email link, please check the address and try again", recoverySuggestion: "Try Again")
+//    }
+//}
