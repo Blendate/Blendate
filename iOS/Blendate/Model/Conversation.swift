@@ -9,11 +9,18 @@ import Foundation
 import Firebase
 import FirebaseFirestoreSwift
 
-struct Conversation: Codable, Identifiable {
+class Conversation: Codable, Identifiable {
     @DocumentID var id: String?
     var users: [String]
-    var lastMessage: ChatMessage = ChatMessage(author: "", text: "")
     let timestamp: Date
+    var lastMessage: ChatMessage
+
+    init(user1: String, user2: String) {
+        self.id = MessageService.getUsersID(userId1: user1, userId2: user2)
+        self.users = [user1, user2]
+        self.timestamp = .now
+        self.lastMessage = ChatMessage(author: "", text: "")
+    }
 }
 
 extension Conversation {

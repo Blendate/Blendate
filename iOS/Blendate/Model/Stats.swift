@@ -7,10 +7,7 @@
 
 import Foundation
 
-
-
-
-struct Stats: Codable {    
+class Stats: Codable {    
     var isParent: Bool = true
     var children: Int = 0
     var childrenRange = IntRange(0,1)

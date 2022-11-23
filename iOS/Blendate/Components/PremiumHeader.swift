@@ -9,10 +9,10 @@ import SwiftUI
 
 struct PremiumHeader: View {
     @State var showMembership = false
+    @Binding var settings: Settings
     @Binding var user: User
-    
     var body: some View {
-        let premium = user.settings.premium
+        let premium = user.premium.active
         Button(action: {
             showMembership = true
         }) {
@@ -35,7 +35,7 @@ struct PremiumHeader: View {
                 print("There was a problem saving your settings, please check your connection and try again")
             }
         } content: {
-            MembershipView(membership: $user.settings.premium)
+            MembershipView(premium: $user.premium)
         }
     }
 }
@@ -44,7 +44,7 @@ struct PremiumHeader: View {
 
 struct PremiumHeader_Previews: PreviewProvider {
     static var previews: some View {
-        PremiumHeader(user: dev.$bindingMichael)
+        PremiumHeader(settings: .constant(Settings()), user: .constant(dev.michael) )
             .padding()
             .previewLayout(.sizeThatFits)
     }

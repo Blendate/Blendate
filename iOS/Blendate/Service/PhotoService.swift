@@ -1,45 +1,30 @@
 //
-//  PhotoService.swift
+//  StorageService.swift
 //  Blendate
 //
-//  Created by Michael on 1/21/22.
+//  Created by Michael on 11/22/22.
 //
 
 import Foundation
 import FirebaseStorage
 
-
-struct PhotoService {
-    let firebase = FirebaseManager.instance
-
-    func uploadPhoto(at index: Int, _ photo: Data) async throws -> Photo {
-        guard let uid = FirebaseManager.instance.auth.currentUser?.uid else {throw FirebaseError.generic("No ID")}
-
-        let imageRef = firebase.StorageRef.child("\(uid)/\(index).jpg")
-        let metadata = try await imageRef.putDataAsync(photo)
+class PhotoService {
+    
+    private let storage = Storage.storage()
+    var reference: StorageReference { storage.reference() }
+    
+    
+    func upload(photo data: Data, at index: Int, for uid: String) async throws -> Photo {
+        let imageRef = reference.child("\(uid)/\(index).jpg")
+        let metadata = try await imageRef.putDataAsync(data)
         let url = try await imageRef.downloadURL()
         
-        print("Uploaded Photo \(index) to: \(url.absoluteString)")
-        return Photo(url: url, placement: index)
+        print("🔥 [StorageService] Uploaded Photo \(index)\n\t\(url.absoluteString)")
+        return Photo(placement: index, url: url)
     }
-
-
-//    static func getPhotoURL(at index: Int, _ uid: String? = nil) async throws -> URL {
-//        let uid = try check(uid)
-//        let imageRef = storageRef.child("\(uid)/\(index).jpg")
-//        return try await imageRef.downloadURL()
-//    }
-//
-//    static private func check(_ uid: String?)throws->String{
-//        if let uid = uid, !uid.isEmpty {
-//            return uid
-//        } else {
-//            throw FirebaseError.generic("No UID found")
-//        }
-//    }
-
+    
     static func photo(_ photos: [Photo], _ index: Int)->Photo? {
         return photos.first(where: {$0.placement == index})
     }
-}
 
+}

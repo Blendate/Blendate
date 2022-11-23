@@ -15,42 +15,46 @@ class MessageService: FirebaseService<Conversation> {
         super.init(collection: "chats")
     }
     
-    func sendMessage(cid: String?, message: String, author: String) async throws {
-        guard let cid = cid else { throw FirebaseError.generic("Invalid Conversation") }
-        let convoReference = collection.document(cid)
-        let document = convoReference.collection("chats").document()
-        
-        let chatMessage = ChatMessage(author: author, text: message)
-        try document.setData(from: chatMessage)
-        
-        var convo = try await fetch(fid: cid)
-        convo.lastMessage = chatMessage
-        try convoReference.setData(from: convo)
-
+    func collection(for cid: String?) -> CollectionReference? {
+        guard let cid = cid else {return nil}
+        return collection.document(cid).collection("chats")
+    }
+    
+    func sendMessage(convo: Conversation, message: String, author: String) async throws {
+        do {
+            let cid = try fid(convo, nil)
+            let convoReference = collection.document(cid)
+            let chatDocument = convoReference.collection("chats").document()
+            
+            let chatMessage = ChatMessage(author: author, text: message)
+            try chatDocument.setData(from: chatMessage)
+            convo.lastMessage = chatMessage
+            try update(convo)
+        } catch {
+            throw AlertError(title: "Server Error", message: "There was an error sending your message.", recovery: "Try Again")
+        }
     }
     
     
     
     func swiped(uid: String, on match: String?, _ swipe: Swipe) async throws -> Conversation? {
-        guard let match = match else { throw ErrorInfo() }
-        try await Users.document(uid).collection(swipe.rawValue).document(match)
-            .setData(["timestamp":Date()])
-        
-        let likes = await getHistory(for: match, .like)
-        
-        guard swipe == .like && likes.contains(uid) else {return nil}
-        
-        let cid = Self.getUsersID(userId1: uid, userId2: match)
-        let convo = Conversation(id: cid, users: [match, uid], timestamp: .now)
+        guard let match = match else { throw FirebaseService<Conversation>.serverError }
+        devPrint("Swiped \(swipe.rawValue.capitalized) on \(match)")
         do {
+            try await Users.document(uid)
+                .collection(swipe.rawValue)
+                .document(match)
+                .setData(["timestamp":Date()])
+            
+            let likes = await getHistory(for: match, .like)
+            
+            guard swipe == .like && likes.contains(uid) else {return nil}
+            
+            let convo = Conversation(user1: match, user2: uid)
             try create(convo)
             return convo
         } catch {
-            throw FirebaseError.generic("There was an error creating the match on the server")
+            throw AlertError(title: "Server Error", message: "Could not save your swipe on the Blendate server.", recovery: "Try Again")
         }
-
-
     }
-
-
 }

@@ -8,14 +8,13 @@
 import Foundation
 
 extension DeveloperPreview {
-    static var michael_: User {
-        var usr = User()
-        usr.id = "123456"
-        usr.settings.providers = [Provider(type: .email, email: "mikebw7@gmail.com")]
-        return usr
-    }
+//    static var michael_: Settings {
+//        var usr = Settings()
+//        usr.id = "123456"
+//        return usr
+//    }
     var filters: Stats {
-        var filters = Stats(.filter)
+        let filters = Stats(.filter)
         filters.seeking = Gender.female.value
         filters.isParent = true
         filters.children = 3
@@ -32,7 +31,7 @@ extension DeveloperPreview {
         return filters
     }
     var info: Stats {
-        var info = Stats(.detail)
+        let info = Stats(.detail)
         info.isParent = true
         info.children = 3
         info.childrenRange = IntRange(1,5)
@@ -47,8 +46,8 @@ extension DeveloperPreview {
         info.height = 60
         return filters
     }
-    var details: Details {
-        var details = Details()
+    var michael: User {
+        var details = User(id: "1234")
         details.firstname = "Michael"
         details.lastname = "Wilkowski"
         details.birthday = Date()
@@ -59,10 +58,10 @@ extension DeveloperPreview {
         details.interests = [Vices.alcohol.rawValue, Vices.smoke.rawValue, Vices.chocolate.rawValue, Vices.books.rawValue]
         details.photos = {
             var arr = [Photo]()
-            arr.append(Photo(url: URL(string: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80"), placement: 0))
-            arr.append(Photo(url: URL(string: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"), placement: 1))
+            arr.append(Photo(placement: 0, url: URL(string: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80")))
+            arr.append(Photo(placement: 1, url: URL(string: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80")))
             for i in 2...7 {
-                arr.append(Photo(url: URL(string: "https://google.com"), placement: i))
+                arr.append(Photo(placement: i, url: URL(string: "https://google.com")))
             }
             return arr
         }()
@@ -70,22 +69,27 @@ extension DeveloperPreview {
         return details
     }
     var tyler: User {
-        var usr = User()
-        usr.id = "78900"
-        usr.settings.providers = [Provider(type: .email, email: "tyler@blendate.app")]
-    return usr
+        var details = User(id: "4321")
+        details.firstname = "Tyler"
+        details.lastname = "Davis"
+        details.birthday = Date()
+        details.gender = Gender.male.value
+        details.bio = "kuhukltgyfg gifty bgkhy hg ghylyuh;i ghk hul hu ghb ghbul bgl bhl lk;ihs xs dre dret;ooik "
+        details.workTitle = "Hardware Engineer"
+        details.schoolTitle = "Masters Degree"
+        details.interests = [Vices.alcohol.rawValue, Vices.smoke.rawValue, Vices.chocolate.rawValue, Vices.books.rawValue]
+        details.photos = {
+            var arr = [Photo]()
+            arr.append(Photo(placement: 0, url: URL(string: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80")))
+            arr.append(Photo(placement: 1, url: URL(string: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80")))
+            for i in 2...7 {
+                arr.append(Photo(placement: i, url: URL(string: "https://google.com")))
+            }
+            return arr
+        }()
+        
+        return details
     }
-    var convo: Conversation {
-        Conversation(id: "FAKE ID", users: [michael.id!, tyler.id!], timestamp: Date())
-//        convo.chats = [
-//            ChatMessage(author: michael.id!, text: "Dev Michael"),
-//            ChatMessage(author: tyler.id!, text: "Dev Tyler")
-//        ]
-    
-//        for i in 2...10 {
-//            let user = i % 2 == 0 ? michael:tyler
-//            convo.chats.append(ChatMessage(author: user.id!, text: "\(user.details.firstname)"))
-//        }
-//        
-    }
+
+
 }

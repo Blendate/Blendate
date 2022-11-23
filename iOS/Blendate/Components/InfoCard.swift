@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct InfoCards: View {
-    let details: Details
+    let details: User
     
     var body: some View {
         if !noInfo() {
@@ -36,11 +36,11 @@ struct InfoCards: View {
 
 
 struct InfoCard: View {
-    let userPreferences: Details
+    let userPreferences: User
     let type: InfoType
     let icon: String
     
-    init(_ type: InfoType, _ userPreferences: Details){
+    init(_ type: InfoType, _ userPreferences: User){
         self.type = type
         self.userPreferences = userPreferences
         switch type {
@@ -138,7 +138,7 @@ enum InfoType: String, CaseIterable, Identifiable {
         }
     }
     
-    func show(_ details: Details) -> Bool {
+    func show(_ details: User) -> Bool {
         switch self {
         case .personal:
             if details.info.relationship.isBlank && details.workTitle.isBlank && details.schoolTitle.isBlank {
@@ -163,7 +163,7 @@ enum InfoType: String, CaseIterable, Identifiable {
 struct InfoCard_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(InfoType.allCases) {type in
-            InfoCard(type, dev.details)
+            InfoCard(type, dev.michael)
                 .previewLayout(.sizeThatFits)
         }
         

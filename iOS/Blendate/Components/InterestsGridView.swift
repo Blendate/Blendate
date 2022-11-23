@@ -97,6 +97,6 @@ struct InterestView: View {
 
 struct InterestsGridView_Previews: PreviewProvider {
     static var previews: some View {
-        InterestsGridView(interests: .constant(dev.details.interests))
+        InterestsGridView(interests: .constant(dev.michael.interests))
     }
 }

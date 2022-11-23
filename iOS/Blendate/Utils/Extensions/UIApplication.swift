@@ -30,3 +30,10 @@ extension UIApplication {
     
 
 }
+
+extension UINavigationController {
+
+  open override func viewWillLayoutSubviews() {
+    navigationBar.topItem?.backButtonDisplayMode = .minimal
+  }
+}

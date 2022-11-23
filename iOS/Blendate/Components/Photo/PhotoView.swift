@@ -11,6 +11,7 @@ import PhotosUI
 
 struct PhotoView: View {
     @Binding var photo: Photo
+    @EnvironmentObject var session: SessionViewModel
     
     let editmode: Bool
     let isCell: Bool
@@ -44,9 +45,13 @@ struct PhotoView: View {
 
     }
     
+    var request: URLRequest? {
+        guard let url = photo.url else {return nil}
+        return URLRequest(url: url)
+    }
     
     var body: some View {
-        CachedAsyncImage(urlRequest: photo.request, urlCache: .imageCache) { image in
+        CachedAsyncImage(urlRequest: request, urlCache: .imageCache) { image in
             image
                 .resizable()
                 .scaledToFill()
@@ -63,7 +68,7 @@ struct PhotoView: View {
             }
         }
         .sheet(isPresented: $showfull) {
-            CachedAsyncImage(urlRequest: photo.request, urlCache: .imageCache) { image in
+            CachedAsyncImage(urlRequest: request, urlCache: .imageCache) { image in
                 image
                     .resizable()
                     .scaledToFill()
@@ -82,7 +87,8 @@ struct PhotoView: View {
         }
         Task {
             do {
-                let photo = try await PhotoService().uploadPhoto(at: photo.placement, data)
+                let photo = try await PhotoService().upload(photo: data, at: photo.placement, for: session.uid)
+
                 self.photo = photo
                 isLoading = false
             } catch {
@@ -126,95 +132,10 @@ struct PhotoView: View {
 }
 
 
-extension PhotoView {
 
-    struct Avatar: View {
-        @State private var showfull = false
-        var request: URLRequest?
-        let size: CGFloat
-        var isCell: Bool = false
-
-        var body: some View {
-            if isCell {
-                image
-            } else {
-                image
-                    .onTapGesture(perform: tapped)
-                    .sheet(isPresented: $showfull) {
-                        CachedAsyncImage(urlRequest: request, urlCache: .imageCache) { image in
-                            image
-                                .resizable()
-                                .scaledToFill()
-                        } placeholder: {
-                            ProgressView()
-                        }
-                    }
-            }
-
-        }
-        
-        private func tapped(){
-            if !isCell {
-                showfull = true
-            }
-        }
-        
-        var image: some View {
-            CachedAsyncImage(urlRequest: request, urlCache: .imageCache) { image in
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: size, height: size)
-                    .clipShape(Circle())
-            } placeholder: {
-                Image("icon")
-                    .resizable()
-                    .renderingMode(.template)
-                    .foregroundColor(.white)
-                    .scaledToFit()
-                    .padding()
-                    .frame(width: size, height: size)
-                    .background(Color.Blue)
-                    .clipShape(Circle())
-            }
-        }
-        
-    }
-    
-
-    struct Cover: View {
-        @State var showfull = false
-
-        var request: URLRequest?
-        var body: some View {
-            
-            CachedAsyncImage(urlRequest: request, urlCache: .imageCache) { image in
-                image
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/2.2)
-                    .clipped()
-                    .cornerRadius(16, corners: [.topLeft, .topRight])
-            } placeholder: {
-                Rectangle().foregroundColor(.gray)
-                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/2.2)
-            }
-            .onTapGesture{showfull = true}
-            .sheet(isPresented: $showfull) {
-                CachedAsyncImage(urlRequest: request, urlCache: .imageCache) { image in
-                    image
-                        .resizable()
-                        .scaledToFill()
-                } placeholder: {
-                    ProgressView()
-                }
-            }
-        }
-    }
-}
 
 struct PhotoView2_Previews: PreviewProvider {
-    @State static var photo = Photo(url: URL(string: "https://www.tailorbrands.com/wp-content/uploads/2020/07/mcdonald-logo.jpg"), placement: 2)
+    @State static var photo = Photo(placement: 2, url: URL(string: "https://www.tailorbrands.com/wp-content/uploads/2020/07/mcdonald-logo.jpg")!)
     static var previews: some View {
         PhotoView($photo)
     }
@@ -224,3 +145,4 @@ extension URLCache {
     
     static let imageCache = URLCache(memoryCapacity: 512*1000*1000, diskCapacity: 10*1000*1000*1000)
 }
+

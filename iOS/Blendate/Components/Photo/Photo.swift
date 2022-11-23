@@ -8,25 +8,30 @@
 import SwiftUI
 import CoreLocation
 
-struct Photo: Codable, Equatable, Identifiable {
+struct Photo: Codable {
+
+    var placement: Int
+    var url: URL?
+    var isEmpty: Bool {url == nil}
+    
+}
+
+extension Photo: Identifiable, Equatable {
+    var id: Int {self.placement}
     static func == (lhs: Photo, rhs: Photo) -> Bool {
         return lhs.placement == rhs.placement
     }
-    var id: Int {self.placement}
-    var url: URL? = nil
-    var placement: Int
-    
-    var isEmpty: Bool {
-        return url == nil
-    }
-    
-    var request: URLRequest? {
-        if let url = url {
-            return URLRequest(url: url)
-        } else {
-            return nil
+}
+
+extension Photo {
+    static let empty: [Photo] = {
+        var array: [Photo] = []
+        for i in 0..<8 {
+            array.append(Photo(placement: i))
         }
-    }
+        return array
+    }()
+    
 }
 
 

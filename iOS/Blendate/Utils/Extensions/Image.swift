@@ -17,5 +17,4 @@ extension Image {
             .frame(width: (size * 0.75) , height: size)
             .foregroundColor(color)
     }
-
 }

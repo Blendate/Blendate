@@ -21,7 +21,7 @@ struct ProfileButtons: View {
     var body: some View {
         switch profileType {
         case .session:
-            profileButtons
+            noButtons
         case .match:
             matchButtons
         case .view:

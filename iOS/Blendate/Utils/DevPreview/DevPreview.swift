@@ -18,23 +18,22 @@ class DeveloperPreview {
     static let instance = DeveloperPreview()
     private init() { }
     
-    var empty: User {
-        return User(id: "12345", settings: UserSettings(), fcm: "")
+    var empty:Settings{
+        return Settings(id: "12345")
     }
-    var michael:User = DeveloperPreview.michael_
     
     var profilesheet = ProfileSheet()
     
-    @StateObject var session = SessionViewModel(user: DeveloperPreview.michael_)
-    
-    var conversation: Conversation { Conversation(id: "1234", users: ["1234", ""], lastMessage: longChatMessage, timestamp: Date() ) }
+//    @StateObject var session = SessionViewModel(user: DeveloperPreview.michael_)
+    var conversation: Conversation {
+        Conversation(user1: michael.id!, user2: tyler.id!)
+    }
     let chatmessage = ChatMessage(author: "1234", text: "Testing a short message")
     let longChatMessage = ChatMessage(author: "", text: String(lorem.prefix(140)))
+    
 
     static let lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-    
-    @State var bindingMichael = michael_
-    
+        
     @ViewBuilder
     func signup(_ detail: Detail) -> some View {
         PreviewSignup(detail)
@@ -44,7 +43,7 @@ class DeveloperPreview {
 
 extension SessionViewModel {
     convenience init(user: User) {
-        self.init(user.id ?? "")
+        self.init(user.id ?? "123")
         self.user = user
     }
 }
@@ -110,16 +109,4 @@ extension View {
         let size = CGSize(width: width, height: height)
         return modifier(PreviewViewModifier(size: size, content: self, title: title))
     }
-}
-
-public func printD(_ object: Any){
-    #if DEBUG
-    let line = "--------------------------------------"
-    let newLine = ""
-    
-    Swift.print(line + newLine)
-    Swift.print(object)
-    Swift.print(newLine + line)
-    
-    #endif
 }
