@@ -8,6 +8,7 @@
 import Foundation
 import Firebase
 import FirebaseFirestoreSwift
+import SwiftUI
 
 class Conversation: Codable, Identifiable {
     @DocumentID var id: String?
@@ -62,4 +63,32 @@ extension ChatMessage {
     var isEmpty: Bool {
         author.isEmpty && text.isEmpty
     }
+}
+
+
+enum Swipe: String, CaseIterable {
+    case pass = "passes", like = "likes", superLike = "super_likes"
+    
+    var color: Color {
+        switch self {
+        case .pass:
+            return .red
+        case .like:
+            return .Blue
+        case .superLike:
+            return .DarkPink
+        }
+    }
+    
+    var imageName: String {
+        switch self {
+        case .pass:
+            return "noMatch"
+        case .like:
+            return "icon"
+        case .superLike:
+            return "star"
+        }
+    }
+    
 }

@@ -14,23 +14,18 @@ class MatchViewModel: ObservableObject {
     @Published var loading = true
     @Published var newConvo: Conversation?
     
-    private let detailService: UserService
-    private let chatService: MessageService
+    private let userService = UserService()
+    private let chatService = MessageService()
     private let uid: String
-    init(_ uid: String,
-         _ chat: MessageService = MessageService(),
-         _ detail: UserService = UserService()
-    ){
+    init(_ uid: String){
         self.uid = uid
-        self.chatService = chat
-        self.detailService = detail
         getLineup()
     }
     
     func getLineup() {
         Task { @MainActor in
             do {
-                self.lineup = try await detailService.fetchLineup(for: uid)
+                self.lineup = try await userService.fetchLineup(for: uid)
                 withAnimation(.spring()) {
                     loading = false
                 }

@@ -15,6 +15,10 @@ class FirebaseService<Object: Codable> where Object: Identifiable {
     
     let collection: CollectionReference
     private let serviceName: String
+    static var kUsers: String { "mock_users" }
+    static var kChats: String { "chats" }
+    static var kCommunity: String { "community" }
+    static var kSettings: String { "settings" }
         
     init(collection: String){
         self.collection = FireStore.instance.firestore.collection(collection)
@@ -83,7 +87,7 @@ class FirebaseService<Object: Codable> where Object: Identifiable {
 extension FirebaseService {
     
     var Users: CollectionReference {
-        FireStore.instance.firestore.collection("users")
+        FireStore.instance.firestore.collection(Self.kUsers)
     }
     
     func Swipes(for uid: String, _ swipe: Swipe) -> CollectionReference {
@@ -98,9 +102,11 @@ extension FirebaseService {
     }
     
     func allSwipes(for uid: String) async -> [String] {
-        let likes = await getHistory(for: uid, .like)
-        let passes = await getHistory(for: uid, .pass)
-        let combine = likes + passes
+        var combine: [String] = []
+        for swipe in Swipe.allCases {
+            let history = await getHistory(for: uid, swipe)
+            combine.append(contentsOf: history)
+        }
         return combine.isEmpty ? ["empty"] : combine
     }
     

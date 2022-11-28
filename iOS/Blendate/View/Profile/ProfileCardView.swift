@@ -22,12 +22,11 @@ struct ProfileCard: View {
         self.swipe = swipe
     }
     
-    
     var body: some View {
         ZStack(alignment: .top) {
             VStack {
                 VStack {
-                    Text(details.firstname + ", " + "\(details.birthday.age)")
+                    Text(details.firstname + ", " + details.ageString)
                         .fontType(.semibold, .title, .white)
                     Text(details.info.location.name)
                         .fontType(.semibold, .body, .white)

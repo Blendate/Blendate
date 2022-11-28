@@ -31,6 +31,7 @@ struct SessionView: View {
         }
         .environmentObject(session)
         .task {
+            
             await session.fetchFirebase()
         }
     }

@@ -8,11 +8,11 @@
 import Foundation
 import FirebaseFirestore
 
-enum Swipe: String { case pass = "passes", like = "likes" }
+
 class MessageService: FirebaseService<Conversation> {
 
     init() {
-        super.init(collection: "chats")
+        super.init(collection: Self.kChats)
     }
     
     func collection(for cid: String?) -> CollectionReference? {
@@ -46,9 +46,11 @@ class MessageService: FirebaseService<Conversation> {
                 .document(match)
                 .setData(["timestamp":Date()])
             
-            let likes = await getHistory(for: match, .like)
-            
-            guard swipe == .like && likes.contains(uid) else {return nil}
+//            let likes = await getHistory(for: match, .like)
+//            guard swipe != .pass && likes.contains(uid) else {return nil}
+
+            #warning("just for testing, remove once super like implemented")
+            guard swipe == .superLike else {return nil}
             
             let convo = Conversation(user1: match, user2: uid)
             try create(convo)
@@ -57,4 +59,9 @@ class MessageService: FirebaseService<Conversation> {
             throw AlertError(title: "Server Error", message: "Could not save your swipe on the Blendate server.", recovery: "Try Again")
         }
     }
+}
+
+
+class MockMessageService: MessageService {
+    
 }

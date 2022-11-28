@@ -27,7 +27,7 @@ class User: Codable, Identifiable {
     var filters = Stats(.filter)
 
     var premium: Premium = Premium()
-    var color: Color? = .Blue
+    var color: Color = .Blue
     
     init(id: String){
         self.id = id
@@ -66,6 +66,14 @@ extension User {
     
     var cover: URL? {
         photos.first(where: {$0.placement == 1})?.url
+    }
+    
+    var ageString: String {
+        if premium.active, premium.hideAge {
+            return ""
+        } else {
+            return String(birthday.age)
+        }
     }
 }
 

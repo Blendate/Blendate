@@ -13,25 +13,15 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     let gcmMessageIDKey = "gcm.message_id"
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        FirebaseApp.configure()
-        
-        
+        config()
+        config_notifications()
+        application.registerForRemoteNotifications()
+
         FBSDKCoreKit.ApplicationDelegate.shared
             .application(application,
                          didFinishLaunchingWithOptions: launchOptions )
         
-        
-        Messaging.messaging().delegate = self
 
-          UNUserNotificationCenter.current().delegate = self
-
-          let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
-          UNUserNotificationCenter.current().requestAuthorization(
-            options: authOptions,
-            completionHandler: {_, _ in })
-
-
-        application.registerForRemoteNotifications()
         return true
     }
 
@@ -45,6 +35,25 @@ class AppDelegate: NSObject, UIApplicationDelegate {
       print(userInfo)
 
       completionHandler(UIBackgroundFetchResult.newData)
+    }
+}
+
+extension AppDelegate {
+    private func config() {
+        RevenueCatService.configure(withAPIKey: Secrets.revenueCat)
+        RevenueCatService.setFirebaseAppInstanceId(Analytics.appInstanceID())
+        FirebaseApp.configure()
+    }
+    
+    private func config_notifications(){
+        Messaging.messaging().delegate = self
+        UNUserNotificationCenter.current().delegate = self
+        let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+        UNUserNotificationCenter.current().requestAuthorization(
+          options: authOptions,
+          completionHandler: {_, _ in })
+
+
     }
 }
 

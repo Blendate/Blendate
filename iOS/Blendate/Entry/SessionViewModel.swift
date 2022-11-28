@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import RevenueCat
 
 enum SessionState {case noUser, user, loading}
 
@@ -36,6 +37,7 @@ class SessionViewModel: ObservableObject {
             self.settings = try await settingsService.fetch(fid: uid)
             self.user = try await userService.fetch(fid: uid)
             self.user.photos = user.photos.sorted(by: {$0.placement < $1.placement})
+            await loginRevenueCat()
             withAnimation(.spring()) {
                 self.loadingState = user.firstname.isEmpty ? .noUser : .user
             }
@@ -44,6 +46,13 @@ class SessionViewModel: ObservableObject {
                 loadingState = .noUser
             }
         }
+    }
+    
+    private func loginRevenueCat() async {
+        try? await RevenueCatService.logIn(uid)
+//        if let info = customerInfo {
+//            print(customerInfo)
+//        }
     }
 
     func createUserDoc() throws {

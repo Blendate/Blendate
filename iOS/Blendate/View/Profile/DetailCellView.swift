@@ -156,7 +156,7 @@ extension User {
         case .name:
             return fullName
         case .birthday:
-            return birthday.description
+            return ageString
         case .gender:
             return gender
         case .location:

@@ -61,9 +61,10 @@ struct InfoCard: View {
                 Text(type.rawValue)
                     .fixedSize()
                     .fontType(.semibold, 18, .DarkBlue)
-                Image(icon)
-                    .renderingMode(.template)
-                    .foregroundColor(.DarkBlue)
+                Spacer()
+//                Image(icon)
+//                    .renderingMode(.template)
+//                    .foregroundColor(.DarkBlue)
             }
             switch type {
             case .personal:

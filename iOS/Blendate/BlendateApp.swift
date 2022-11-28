@@ -9,13 +9,12 @@ import SwiftUI
 
 @main
 struct BlendateApp: App {
-//    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-//    @StateObject var authState = FirebaseAuthState()
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @StateObject var authState = FirebaseAuthState()
     var body: some Scene {
         WindowGroup {
-            MockUsers()
-//            EntryView()
-//                .environmentObject(authState)
+            EntryView()
+                .environmentObject(authState)
         }
     }
 }

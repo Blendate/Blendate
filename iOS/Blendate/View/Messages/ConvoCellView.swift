@@ -18,7 +18,7 @@ struct ConvoCellView: View {
             ChatView(conversation, with: $details)
         } label: {
             HStack(spacing: 0){
-                PhotoView.Avatar(url: details?.photos[0].url, size: 75, isCell: true)
+                PhotoView.Avatar(url: details?.avatar, size: 75, isCell: true)
                 VStack(alignment: .leading) {
                     Text(details?.firstname ?? "")
                         .fontType(.semibold, .title3)

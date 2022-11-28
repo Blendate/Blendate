@@ -54,6 +54,9 @@ extension ProfileButtons {
             Spacer()
             BlendButton(swipe: .pass, action: action)
             Spacer()
+            BlendButton(swipe: .superLike, action: action)
+                .padding(.top)
+            Spacer()
             BlendButton(swipe: .like, action: action)
             Spacer()
         }.padding([.bottom, .horizontal])
@@ -104,20 +107,36 @@ extension ProfileButtons {
         let swipe: Swipe
         var action: (_ swipe: Swipe) -> Void
 
+        var blend: Bool {
+            swipe == .like
+        }
         var body: some View {
-            let blend = swipe == .like
-            let color:Color = blend ? .Blue:.red
             Button(action: swiped) {
-                Image(blend ? "icon":"noMatch")
-                    .renderingMode(.template)
-                    .resizable()
-                    .foregroundColor(color)
-                    .frame(width: blend ? 30:40, height: 40)
-                    .padding(blend ? 20:15)
-                    .background(Color.white)
-                    .clipShape(Circle())
+                Group {
+                    if swipe == .superLike {
+                        Image(systemName: "star.fill")
+                            .renderingMode(.template)
+                            .resizable()
+
+                    } else {
+                        Image(swipe.imageName)
+                            .renderingMode(.template)
+                            .resizable()
+                    }
+
+                }
+                .foregroundColor(.white)
+                .frame(width: blend ? 20:30, height: 30)
+                .padding(blend ? 15:10)
+                .background(swipe.color)
+                .clipShape(Circle())
+//                .overlay(
+//                    Circle()
+//                    .stroke(Color.white, lineWidth: 1)
+//                )
             }
         }
+
         
         private func swiped(){
             action(swipe)
@@ -134,3 +153,5 @@ struct ProfileButtons_Previews: PreviewProvider {
         
     }
 }
+
+

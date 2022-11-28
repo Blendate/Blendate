@@ -9,7 +9,10 @@ import SwiftUI
 
 struct TodayView: View {
     @EnvironmentObject var session: SessionViewModel
-    @State var todayUser: User = DeveloperPreview.instance.tyler
+    
+    let todayUser: User
+    @Binding var showLikes: Bool
+
     @State var message: String = ""
     @State var showProfile = false
     
@@ -55,18 +58,10 @@ struct TodayView: View {
                     }
             }
             Spacer()
-            Button{
-                
-            } label: {
-                HStack {
-                    Spacer()
-                    Text("See Who Likes you")
-                        .foregroundColor(.white)
-                    Spacer()
-                }
-                .background(Color.DarkPink)
-                .clipShape(Capsule())
+            Button("Show Likes"){
+                showLikes = true
             }
+            .capsuleButton(color: .DarkPink, fontsize: 16)
         }
         .sheet(isPresented: $showProfile) {
             ViewProfileView(details: todayUser)
@@ -101,6 +96,6 @@ struct TextView: UIViewRepresentable {
 
 struct TodayView_Previews: PreviewProvider {
     static var previews: some View {
-        TodayView()
+        TodayView(todayUser: dev.tyler, showLikes: .constant(false))
     }
 }
