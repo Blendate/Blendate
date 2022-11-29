@@ -18,11 +18,29 @@ struct ProfileView: View {
                 ProfileCardView(user, .session)
                     .padding(.vertical)
                 VStack {
-                    ButtonCell(destination: .edit, title: "Edit Profile", systemImage: "pencil")
+                    NavigationLink {
+                        EditProfileView(details: $user)
+                    } label: {
+                        ButtonCell(title: "Edit Profile", systemImage: "pencil")
+                    }
                     Divider()
-                    ButtonCell(destination: .filter, title: "Change Filters", systemImage: "cloud")
+                    NavigationLink {
+                        FiltersView()
+                    } label: {
+                        ButtonCell(title: "Change Filters", systemImage: "cloud")
+                    }
                     Divider()
-                    ButtonCell(destination: .settings, title: "App Settings", systemImage: "gear")
+                    NavigationLink {
+                        SettingsView()
+                    } label: {
+                        ButtonCell(title: "App Settings", systemImage: "gear")
+                    }
+
+//                    ButtonCell(title: "Edit Profile", systemImage: "pencil")
+//                    Divider()
+//                    ButtonCell(title: "Change Filters", systemImage: "cloud")
+//                    Divider()
+//                    ButtonCell(title: "App Settings", systemImage: "gear")
                 }
                 Spacer()
                 PremiumButton(isMembership: true)
@@ -42,25 +60,35 @@ struct ProfileView: View {
     }
     
     struct PremiumButton: View {
+        @EnvironmentObject var session: SessionViewModel
         let isMembership: Bool
         var title: String { isMembership ? "Premium Membership" : "Get more Super Likes"}
         var body: some View {
-            HStack {
-                image
-                    .foregroundColor(isMembership ? Color.Blue : Color.DarkPink)
-                    .padding()
-                    .background(.white)
-                    .clipShape(Circle())
-                Text(title)
-                    .fontType(.semibold, .title2, .white)
-                    .padding(.leading, 6)
-                Spacer()
+            Button {
+                if isMembership {
+                    session.showMembership = true
+                } else {
+                    session.showSuperLike = true
+                }
+            } label: {
+                HStack {
+                    image
+                        .foregroundColor(isMembership ? Color.Blue : Color.DarkPink)
+                        .padding()
+                        .background(.white)
+                        .clipShape(Circle())
+                    Text(title)
+                        .fontType(.semibold, .title2, .white)
+                        .padding(.leading, 6)
+                    Spacer()
 
+                }
+                .padding(.horizontal)
+                .padding(.vertical, 10)
+                .background(isMembership ? Color.Blue : Color.DarkPink)
+                .cornerRadius(16)
             }
-            .padding(.horizontal)
-            .padding(.vertical, 10)
-            .background(isMembership ? Color.Blue : Color.DarkPink)
-            .cornerRadius(16)
+
         }
         
         var image: some View {
@@ -77,9 +105,9 @@ struct ProfileView: View {
     }
     
     struct ButtonCell: View {
-        @EnvironmentObject var sheet: ProfileSheet
-        
-        let destination: ProfileSheet.State
+//        @EnvironmentObject var sheet: ProfileSheet
+//
+//        let destination: ProfileSheet.State
         var title: String
         var systemImage: String?
         var image: String?
@@ -87,7 +115,7 @@ struct ProfileView: View {
         
         var body: some View {
             
-            Button(action: {sheet.state = destination }) {
+//            Button(action: {sheet.state = destination }) {
                 HStack {
                     if let image = image {
                         Label(title, image: image)
@@ -97,7 +125,7 @@ struct ProfileView: View {
                     Spacer()
                     Image(systemName: "chevron.right")
                 }
-            }
+//            }
             .foregroundColor(.Blue)
             .font(.title2.weight(.semibold))
         }

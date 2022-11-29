@@ -20,15 +20,16 @@ struct SettingsView: View {
     }
     
     var body: some View {
-        NavigationView {
+//        NavigationView {
             VStack {
                 List {
                     Section {
-                        NavigationLink {
-                            MembershipView(premium: $session.user.premium)
+                        Button {
+                            session.showMembership = true
                         } label: {
                             Text(hasPremium ? "Manage Membership":"Premium Membership")
                         }
+
                         if hasPremium {
                             ToggleView("Invisivle Blending", value: $session.user.premium.invisbleBlending)
                             ToggleView("Hide Age", value: $session.user.premium.hideAge)
@@ -73,7 +74,7 @@ struct SettingsView: View {
             .background(Color.LightGray)
             .navigationBarTitle("Settings")
             .errorAlert(error: $alertError, retry: delete)
-        }
+//        }
     }
     
     

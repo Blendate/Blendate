@@ -18,6 +18,9 @@ class SessionViewModel: ObservableObject {
     
     @Published var settings: Settings
     @Published var user: User
+    
+    @Published var showMembership = false
+    @Published var showSuperLike = false
 
     let uid: String
     

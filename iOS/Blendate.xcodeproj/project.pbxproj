@@ -153,6 +153,8 @@
 		4CD00FC828E8DA5A00AAC16A /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD00FC728E8DA5A00AAC16A /* EditProfileView.swift */; };
 		4CD00FCA28E8F1A900AAC16A /* CommunityChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD00FC928E8F1A900AAC16A /* CommunityChatView.swift */; };
 		4CD00FCC28E8F25D00AAC16A /* CommunityTopic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD00FCB28E8F25D00AAC16A /* CommunityTopic.swift */; };
+		4CD080D02936948E006B5641 /* PremiumPerks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD080CF2936948E006B5641 /* PremiumPerks.swift */; };
+		4CD080D2293695EB006B5641 /* MembershipViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD080D1293695EB006B5641 /* MembershipViewModel.swift */; };
 		4CD27CDF281CD6B200CD0F20 /* ItemButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD27CDE281CD6B200CD0F20 /* ItemButton.swift */; };
 		4CD3FF8E27838920004D2E5A /* EntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD3FF8D27838920004D2E5A /* EntryView.swift */; };
 		4CDC57E627F3B51E009EC83B /* SessionTabsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CDC57E527F3B51E009EC83B /* SessionTabsView.swift */; };
@@ -292,6 +294,8 @@
 		4CD00FC728E8DA5A00AAC16A /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
 		4CD00FC928E8F1A900AAC16A /* CommunityChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityChatView.swift; sourceTree = "<group>"; };
 		4CD00FCB28E8F25D00AAC16A /* CommunityTopic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityTopic.swift; sourceTree = "<group>"; };
+		4CD080CF2936948E006B5641 /* PremiumPerks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumPerks.swift; sourceTree = "<group>"; };
+		4CD080D1293695EB006B5641 /* MembershipViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MembershipViewModel.swift; sourceTree = "<group>"; };
 		4CD27CDE281CD6B200CD0F20 /* ItemButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemButton.swift; sourceTree = "<group>"; };
 		4CD3FF8D27838920004D2E5A /* EntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryView.swift; sourceTree = "<group>"; };
 		4CDC57E527F3B51E009EC83B /* SessionTabsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionTabsView.swift; sourceTree = "<group>"; };
@@ -396,7 +400,9 @@
 			children = (
 				4C47044F27F41B99007517D9 /* SettingsView.swift */,
 				4CCFAC14280364AE0063FCA6 /* SettingCellView.swift */,
+				4CD080D1293695EB006B5641 /* MembershipViewModel.swift */,
 				4CC57ED72802C08C00C6683C /* MembershipView.swift */,
+				4CD080CF2936948E006B5641 /* PremiumPerks.swift */,
 				4C80025527609E9800F9410A /* HelpCenterView.swift */,
 			);
 			path = Settings;
@@ -841,6 +847,7 @@
 				4C2CE33728E8C24500BF669D /* MessageField.swift in Sources */,
 				4C8002642762B5E200F9410A /* Conversation.swift in Sources */,
 				4CD3FF8E27838920004D2E5A /* EntryView.swift in Sources */,
+				4CD080D2293695EB006B5641 /* MembershipViewModel.swift in Sources */,
 				4CC2F9512817922100A1D105 /* EmptyLineupView.swift in Sources */,
 				4C0A582A2818E4CE0068CCCE /* MatchAvatarView.swift in Sources */,
 				4C0E9480278BF11F00740252 /* User.swift in Sources */,
@@ -900,6 +907,7 @@
 				4CD00FCC28E8F25D00AAC16A /* CommunityTopic.swift in Sources */,
 				4C805A662760569300D85D14 /* AddPhotosView.swift in Sources */,
 				4C9842B527FFEA4300709597 /* SheetState.swift in Sources */,
+				4CD080D02936948E006B5641 /* PremiumPerks.swift in Sources */,
 				4C78847128188CA500B643C2 /* AsyncButton.swift in Sources */,
 				4C48DC9D292C8C30009A57D4 /* UserService.swift in Sources */,
 				4C2AB2992928211600BB8F10 /* TabViewOverlay.swift in Sources */,
@@ -1037,7 +1045,7 @@
 				CODE_SIGN_ENTITLEMENTS = Blendate/Blendate.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"Blendate/Preview Content\"";
 				DEVELOPMENT_TEAM = QLFXX64RR2;
 				ENABLE_PREVIEWS = YES;
@@ -1055,7 +1063,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.blendate.blendate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1073,7 +1081,7 @@
 				CODE_SIGN_ENTITLEMENTS = Blendate/Blendate.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"Blendate/Preview Content\"";
 				DEVELOPMENT_TEAM = QLFXX64RR2;
 				ENABLE_PREVIEWS = YES;
@@ -1091,7 +1099,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.blendate.blendate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

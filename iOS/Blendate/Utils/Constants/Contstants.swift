@@ -27,6 +27,15 @@ extension WelcomeView2 {
 // MARK: - Signup
 extension NameView {
     static let Lastname = "Last names help build authenticity and will only be shared with matches."
+
+}
+
+// MARK: - Membership
+extension MembershipView {
+    static let TapSubscribe = "By tapping Subscribe, your payment will be charged to your Apple App Store account, and your subscription will automatically renew for the same package length at the same price until you cancel in settings in the Apple App Store. By tapping Subscribe you agree to our Terms"
+    static let Yearly_ID = "com.blendate.blendate.yearly"
+    static let Monthly_ID = "com.blendate.blendate.monthly"
+    static let SemiAnnual_ID = "com.blendate.blendate.semiAnnual"
 }
 
 // MARK: - Signup Titles

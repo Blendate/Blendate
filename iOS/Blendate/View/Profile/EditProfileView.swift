@@ -13,23 +13,21 @@ struct EditProfileView: View {
     @Binding var details: User
     @State private var edit = true
     var body: some View {
-        NavigationView {
-            VStack {
-                editControl
-                Divider()
-                if edit {
-                    List {
-                        detailsView
-                    }.listStyle(.grouped)
-                    Spacer()
-                } else {
-                    ViewProfileView(details: details)
-                }
+        VStack {
+            editControl
+            Divider()
+            if edit {
+                List {
+                    detailsView
+                }.listStyle(.grouped)
+                Spacer()
+            } else {
+                ViewProfileView(details: details)
             }
-            .toolbar {
-                ToolbarItem(placment: .navigationBarTrailing, title: "Done") {
-                    dismiss()
-                }
+        }
+        .toolbar {
+            ToolbarItem(placment: .navigationBarTrailing, title: "Done") {
+                dismiss()
             }
         }
     }

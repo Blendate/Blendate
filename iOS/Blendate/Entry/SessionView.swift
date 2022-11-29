@@ -58,5 +58,12 @@ struct SessionView: View {
         .task {
             await session.checkNotification()
         }
+        .fullScreenCover(isPresented: $session.showMembership) {
+            MembershipView(premium: $session.user.premium)
+        }
+        .sheet(isPresented: $session.showSuperLike) {
+            PurchaseLikesView(premium: $session.user.premium)
+                .presentationDetents([.medium])
+        }
     }
 }

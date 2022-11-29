@@ -20,29 +20,27 @@ struct FiltersView: View {
     }
     
     var body: some View {
-        NavigationView{
-            List {
-                ForEach(Detail.FilterGroup.allCases){ group in
-                    Section {
-                        ForEach(group.cells(isParent: isParent)) { cell in
-                            DetailCellView(detail: cell, details: $session.user, type: .filter)
-                        }
-                    } header: {
-                        Text(group.id)
-                    }.textCase(nil)
+        List {
+            ForEach(Detail.FilterGroup.allCases){ group in
+                Section {
+                    ForEach(group.cells(isParent: isParent)) { cell in
+                        DetailCellView(detail: cell, details: $session.user, type: .filter)
+                    }
+                } header: {
+                    Text(group.id)
+                }.textCase(nil)
 
-                }
             }
-            .listStyle(.grouped)
-            .navigationBarTitle("Filters")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placment: .navigationBarTrailing, title: "Done") {
-                    dismiss()
-                }
-            }
-
         }
+        .listStyle(.grouped)
+        .navigationBarTitle("Filters")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placment: .navigationBarTrailing, title: "Done") {
+                dismiss()
+            }
+        }
+
     }
 }
 

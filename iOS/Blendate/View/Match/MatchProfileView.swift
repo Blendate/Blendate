@@ -47,7 +47,9 @@ struct MatchProfileView: View {
         .sheet(isPresented: $showFilters) {
             try? session.saveUser()
         } content: {
-            FiltersView()
+            NavigationStack {
+                FiltersView()
+            }
         }
     }
 

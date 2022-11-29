@@ -8,6 +8,7 @@
 import SwiftUI
 import Firebase
 import FacebookCore
+import RevenueCat
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     let gcmMessageIDKey = "gcm.message_id"
@@ -41,7 +42,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 extension AppDelegate {
     private func config() {
         RevenueCatService.configure(withAPIKey: Secrets.revenueCat)
-        RevenueCatService.setFirebaseAppInstanceId(Analytics.appInstanceID())
+//        RevenueCatService.setFirebaseAppInstanceId(RevenueCat.Analytics.appInstanceID())
         FirebaseApp.configure()
     }
     
