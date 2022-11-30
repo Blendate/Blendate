@@ -10,9 +10,9 @@ import SwiftUI
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var session: SessionViewModel
+    @EnvironmentObject var premium: PremiumViewModel
     @EnvironmentObject var auth: FirebaseAuthState
     
-    @State var showPremium: Bool = false
     @State var alertError: AlertError?
 
     var hasPremium: Bool {
@@ -25,7 +25,7 @@ struct SettingsView: View {
                 List {
                     Section {
                         Button {
-                            session.showMembership = true
+                            showMembership()
                         } label: {
                             Text(hasPremium ? "Manage Membership":"Premium Membership")
                         }
@@ -108,6 +108,11 @@ struct SettingsView: View {
                 Spacer()
             }
         }
+    }
+    
+    @MainActor
+    func showMembership(){
+        premium.showMembership = true
     }
     
     private func delete(){

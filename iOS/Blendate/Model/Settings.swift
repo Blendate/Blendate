@@ -11,6 +11,7 @@ import FirebaseFirestoreSwift
 struct Settings: Codable, Identifiable  {
     @DocumentID var id: String?
     var notifications = Notifications(fcm: "", isOn: false)
+    var superLikes: Int = 0
 }
 
 struct Notifications: Codable {

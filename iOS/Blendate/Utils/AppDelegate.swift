@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Firebase
+import FirebaseAnalytics
 import FacebookCore
 import RevenueCat
 
@@ -41,8 +42,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 extension AppDelegate {
     private func config() {
+        Purchases.logLevel = .error
         RevenueCatService.configure(withAPIKey: Secrets.revenueCat)
-//        RevenueCatService.setFirebaseAppInstanceId(RevenueCat.Analytics.appInstanceID())
+        RevenueCatService.setFirebaseAppInstanceId(Analytics.appInstanceID())
         FirebaseApp.configure()
     }
     

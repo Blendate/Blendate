@@ -10,11 +10,10 @@ import RevenueCat
 
 struct MembershipView: View {
     @Environment(\.dismiss) private var dismiss
-
-    @StateObject var model = MembershipViewModel()
-    @Binding var premium: Premium
+    @EnvironmentObject var model: PremiumViewModel
+//    @Binding var premium: Premium
     
-    var packages: [Package] { model.packages}
+    var packages: [Package] { model.packages.filter{!$0.isLike} }
     
     var body: some View {
         VStack {
@@ -39,12 +38,7 @@ struct MembershipView: View {
                 .foregroundColor(.Blue)
                 .font(.callout.weight(.semibold))
                 .padding()
-                TabView {
-                    ForEach(PremiumPerks.allCases) { perk in
-                        membershipPerk(perk)
-                    }
-                }
-                .tabViewStyle(.page(indexDisplayMode: .always))
+                PerksTabView()
                 List(packages) { package in
                     if !package.storeProduct.productIdentifier.contains("like") {
                         cell(package)
@@ -56,10 +50,10 @@ struct MembershipView: View {
             .background(Color.white)
             .cornerRadius(16)
         }
-        .padding(32)
+        .padding()
         .background(Color.Blue)
         .onAppear {
-            model.getPackages()
+            try? model.getOfferings()
         }
     }
     
@@ -96,23 +90,7 @@ struct MembershipView: View {
         }
     }
     
-    func membershipPerk(_ perk: PremiumPerks) -> some View {
-        VStack {
-            ZStack {
-                Rectangle().fill(Color.Blue)
-                Text("Placeholder")
-                    .foregroundColor(.white)
-                    .fontWeight(.bold)
-            }
-            .frame(width: 175, height: 175)
-            VStack(alignment: .leading) {
-                Text(perk.title)
-                    .font(.title3).fontWeight(.semibold)
-                Text(perk.description)
-                    .font(.callout)
-            }
-        }
-    }
+
     
     
     func months(for package: Package) -> Int {
@@ -127,12 +105,45 @@ struct MembershipView: View {
         }
     }
     
+    struct PerksTabView: View {
+        let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
+        @State private var selection: PremiumPerks = .matches
+        var body: some View {
+            TabView(selection: $selection) {
+                ForEach(PremiumPerks.allCases) { perk in
+                    VStack {
+                        ZStack {
+                            Rectangle().fill(Color.Blue)
+                            Text("Placeholder")
+                                .foregroundColor(.white)
+                                .fontWeight(.bold)
+                        }
+                        .frame(width: 175, height: 175)
+                        VStack(alignment: .leading) {
+                            Text(perk.title)
+                                .font(.title3).fontWeight(.semibold)
+                            Text(perk.description)
+                                .font(.callout)
+                        }
+                    }
+                    .tag(perk)
+                }
+            }
+            .tabViewStyle(.page(indexDisplayMode: .always))
+            .onReceive(timer) { _ in
+                withAnimation {
+                    selection = selection.next()
+                }
+            }
+        }
+    }
+    
 
 }
 
 struct MembershipView_Previews: PreviewProvider {
     static var previews: some View {
-        MembershipView(premium: .constant(Premium()))
+        MembershipView()
 //            .preferredColorScheme(.dark)
     }
 }
@@ -140,8 +151,8 @@ struct MembershipView_Previews: PreviewProvider {
 
 struct PurchaseLikesView: View {
     @Environment(\.dismiss) private var dismiss
-    @Binding var premium: Premium
-    @State var packages: [Package] = []
+    @EnvironmentObject var model: PremiumViewModel
+    var packages: [Package] { model.packages.filter{$0.isLike} }
 
     var body: some View {
         VStack {
@@ -174,9 +185,7 @@ struct PurchaseLikesView: View {
         }
         .padding(.horizontal)
         .onAppear {
-            Purchases.shared.getOfferings { offering, error in
-                self.packages = offering?.current?.availablePackages.filter({$0.storeProduct.productIdentifier.contains("like")}) ?? []
-            }
+            try? model.getOfferings()
         }
     }
     
@@ -184,7 +193,7 @@ struct PurchaseLikesView: View {
         VStack {
             ForEach(packages) { package in
                 Button {
-                    purchase(package)
+                    model.purchase(package)
                 } label: {
                     HStack {
                         Spacer()
@@ -210,19 +219,5 @@ struct PurchaseLikesView: View {
             }
         }
         .padding(.horizontal, 32)
-    }
-    
-    func purchase(_ package: Package) {
-        Task {
-            do {
-                let (_, customerInfo, _) = try await RevenueCatService.purchase(package: package)
-                if let customerInfo = customerInfo {
-                    print(customerInfo)
-                }
-            } catch {
-                print(error.localizedDescription)
-            }
-//            try await profileService.isActive(Setup.entitlement, customerInfo: customerInfo)
-        }
     }
 }

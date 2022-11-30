@@ -17,7 +17,7 @@ extension MessagesView {
 }
 
 // MARK: - Welcome
-extension WelcomeView2 {
+extension WelcomeView {
     static let ByTapping = "By tapping Create Accout/Sign in, you agree to our"
     static let ProccessData = "See how we proccess your data in our"
     static let Create = "Create Account"

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct InfoCards: View {
+struct InfoCardsView: View {
     let details: User
     
     var body: some View {
@@ -163,11 +163,7 @@ enum InfoType: String, CaseIterable, Identifiable {
 
 struct InfoCard_Previews: PreviewProvider {
     static var previews: some View {
-        ForEach(InfoType.allCases) {type in
-            InfoCard(type, dev.michael)
-                .previewLayout(.sizeThatFits)
-        }
-        
+        InfoCardsView(details: dev.michael)
     }
 }
 

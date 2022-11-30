@@ -9,6 +9,7 @@ import SwiftUI
 import Firebase
 import FacebookCore
 import UIKit
+import FirebaseAuth
 
 struct EntryView: View {
     @EnvironmentObject var authState: FirebaseAuthState
@@ -19,23 +20,21 @@ struct EntryView: View {
             case .loading:
                 LaunchView()
             case .noUser:
-                WelcomeView2()
+                WelcomeView()
             case .uid(let uid):
                 SessionView(uid)
             }
         }
-        .onOpenURL(perform: firebaseSignin)
-        .onAppear(
-            perform: UIApplication.shared.addTapGestureRecognizer
-        )
+//        .onOpenURL(perform: firebaseSignin)
+        .onAppear(perform: UIApplication.shared.addTapGestureRecognizer )
 
     }
     
-    private func firebaseSignin(with url: URL){
-        let link = url.absoluteString
-        print("🔗 [URL] \(link)")
-        FBSDKCoreKit.ApplicationDelegate.shared.application(UIApplication.shared, open: url, sourceApplication: nil, annotation: UIApplication.OpenURLOptionsKey.annotation)
-    }
+//    private func firebaseSignin(with url: URL){
+//        let link = url.absoluteString
+//        print("🔗 [URL] \(link)")
+//        FBSDKCoreKit.ApplicationDelegate.shared.application(UIApplication.shared, open: url, sourceApplication: nil, annotation: UIApplication.OpenURLOptionsKey.annotation)
+//    }
 }
 
 
@@ -46,8 +45,9 @@ class FirebaseAuthState: ObservableObject {
         case loading, noUser, uid(String)
     }
     
-    @Published var auth: Auth = Auth.auth()
-    @Published var firUser: FirebaseAuth.User?
+    let auth = Auth.auth()
+    
+//    @Published var firUser: FirebaseAuth.User?
     @Published var state:FirebaseState = .loading
     
     private let firebase = Firestore.firestore()
@@ -55,7 +55,7 @@ class FirebaseAuthState: ObservableObject {
     init(){
         auth.addStateDidChangeListener { (auth,user) in
             print("🔥 [Auth] Changed: \(user?.uid ?? "No User")")
-            self.firUser = user
+//            self.firUser = user
             if let uid = user?.uid {
                 self.state = .uid(uid)
             } else {

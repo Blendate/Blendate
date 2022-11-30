@@ -45,6 +45,10 @@ enum Detail: String, Identifiable, CaseIterable {
         default: return rawValue.camelCaseToWords()
         }
     }
+    
+    var isPremium: Bool {
+        FilterGroup.premium.cells(isParent: true).contains(self)
+    }
 
 }
 
@@ -57,7 +61,7 @@ extension Detail {
         case personal = "Personal"
         case children = "Children"
         case background = "Background"
-        case other = "Other"
+        case premium = "Premium"
 
         func cells(isParent: Bool) -> [Detail] {
             switch self {
@@ -65,16 +69,16 @@ extension Detail {
                 return [.maxDistance, .ageRange, .seeking]
             case .children:
                 if isParent {
-                    return [.isParent, .children, .childrenRange, .familyPlans]
+                    return [.isParent, .children, .familyPlans]
                 } else {
                     return [.isParent, .familyPlans]
                 }
             case .personal:
-                return [.height, .relationship]
+                return [.relationship]
             case .background:
-                return [.religion, .ethnicity, .politics]
-            case .other:
-                return [.mobility, .vices]
+                return [.religion, .ethnicity]
+            case .premium:
+                return [.childrenRange, .height, .politics, .mobility, .vices]
             }
         }
     }
@@ -110,7 +114,7 @@ extension Detail {
 }
 
 extension Detail {
-        
+    #warning("Fix All SVGs")
     var svgName: String? {
         switch self {
         case .name: return "Family"

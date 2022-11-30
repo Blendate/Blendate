@@ -10,49 +10,33 @@ import SwiftUI
 struct MatchProfileView: View {
     @EnvironmentObject var vm: MatchViewModel
     @EnvironmentObject var session: SessionViewModel
+    @EnvironmentObject var premium: PremiumViewModel
     
-    @State private var showFilters = false
     
     var body: some View {
-        if let first = vm.lineup.first {
-            profile(first)
-        } else {
-            empty
-        }
-    }
-    
-    @ViewBuilder
-    func profile(_ details: User) -> some View {
-        if let first = vm.lineup.first {
+        if let details = vm.lineup.first {
+            
             ScrollView(showsIndicators: false) {
                 ProfileCardView(details, .match) { swipe in
-                    vm.swipe(on: first.id, swipe)
+                    vm.swipe(on: details.id, swipe)
+                    if swipe == .superLike {
+                        premium.settings.superLikes -= 1
+                        try? premium.saveSettings()
+                    }
                 }
-                ProfileBio(bio: details.bio)
-                InfoCards(details: details)
+                ProfileBioView(bio: details.bio)
+                InfoCardsView(details: details)
                 PhotosGridView(details.photos)
                 TagCloudView(tags: details.interests)
             }
-            .sheet(item: $vm.newConvo) {
-                nextLineup()
-            } content: { convo in
-                MatchedView(details: session.user, matchedWith: first, newConvo: convo)
+            .sheet(item: $vm.newConvo, onDismiss: nextLineup) { convo in
+                MatchedView(details: session.user, matchedWith: details, newConvo: convo)
             }
-
+            
+        } else {
+            EmptyLineupView()
         }
     }
-    
-    var empty: some View {
-        EmptyLineupView(showFilters: $showFilters)
-        .sheet(isPresented: $showFilters) {
-            try? session.saveUser()
-        } content: {
-            NavigationStack {
-                FiltersView()
-            }
-        }
-    }
-
     
     private func nextLineup(){
         withAnimation(.spring()) {
@@ -69,14 +53,14 @@ struct ViewProfileView: View {
     var body: some View {
         ScrollView(showsIndicators: false) {
             ProfileCardView(details, .view)
-            ProfileBio(bio: details.bio)
-            InfoCards(details: details)
+            ProfileBioView(bio: details.bio)
+            InfoCardsView(details: details)
             PhotosGridView(details.photos)
             TagCloudView(tags: details.interests)
-                .padding(.horizontal)
         }
     }
 }
+
 
 
 struct MatchProfileView_Previews: PreviewProvider {

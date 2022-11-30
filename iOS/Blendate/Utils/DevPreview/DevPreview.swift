@@ -21,9 +21,6 @@ class DeveloperPreview {
     var empty:Settings{
         return Settings(id: "12345")
     }
-    
-    var profilesheet = ProfileSheet()
-    
 //    @StateObject var session = SessionViewModel(user: DeveloperPreview.michael_)
     var conversation: Conversation {
         Conversation(user1: michael.id!, user2: tyler.id!)

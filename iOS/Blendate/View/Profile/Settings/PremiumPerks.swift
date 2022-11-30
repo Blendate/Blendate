@@ -10,7 +10,6 @@ import Foundation
 enum PremiumPerks: String, Identifiable, CaseIterable {
     var id: String {self.rawValue}
     
-    
     case matches
     case likes
     case filters

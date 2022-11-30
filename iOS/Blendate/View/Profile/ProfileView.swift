@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ProfileView: View {
 //    @EnvironmentObject var authState: FirebaseAuthState
-    @StateObject var sheet = ProfileSheet()
     @Binding var user: User
 
     var body: some View {
@@ -53,23 +52,17 @@ struct ProfileView: View {
                     Image.icon(40).foregroundColor(.Blue)
                 }
             }
-            .environmentObject(sheet)
-            .fullScreenCover(isPresented: $sheet.isShowing, onDismiss: save, content: sheetContent)
             .navigationBarTitleDisplayMode(.inline)
         }
     }
     
     struct PremiumButton: View {
-        @EnvironmentObject var session: SessionViewModel
+        @EnvironmentObject var premium: PremiumViewModel
         let isMembership: Bool
         var title: String { isMembership ? "Premium Membership" : "Get more Super Likes"}
         var body: some View {
             Button {
-                if isMembership {
-                    session.showMembership = true
-                } else {
-                    session.showSuperLike = true
-                }
+                tapped()
             } label: {
                 HStack {
                     image
@@ -100,6 +93,15 @@ struct ProfileView: View {
                         .resizable()
                         .frame(width: 25, height: 25)
                 }
+            }
+        }
+        
+        @MainActor
+        func tapped(){
+            if isMembership {
+                premium.showMembership = true
+            } else {
+                premium.showSuperLike = true
             }
         }
     }
@@ -141,20 +143,7 @@ extension ProfileView {
             #warning("Add Popup")
         }
     }
-    
-    @ViewBuilder
-    private func sheetContent() -> some View {
-        switch sheet.state {
-        case .edit:
-            EditProfileView(details: $user)
-        case .filter:
-            FiltersView()
-        case .settings:
-            SettingsView()
-        default:
-            EmptyView()
-        }
-    }
+
 }
 
 struct EditProfile_Previews: PreviewProvider {

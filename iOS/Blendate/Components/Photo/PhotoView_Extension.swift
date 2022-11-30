@@ -29,13 +29,21 @@ extension PhotoView {
                 image
                     .onTapGesture(perform: tapped)
                     .sheet(isPresented: $showfull) {
-                        CachedAsyncImage(urlRequest: request, urlCache: .imageCache) { image in
+                        AsyncImage(url: url) { image in
                             image
                                 .resizable()
                                 .scaledToFill()
                         } placeholder: {
                             ProgressView()
                         }
+
+//                        CachedAsyncImage(urlRequest: request, urlCache: .imageCache) { image in
+//                            image
+//                                .resizable()
+//                                .scaledToFill()
+//                        } placeholder: {
+//                            ProgressView()
+//                        }
                     }
             }
 

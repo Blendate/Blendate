@@ -10,6 +10,7 @@ import Sliders
 
 
 struct DetailCellView: View {
+    @EnvironmentObject var premium: PremiumViewModel
     let detail: Detail
     @Binding var details: User
     let type: PropType
@@ -25,16 +26,36 @@ struct DetailCellView: View {
 
     }
     
-    var detailCell: some View {
-        NavigationLink {
-            PropertyView(detail, signup: false, propType: type)
-        } label: {
-            HStack {
-                label
-                Spacer()
-                value
+    @ViewBuilder var detailCell: some View {
+        
+        if detail.isPremium && !premium.hasPremium && type == .filter {
+            Button {
+                showMembership()
+            } label: {
+                HStack {
+                    label
+                    Spacer()
+                    value
+                }
+                .foregroundColor(.gray)
+            }
+
+        } else {
+            NavigationLink {
+                PropertyView(detail, signup: false, propType: type)
+            } label: {
+                HStack {
+                    label
+                    Spacer()
+                    value
+                }
             }
         }
+    }
+    
+    @MainActor
+    func showMembership(){
+        premium.showMembership.toggle()
     }
     
     var maxDistanceCell: some View {

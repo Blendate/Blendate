@@ -21,7 +21,7 @@ struct AsyncButton<Label: View>: View {
                 if actionOptions.contains(.disableButton) {
                     isDisabled = true
                 }
-            
+
                 Task {
                     var progressViewTask: Task<Void, Error>?
 
@@ -83,7 +83,7 @@ extension AsyncButton where Label == Image {
 struct AsyncButton_Previews: PreviewProvider {
     static var previews: some View {
         AsyncButton("Button"){
-            
+
         }
             .previewLayout(.sizeThatFits)
     }

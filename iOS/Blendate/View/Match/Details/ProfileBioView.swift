@@ -1,13 +1,13 @@
 //
-//  ProfileBio.swift
+//  ProfileBioView.swift
 //  Blendate
 //
-//  Created by Michael on 9/29/22.
+//  Created by Michael on 11/29/22.
 //
 
 import SwiftUI
 
-struct ProfileBio: View {
+struct ProfileBioView: View {
     let bio: String
     
     var body: some View {
@@ -25,8 +25,8 @@ struct ProfileBio: View {
     }
 }
 
-struct ProfileBio_Previews: PreviewProvider {
+struct ProfileBioView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfileBio(bio: dev.michael.bio)
+        ProfileBioView(bio: dev.michael.bio)
     }
 }

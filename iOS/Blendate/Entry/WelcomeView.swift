@@ -2,148 +2,117 @@
 //  WelcomeView.swift
 //  Blendate
 //
-//  Created by Michael on 12/7/21.
+//  Created by Michael on 11/17/22.
 //
 
 import SwiftUI
 
 struct WelcomeView: View {
-    @State var showEmail = false
-    @State var email: String = ""
-    @State var error: AlertError?
-    
+    @State var siginTapped = false
     var body: some View {
-        VStack(spacing: 0) {
+        VStack {
+            Spacer()
             header
             Spacer()
-            card
-            Spacer()
             terms
+            if siginTapped {
+                signinButtons
+            } else {
+                accountButtons
+            }
         }
-        .errorAlert(error: $error)
+        .padding(.horizontal, 32)
+        .background(Color.Blue)
     }
-    
-    func emailTapped() async {
-//        if showEmail {
-//            do {
-//                try await UserService().sendEmail(to: email)
-//            } catch {
-//                self.error = error as? AlertError
-//            }
-//        } else {
-//            withAnimation(.spring()) {
-//                showEmail = true
-//            }
-//        }
-    }
-    
-
-}
-extension WelcomeView {
     
     var header: some View {
-        VStack(spacing: 0) {
-            Image.icon(60, .Blue)
-                .padding(.top, 10)
-            Text("Blendate")
-                .fontType(.semibold, 60, .Blue)
-            Text("Find your blended family")
-                .fontType(.semibold, 16, .Blue)
-        }
-    }
-    
-    var card: some View {
         VStack {
-            emailInput
-            if showEmail {
-                or
-            }
-            signinButtons
-        }
-        .background(Color.Blue)
-        .cornerRadius(16)
-        .padding(.top)
-        .padding(.horizontal, 30)
-        .shadow(radius: 10)
-    }
-    
-    var emailInput: some View {
-        VStack(spacing: 24) {
-            if showEmail {
-                emailField
-            }
-            emailButton
-        }
-        .padding(.top, 40)
-        .padding(.horizontal, 56)
-    }
-    
-    var or: some View {
-        HStack {
-            Rectangle().fill(Color.LightGray)
-                .frame(height: 1)
-            Text("or")
-                .foregroundColor(.LightGray)
-            Rectangle().fill(Color.LightGray)
-                .frame(height: 1)
-        }
-        .padding(.horizontal)
-        .padding([.horizontal,.top])
-    }
-    
-    
-    var terms: some View {
-        Text("By signing up, you agree to our [Terms](https://blendate.app) See what data we collect in our [Privacy Policy](https://blendate.app).")
-            .multilineTextAlignment(.center)
-            .padding(.horizontal)
-            .padding(.vertical, 6)
-            .font(.footnote)
-            .foregroundColor(Color.gray)
-    }
-    
-    
-    
-    var emailField: some View {
-        TextField("tyler@blendate.app", text: $email)
-            .textFieldStyle(.roundedBorder)
-            .keyboardType(.emailAddress)
-            .autocapitalization(.none)
-            .disableAutocorrection(true)
-    }
-    
-    var emailButton: some View {
-        AsyncButton(action: emailTapped) {
-            HStack {
-                Image(systemName: "envelope.fill")
-                    .foregroundColor(.Blue)
-                Text("Sign in with Email")
-                    .fontType(.semibold, 12, .Blue)
+            HStack() {
+                Spacer()
+                Image.icon(60, .white)
+                Text("Blendate")
+                    .fontType(.semibold, 60, .white)
                 Spacer()
             }
-            .padding(.vertical, 10)
-            .padding(.leading, 10)
-            .background(Color.white)
-            .cornerRadius(20)
+        }
+    }
+
+        
+    var signinButtons: some View {
+        VStack {
+            SocialSigninButtons()
+                .frame(height:240)
+                .noPreview(220, 240, "Social Button")
+            Button {
+                withAnimation {
+                    siginTapped = false
+                }
+            } label: {
+                Text("Back")
+                    .fontWeight(.semibold)
+                    .foregroundColor(.white)
+            }
         }
     }
     
+    var accountButtons: some View {
+        VStack(spacing: 16) {
+            Button {
+                
+            } label: {
+                HStack {
+                    Spacer()
+                    Text(Self.Create.uppercased())
+                        .fontType(.semibold, 14, .gray)
+                    Spacer()
+                }
+            }
+            .padding(12)
+            .background(Color.white)
+            .clipShape(Capsule())
+            Button {
+                withAnimation {
+                    siginTapped = true
+                }
+            } label: {
+                HStack {
+                    Spacer()
+                    Text(Self.Signin.uppercased())
+                            .fontType(.semibold, 14, .white)
+                    Spacer()
+                }
+            }
+            .padding(12)
+            .background(Color.clear)
+            .clipShape(Capsule())
+            .overlay( /// apply a rounded border
+                Capsule()
+                    .stroke(.white, lineWidth: 2)
+            )
 
+        }
+        .padding(.bottom)
+    }
     
-    var signinButtons: some View {
-        SocialSigninButtons()
-//        Rectangle().fill(Color.gray)
-            .frame(height:240)
-            .noPreview(220, 240, "Social Button")
+    var terms: some View {
+        Group {
+            Text(Self.ByTapping) +
+            Text(" [Terms](https://blendate.app) ").fontWeight(.semibold).underline() +
+            Text(Self.ProccessData) +
+            Text(" [Privacy Policy](https://blendate.app) ").fontWeight(.semibold).underline() +
+            Text("and") +
+            Text(" [Cookies Policy](https://blendate.app) ").fontWeight(.semibold).underline()
+        }
+            .multilineTextAlignment(.center)
+            .font(.caption2)
+            .foregroundColor(Color.white)
+            .accentColor(.white)
+            .padding(.bottom)
     }
-
 }
 
-
-struct WelcomeView_Previews: PreviewProvider {
+struct WelcomeView2_Previews: PreviewProvider {
     static var previews: some View {
-        WelcomeView(showEmail: true)
+        WelcomeView()
     }
 }
-
-
-

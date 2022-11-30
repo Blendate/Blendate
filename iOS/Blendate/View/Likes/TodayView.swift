@@ -38,17 +38,7 @@ struct TodayView: View {
                     .padding()
                     .background(Color.Blue.opacity(0.5))
                     .cornerRadius(16)
-                    Button("Send Message"){
-                        guard let id = todayUser.id else {return}
-                        let convo = Conversation(user1: id, user2: session.uid)
-                        Task {
-                            do {
-                                try await MessageService().sendMessage(convo: convo, message: message, author: session.uid)
-                            } catch {
-                                
-                            }
-                        }
-                    }
+                    AsyncButton("Send Message", action: sendMessage)
                     .capsuleButton(color: .Blue, fontsize: 18)
                     .offset(y: -25)
                 }.padding(.top, 70)
@@ -66,8 +56,16 @@ struct TodayView: View {
         .sheet(isPresented: $showProfile) {
             ViewProfileView(details: todayUser)
         }
-        .tabItem{ Image("heart") }
-        .tag(2)
+    }
+    
+    func sendMessage() async {
+        guard let id = todayUser.id else {return}
+        let convo = Conversation(user1: id, user2: session.uid)
+        do {
+            try await MessageService().sendMessage(convo: convo, message: message, author: session.uid)
+        } catch {
+            print(error.localizedDescription)
+        }
     }
     
 }

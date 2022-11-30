@@ -10,10 +10,12 @@ import SwiftUI
 struct SessionView: View {
     @StateObject var session: SessionViewModel
     @StateObject var matchVM: MatchViewModel
+    @StateObject var premium: PremiumViewModel
 
     init(_ uid: String){
         self._session = StateObject(wrappedValue: SessionViewModel(uid))
         self._matchVM = StateObject(wrappedValue: MatchViewModel(uid))
+        self._premium = StateObject(wrappedValue: PremiumViewModel(uid))
     }
     
     var body: some View {
@@ -31,7 +33,7 @@ struct SessionView: View {
         }
         .environmentObject(session)
         .task {
-            
+            await premium.login(uid: session.uid)
             await session.fetchFirebase()
         }
     }
@@ -54,16 +56,19 @@ struct SessionView: View {
                 .tag(Tab.profile)
                 .tabItem{ Tab.profile.image }
         }
+        .environmentObject(premium)
         .environmentObject(matchVM)
-        .task {
-            await session.checkNotification()
+        .fullScreenCover(isPresented: $premium.showMembership) {
+            MembershipView()
+                .environmentObject(premium)
         }
-        .fullScreenCover(isPresented: $session.showMembership) {
-            MembershipView(premium: $session.user.premium)
-        }
-        .sheet(isPresented: $session.showSuperLike) {
-            PurchaseLikesView(premium: $session.user.premium)
+        .sheet(isPresented: $premium.showSuperLike) {
+            PurchaseLikesView()
                 .presentationDetents([.medium])
+                .environmentObject(premium)
+        }
+        .task {
+            await premium.checkNotification()
         }
     }
 }

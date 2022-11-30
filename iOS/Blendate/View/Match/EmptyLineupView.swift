@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct EmptyLineupView: View {
-    @Binding var showFilters: Bool
-    
+    @EnvironmentObject var session: SessionViewModel
+    @State private var showFilters = false
+
     var body: some View {
         VStack {
             Spacer()
@@ -32,6 +33,13 @@ struct EmptyLineupView: View {
             .padding(.top)
             Spacer()
         }
+        .sheet(isPresented: $showFilters) {
+            try? session.saveUser()
+        } content: {
+            NavigationStack {
+                FiltersView()
+            }
+        }
 //        .elipseBackground(true)
 
     }
@@ -39,6 +47,6 @@ struct EmptyLineupView: View {
 
 struct EmptyLineupView_Previews: PreviewProvider {
     static var previews: some View {
-        EmptyLineupView(showFilters: .constant(false))
+        EmptyLineupView()
     }
 }

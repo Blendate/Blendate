@@ -9,12 +9,10 @@ import SwiftUI
 
 struct MatchedView: View {
     @Environment(\.dismiss) private var dismiss
-//    @EnvironmentObject var vm: MatchViewModel
     
     let circleSize: CGFloat = 200
     let imageSize: CGFloat = 150
     @State var showChat = false
-//    @Binding var show: Bool
     var details: User
     var matchedWith: User
     let newConvo: Conversation
