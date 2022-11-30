@@ -22,6 +22,8 @@ struct EthnicityView: View {
                     ForEach(Ethnicity.allCases, id: \.self) { item in
                         ItemButton($ethnicity, item)
                     }
+                    OpenToAllButton($ethnicity, isFilter)
+
                 }
             }
         }

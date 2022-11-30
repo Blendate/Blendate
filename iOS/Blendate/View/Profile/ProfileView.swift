@@ -10,6 +10,10 @@ import SwiftUI
 struct ProfileView: View {
 //    @EnvironmentObject var authState: FirebaseAuthState
     @Binding var user: User
+    @State private var showSettings = false
+    @State private var showFilters = false
+    @State private var showProfile = false
+
 
     var body: some View {
         NavigationView {
@@ -17,29 +21,35 @@ struct ProfileView: View {
                 ProfileCardView(user, .session)
                     .padding(.vertical)
                 VStack {
-                    NavigationLink {
-                        EditProfileView(details: $user)
-                    } label: {
-                        ButtonCell(title: "Edit Profile", systemImage: "pencil")
-                    }
-                    Divider()
-                    NavigationLink {
-                        FiltersView()
-                    } label: {
-                        ButtonCell(title: "Change Filters", systemImage: "cloud")
-                    }
-                    Divider()
-                    NavigationLink {
-                        SettingsView()
-                    } label: {
-                        ButtonCell(title: "App Settings", systemImage: "gear")
-                    }
+//                    NavigationLink {
+//                        EditProfileView(details: $user)
+//                    } label: {
+//                        ButtonCell(title: "Edit Profile", systemImage: "pencil")
+//                    }
+//                    Divider()
+//                    NavigationLink {
+//                        FiltersView()
+//                    } label: {
+//                        ButtonCell(title: "Change Filters", systemImage: "cloud")
+//                    }
+//                    Divider()
+//                    NavigationLink {
+//                        SettingsView()
+//                    } label: {
+//                        ButtonCell(title: "App Settings", systemImage: "gear")
+//                    }
 
-//                    ButtonCell(title: "Edit Profile", systemImage: "pencil")
-//                    Divider()
-//                    ButtonCell(title: "Change Filters", systemImage: "cloud")
-//                    Divider()
-//                    ButtonCell(title: "App Settings", systemImage: "gear")
+                    ButtonCell(title: "Edit Profile", systemImage: "pencil"){
+                        showProfile = true
+                    }
+                    Divider()
+                    ButtonCell(title: "Change Filters", systemImage: "slider.horizontal.3") {
+                        showFilters = true
+                    }
+                    Divider()
+                    ButtonCell(title: "App Settings", systemImage: "gear") {
+                        showSettings = true
+                    }
                 }
                 Spacer()
                 PremiumButton(isMembership: true)
@@ -53,6 +63,10 @@ struct ProfileView: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
+            .fullScreenCover(isPresented: $showSettings) { SettingsView() }
+            .fullScreenCover(isPresented: $showProfile) { EditProfileView(details: $user) }
+            .fullScreenCover(isPresented: $showFilters) { FiltersView() }
+
         }
     }
     
@@ -113,11 +127,12 @@ struct ProfileView: View {
         var title: String
         var systemImage: String?
         var image: String?
+        var action: ()->Void
         
         
         var body: some View {
             
-//            Button(action: {sheet.state = destination }) {
+            Button(action: action) {
                 HStack {
                     if let image = image {
                         Label(title, image: image)
@@ -127,23 +142,11 @@ struct ProfileView: View {
                     Spacer()
                     Image(systemName: "chevron.right")
                 }
-//            }
+            }
             .foregroundColor(.Blue)
-            .font(.title2.weight(.semibold))
+            .font(.title3.weight(.semibold))
         }
     }
-}
-
-extension ProfileView {
-    
-    private func save() {
-        do {
-            try UserService().update(user)
-        } catch {
-            #warning("Add Popup")
-        }
-    }
-
 }
 
 struct EditProfile_Previews: PreviewProvider {

@@ -43,15 +43,21 @@ struct SessionView: View {
             MatchProfileView()
                 .tag(Tab.match)
                 .tabItem{ Tab.match.image }
+            CommunityView()
+                .tag(Tab.community)
+                .tabItem{
+                    Tab.community.image
+                        .environment(\.symbolVariants, .none)
+                }
             LikesView()
                 .tag(Tab.likes)
-                .tabItem{Tab.likes.image}
+                .tabItem{
+                    Tab.likes.image
+                        .environment(\.symbolVariants, .none)
+                }
             MessagesView(uid: session.uid)
                 .tag(Tab.messages)
                 .tabItem{ Tab.messages.image }
-            CommunityView()
-                .tag(Tab.community)
-                .tabItem{Tab.community.image}
             ProfileView(user: $session.user)
                 .tag(Tab.profile)
                 .tabItem{ Tab.profile.image }

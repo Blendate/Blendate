@@ -8,16 +8,15 @@
 import SwiftUI
 
 struct MatchAvatarView: View {
+    @EnvironmentObject var session: SessionViewModel
     var match: Conversation
     @State var startConvo = false
     @State var details: User?
     
     let service = UserService()
-    private let uid: String
 
-    init(_ match: Conversation, uid: String){
+    init(_ match: Conversation){
         self.match = match
-        self.uid = uid
     }
 
     var body: some View {
@@ -31,7 +30,6 @@ struct MatchAvatarView: View {
                         .frame(width: 80, height: 80, alignment: .center)
                     PhotoView.Avatar(url: details?.avatar, size: 70, isCell: true)
                 }
-                Text(" ")
             }
         }
         .buttonStyle(.plain)
@@ -42,7 +40,7 @@ struct MatchAvatarView: View {
     
     @MainActor
     func fetchUser() async {
-        guard let withUID = match.withUserID(uid) else {return}
+        guard let withUID = match.withUserID(session.uid) else {return}
         self.details = try? await service.fetch(fid: withUID)
 
     }
@@ -51,6 +49,7 @@ struct MatchAvatarView: View {
 
 struct MatchAvatarView_Previews: PreviewProvider {
     static var previews: some View {
-        MatchAvatarView(dev.conversation, uid: dev.tyler.id!)
+        MatchAvatarView(dev.conversation)
+            .environmentObject(SessionViewModel(dev.michael.id!))
     }
 }

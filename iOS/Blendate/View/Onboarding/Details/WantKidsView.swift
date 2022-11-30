@@ -16,6 +16,7 @@ struct WantKidsView: View {
             SignupTitle(.familyPlans, isFilter)
             ItemButton($wantKids, FamilyPlans.wantMore).padding(.trailing)
             ItemButton($wantKids, FamilyPlans.dontWant)
+            OpenToAllButton($wantKids, isFilter)
             Spacer()
         }
     }

@@ -157,6 +157,8 @@
 		4CD27CDF281CD6B200CD0F20 /* ItemButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD27CDE281CD6B200CD0F20 /* ItemButton.swift */; };
 		4CD3FF8E27838920004D2E5A /* EntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD3FF8D27838920004D2E5A /* EntryView.swift */; };
 		4CDC57E627F3B51E009EC83B /* SessionTabsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CDC57E527F3B51E009EC83B /* SessionTabsView.swift */; };
+		4CF33D242937F3240041E6C8 /* ShowMembership.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF33D232937F3240041E6C8 /* ShowMembership.swift */; };
+		4CF33D26293805510041E6C8 /* PurchaseLikesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF33D25293805510041E6C8 /* PurchaseLikesView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -297,6 +299,8 @@
 		4CD27CDE281CD6B200CD0F20 /* ItemButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemButton.swift; sourceTree = "<group>"; };
 		4CD3FF8D27838920004D2E5A /* EntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryView.swift; sourceTree = "<group>"; };
 		4CDC57E527F3B51E009EC83B /* SessionTabsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionTabsView.swift; sourceTree = "<group>"; };
+		4CF33D232937F3240041E6C8 /* ShowMembership.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowMembership.swift; sourceTree = "<group>"; };
+		4CF33D25293805510041E6C8 /* PurchaseLikesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseLikesView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -332,7 +336,6 @@
 				4CD3FF8D27838920004D2E5A /* EntryView.swift */,
 				4C2D17572926C50200C56063 /* WelcomeView.swift */,
 				4C8059D527603AF600D85D14 /* SessionView.swift */,
-				4C02578827F7766400844565 /* SessionViewModel.swift */,
 				4C02578427F774FA00844565 /* LoadingView.swift */,
 			);
 			path = Entry;
@@ -341,7 +344,6 @@
 		4C0A58312818ED730068CCCE /* Chat */ = {
 			isa = PBXGroup;
 			children = (
-				4CC1358C27F65E6F00719F48 /* ChatViewModel.swift */,
 				4C2CE33428E8C21700BF669D /* ChatView.swift */,
 				4CD00FCB28E8F25D00AAC16A /* CommunityTopic.swift */,
 				4C2CE33628E8C24500BF669D /* MessageField.swift */,
@@ -364,11 +366,12 @@
 		4C2A19A0292DD770002A1F48 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				4CF33D27293805670041E6C8 /* Premium */,
 				4CD27CDD281CD63800CD0F20 /* Onboarding */,
 				4CC2F9522817922E00A1D105 /* Match */,
+				4CF4372928A418C700A7B09F /* Community */,
 				4C48DC97292C47DA009A57D4 /* Likes */,
 				4C8002602762B41200F9410A /* Messages */,
-				4CF4372928A418C700A7B09F /* Community */,
 				4C805A7127605DAA00D85D14 /* Profile */,
 			);
 			path = View;
@@ -398,9 +401,6 @@
 			children = (
 				4C47044F27F41B99007517D9 /* SettingsView.swift */,
 				4CCFAC14280364AE0063FCA6 /* SettingCellView.swift */,
-				4CD080D52936C16E006B5641 /* PremiumViewModel.swift */,
-				4CC57ED72802C08C00C6683C /* MembershipView.swift */,
-				4CD080CF2936948E006B5641 /* PremiumPerks.swift */,
 				4C80025527609E9800F9410A /* HelpCenterView.swift */,
 			);
 			path = Settings;
@@ -409,7 +409,6 @@
 		4C8002602762B41200F9410A /* Messages */ = {
 			isa = PBXGroup;
 			children = (
-				4CC1358A27F64B4300719F48 /* MessagesViewModel.swift */,
 				4C8002612762B48700F9410A /* MessagesView.swift */,
 				4C0A582D2818E5970068CCCE /* ConvoCellView.swift */,
 				4C0A58292818E4CE0068CCCE /* MatchAvatarView.swift */,
@@ -445,6 +444,7 @@
 				4C9C0290281E0D1600EBE008 /* Model */,
 				4C02578327F774BB00844565 /* Entry */,
 				4C2A19A0292DD770002A1F48 /* View */,
+				4CF33D222937E9F00041E6C8 /* ViewModel */,
 				4CC2F9532817924700A1D105 /* Service */,
 				4C82C4D927632EA4008F3E59 /* Components */,
 				4C805A512760461C00D85D14 /* Utils */,
@@ -535,6 +535,7 @@
 			isa = PBXGroup;
 			children = (
 				4CA917462795F3B70017DADB /* FirebaseSignin.swift */,
+				4CF33D232937F3240041E6C8 /* ShowMembership.swift */,
 				4CC1359727F66BD400719F48 /* Photo */,
 				4C9C0297281E14EA00EBE008 /* Buttons */,
 				4CD080D92936DAC7006B5641 /* OLD */,
@@ -589,9 +590,9 @@
 		4C9C0290281E0D1600EBE008 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				4C0E947F278BF11F00740252 /* User.swift */,
 				4C8059D127602BD100D85D14 /* Settings.swift */,
 				4C197C58281A43D5002DD266 /* Detail.swift */,
-				4C0E947F278BF11F00740252 /* User.swift */,
 				4C2A198B292D4A94002A1F48 /* Location.swift */,
 				4C197C56281A3332002DD266 /* Stats.swift */,
 				4C8002632762B5E200F9410A /* Conversation.swift */,
@@ -629,7 +630,6 @@
 				4CD080DC2936DFFA006B5641 /* Details */,
 				4C16AD4F2799EFE400779502 /* MatchedView.swift */,
 				4CC2F9502817922100A1D105 /* EmptyLineupView.swift */,
-				4CC1358827F649D100719F48 /* MatchViewModel.swift */,
 			);
 			path = Match;
 			sourceTree = "<group>";
@@ -682,6 +682,28 @@
 				4C9182282817626F00D5CF62 /* AgeRangeView.swift */,
 			);
 			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		4CF33D222937E9F00041E6C8 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				4C02578827F7766400844565 /* SessionViewModel.swift */,
+				4CD080D52936C16E006B5641 /* PremiumViewModel.swift */,
+				4CC1358827F649D100719F48 /* MatchViewModel.swift */,
+				4CC1358A27F64B4300719F48 /* MessagesViewModel.swift */,
+				4CC1358C27F65E6F00719F48 /* ChatViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		4CF33D27293805670041E6C8 /* Premium */ = {
+			isa = PBXGroup;
+			children = (
+				4CC57ED72802C08C00C6683C /* MembershipView.swift */,
+				4CF33D25293805510041E6C8 /* PurchaseLikesView.swift */,
+				4CD080CF2936948E006B5641 /* PremiumPerks.swift */,
+			);
+			path = Premium;
 			sourceTree = "<group>";
 		};
 		4CF4372928A418C700A7B09F /* Community */ = {
@@ -884,6 +906,7 @@
 				4C2A1998292D59E5002A1F48 /* FirebaseService.swift in Sources */,
 				4C82C4EC27633788008F3E59 /* EducationView.swift in Sources */,
 				4CC1358B27F64B4300719F48 /* MessagesViewModel.swift in Sources */,
+				4CF33D242937F3240041E6C8 /* ShowMembership.swift in Sources */,
 				4C197C63281B9AB1002DD266 /* String.swift in Sources */,
 				4C805A5B27604ECE00D85D14 /* KidsrangeView.swift in Sources */,
 				4C78847D2818A03000B643C2 /* Image.swift in Sources */,
@@ -896,6 +919,7 @@
 				4C197C53281A28D2002DD266 /* Photo.swift in Sources */,
 				4C805A472760420D00D85D14 /* PropertyView.swift in Sources */,
 				4CD080D42936BC27006B5641 /* AuthState.swift in Sources */,
+				4CF33D26293805510041E6C8 /* PurchaseLikesView.swift in Sources */,
 				4C805A442760420D00D85D14 /* NameView.swift in Sources */,
 				4C0A582E2818E5970068CCCE /* ConvoCellView.swift in Sources */,
 				4C4B850A28E6B3B000B3CAF0 /* DetailCellView.swift in Sources */,
@@ -1049,13 +1073,14 @@
 				CODE_SIGN_ENTITLEMENTS = Blendate/Blendate.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"Blendate/Preview Content\"";
 				DEVELOPMENT_TEAM = QLFXX64RR2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Blendate/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Blendate;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Blendate uses your location to find better matches";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -1089,13 +1114,14 @@
 				CODE_SIGN_ENTITLEMENTS = Blendate/Blendate.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"Blendate/Preview Content\"";
 				DEVELOPMENT_TEAM = QLFXX64RR2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Blendate/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Blendate;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Blendate uses your location to find better matches";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

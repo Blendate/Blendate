@@ -48,6 +48,43 @@ struct ItemButton<T:Property>: View {
 }
 
 
+struct OpenToAllButton: View {
+    
+    @Binding var value: String
+    private let isFilter: Bool
+    init(_ value: Binding<String>, _ isFilter: Bool){
+        self._value = value
+        self.isFilter = isFilter
+    }
+    
+    var active: Bool {
+        value == kOpenString
+    }
+    
+    var body: some View {
+        if isFilter {
+            Button {
+                value = kOpenString
+            } label: {
+                Text(kOpenString)
+                    .fontType(.regular, 18, active ? .white:.Blue)
+                    .padding(.horizontal)
+                    .padding()
+                    .background(active ? Color.Blue:Color.white)
+                    .clipShape(Capsule())
+                    .shadow(color: .Blue, radius: 1, x: 0, y: 1)
+    //                .overlay(
+    //                    Capsule()
+    //                        .stroke(Color.Blue, lineWidth: 2)
+    //                )
+            }
+        }
+
+    }
+
+}
+
+
 
 struct ItemArray<T:Property>: View {
     @Binding var array: [String]

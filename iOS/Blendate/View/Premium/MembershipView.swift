@@ -31,8 +31,8 @@ struct MembershipView: View {
                         Image(systemName: "xmark")
                     }
                     Spacer()
-                    Button("Restore") {
-                        model.restore()
+                    AsyncButton("Restore") {
+                        await model.restore()
                     }
                 }
                 .foregroundColor(.Blue)
@@ -58,13 +58,13 @@ struct MembershipView: View {
     }
     
     func cell(_ package: Package) -> some View {
-        Button {
-            model.purchase(package)
+        AsyncButton {
+            try? await model.purchase(package)
         } label: {
             HStack {
                 VStack(alignment: .leading, spacing: 0) {
                     HStack {
-                        Text("\(months(for:package)) Month")
+                        Text(title(for:package))
                         if package.storeProduct.productIdentifier == Self.Yearly_ID {
                             Text("Most Popular")
                                 .font(.caption2)
@@ -93,15 +93,17 @@ struct MembershipView: View {
 
     
     
-    func months(for package: Package) -> Int {
+    func title(for package: Package) -> String {
         switch package.storeProduct.productIdentifier {
         case Self.Yearly_ID:
-            return 12
+            return String(12) + " Month"
         case Self.SemiAnnual_ID:
-            return 6
+            return String(6) + " Month"
         case Self.Monthly_ID:
-            return 1
-        default: return 1
+            return String(1) + " Month"
+        case Self.Lifetime_ID:
+            return "Lifetime"
+        default: return ""
         }
     }
     
@@ -149,75 +151,3 @@ struct MembershipView_Previews: PreviewProvider {
 }
 
 
-struct PurchaseLikesView: View {
-    @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var model: PremiumViewModel
-    var packages: [Package] { model.packages.filter{$0.isLike} }
-
-    var body: some View {
-        VStack {
-            ZStack(alignment: .top) {
-                HStack(alignment: .top) {
-                    Spacer()
-                    Button { dismiss() } label: {
-                        Image(systemName: "xmark")
-                            .fontWeight(.bold)
-                            .foregroundColor(.Blue)
-                    }
-                }
-                Image(systemName: "star.fill")
-                    .font(.largeTitle)
-                    .foregroundColor(.white)
-                    .padding()
-                    .background(Color.DarkPink)
-                    .clipShape(Circle())
-            }
-            .padding([.top, .trailing])
-            Text("Stand out and get their attention with a Super Like")
-                .font(.title)
-                .multilineTextAlignment(.center)
-                .lineLimit(4)
-            Text("Super Likes put you at the top of their list and gives you a better chance at matching")
-                .multilineTextAlignment(.center)
-                .font(.footnote)
-            packageButtons
-            Spacer()
-        }
-        .padding(.horizontal)
-        .onAppear {
-            try? model.getOfferings()
-        }
-    }
-    
-    var packageButtons: some View {
-        VStack {
-            ForEach(packages) { package in
-                Button {
-                    model.purchase(package)
-                } label: {
-                    HStack {
-                        Spacer()
-                        VStack {
-                            HStack {
-                                Text(package.storeProduct.localizedTitle)
-                                    .foregroundColor(.primary)
-                                Text(package.storeProduct.localizedPriceString)
-                                    .foregroundColor(.Blue)
-                            }.fontWeight(.bold)
-                            Text("$1.99 each")
-                                .foregroundColor(.gray)
-                        }
-                        .padding(.vertical, 8)
-                        Spacer()
-                    }
-                    .overlay(
-                        Capsule(style: .continuous)
-                            .stroke(Color.Blue, lineWidth: 1)
-                    )
-                }
-
-            }
-        }
-        .padding(.horizontal, 32)
-    }
-}

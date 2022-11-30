@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TodayView: View {
     @EnvironmentObject var session: SessionViewModel
+    @EnvironmentObject var premium: PremiumViewModel
     
     let todayUser: User
     @Binding var showLikes: Bool
@@ -47,11 +48,12 @@ struct TodayView: View {
                         showProfile = true
                     }
             }
-            Spacer()
-            Button("Show Likes"){
+            Button("View Likes"){
                 showLikes = true
             }
-            .capsuleButton(color: .DarkPink, fontsize: 16)
+            .foregroundColor(.white)
+            .capsuleButton(color: .DarkPink, fontsize: 18)
+            Spacer()
         }
         .sheet(isPresented: $showProfile) {
             ViewProfileView(details: todayUser)
@@ -59,12 +61,16 @@ struct TodayView: View {
     }
     
     func sendMessage() async {
-        guard let id = todayUser.id else {return}
-        let convo = Conversation(user1: id, user2: session.uid)
-        do {
-            try await MessageService().sendMessage(convo: convo, message: message, author: session.uid)
-        } catch {
-            print(error.localizedDescription)
+        if premium.hasPremium {
+            guard let id = todayUser.id else {return}
+            let convo = Conversation(user1: id, user2: session.uid)
+            do {
+                try await MessageService().sendMessage(convo: convo, message: message, author: session.uid)
+            } catch {
+                print(error.localizedDescription)
+            }
+        } else {
+            premium.showMembership = true
         }
     }
     

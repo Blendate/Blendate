@@ -66,28 +66,25 @@ class PremiumViewModel: ObservableObject {
         }
     }
     
-    func purchase(_ package: Package) {
-        Task {
-            let (_, customerInfo, _) = try await RevenueCatService.purchase(package: package)
-            if package.isLike {
-                let likeString = package.storeProduct.productIdentifier.filter { "0"..."9" ~= $0 }
-                if let likes = Int(likeString) {
-                    settings.superLikes += likes
-                    try saveSettings()
-                }
-            } else {
-                try await isActive(Secrets.entitlement, customerInfo: customerInfo)
+    @MainActor
+    func purchase(_ package: Package) async throws {
+        let (_, customerInfo, _) = try await RevenueCatService.purchase(package: package)
+        if package.isLike {
+            let likeString = package.storeProduct.productIdentifier.filter { "0"..."9" ~= $0 }
+            if let likes = Int(likeString) {
+                settings.superLikes += likes
+                try saveSettings()
             }
+        } else {
+            try await isActive(Secrets.entitlement, customerInfo: customerInfo)
         }
     }
     
-    func restore() {
-        Task {
-            do {
-                try await RevenueCatService.restorePurchases()
-            } catch {
-                print(error.localizedDescription)
-            }
+    func restore() async {
+        do {
+            try await RevenueCatService.restorePurchases()
+        } catch {
+            print(error.localizedDescription)
         }
     }
     

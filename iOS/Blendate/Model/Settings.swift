@@ -12,6 +12,7 @@ struct Settings: Codable, Identifiable  {
     @DocumentID var id: String?
     var notifications = Notifications(fcm: "", isOn: false)
     var superLikes: Int = 0
+    var premium: Premium = Premium()
 }
 
 struct Notifications: Codable {
@@ -19,4 +20,11 @@ struct Notifications: Codable {
     var isOn: Bool
     var messages: Bool = true
     var matches: Bool = true
+    var likes: Bool = false
+}
+
+struct Premium: Codable {
+    var invisbleBlending: Bool = false
+    var hideAge: Bool = false
+    var color: Color = .Blue
 }

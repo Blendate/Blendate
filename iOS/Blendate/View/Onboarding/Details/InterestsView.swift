@@ -12,6 +12,7 @@ struct InterestsView: View {
     
     @Binding var interests:[String]
     var isFilter: Bool = false
+    let isSignup: Bool
     let columns = [ GridItem(.flexible()), GridItem(.flexible())]
 
     @State private var presentAlert = false
@@ -28,13 +29,15 @@ struct InterestsView: View {
                     }
                 }
             }
-            Button("Start Blending", action: startTapped)
-            .fontType(.semibold, 22, .Blue)
-            .tint(.white)
-            .buttonStyle(.borderedProminent)
-            .buttonBorderShape(.capsule)
-            .controlSize(.large)
-            .padding(.bottom)
+            if isSignup {
+                Button("Start Blending", action: startTapped)
+                .fontType(.semibold, 22, .Blue)
+                .tint(.white)
+                .buttonStyle(.borderedProminent)
+                .buttonBorderShape(.capsule)
+                .controlSize(.large)
+                .padding(.bottom)
+            }
         }
         .padding(.horizontal)
 

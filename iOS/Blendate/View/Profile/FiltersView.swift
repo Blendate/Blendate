@@ -15,37 +15,46 @@ struct FiltersView: View {
     @State var drinking: String = "Open to all"
     @State var smoking: String = "Open to all"
     @State var cannabis: String = "Open to all"
+    
+    @State var showMembership = false
 
     var isParent: Bool {
         session.user.filters.isParent
     }
     
     var body: some View {
-        List {
-            ForEach(Detail.FilterGroup.allCases){ group in
-                Section {
-                    ForEach(group.cells(isParent: isParent)) { cell in
-                        DetailCellView(detail: cell, details: $session.user, type: .filter)
-                    }
-                } header: {
-                    HStack {
-                        Text(group.id)
-                        if group == .premium {
-                            Image(systemName: premium.hasPremium ? "lock.open" : "lock")
+        NavigationStack {
+            List {
+                ForEach(Detail.FilterGroup.allCases){ group in
+                    Section {
+                        ForEach(group.cells(isParent: isParent)) { cell in
+                            DetailCellView(detail: cell, details: $session.user, type: .filter, showMembership: $showMembership)
+                        }
+                    } header: {
+                        HStack {
+                            Text(group.id)
+                            if group == .premium {
+                                Image(systemName: premium.hasPremium ? "lock.open" : "lock")
+                            }
                         }
                     }
-                }
-                .textCase(nil)
+                    .textCase(nil)
 
+                }
             }
-        }
-        .listStyle(.grouped)
-        .navigationBarTitle("Filters")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placment: .navigationBarTrailing, title: "Done") {
-                dismiss()
+            .listStyle(.grouped)
+            .navigationBarTitle("Filters")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placment: .navigationBarTrailing, title: "Done") {
+                    dismiss()
+                }
             }
+            .fullScreenCover(isPresented: $showMembership){
+                MembershipView()
+                    .environmentObject(premium)
+            }
+            
         }
 
     }

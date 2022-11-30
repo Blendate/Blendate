@@ -13,75 +13,121 @@ struct SettingsView: View {
     @EnvironmentObject var premium: PremiumViewModel
     @EnvironmentObject var auth: FirebaseAuthState
     
-    @State var alertError: AlertError?
-
-    var hasPremium: Bool {
-        session.user.premium.active
-    }
+    @State var logoutAlert: AlertError?
+    @State var deleteAlert: AlertError?
+    @State private var showMembership = false
     
     var body: some View {
-//        NavigationView {
-            VStack {
-                List {
-                    Section {
-                        Button {
-                            showMembership()
-                        } label: {
-                            Text(hasPremium ? "Manage Membership":"Premium Membership")
-                        }
-
-                        if hasPremium {
-                            ToggleView("Invisivle Blending", value: $session.user.premium.invisbleBlending)
-                            ToggleView("Hide Age", value: $session.user.premium.hideAge)
-                        }
-
-                        NavigationLink("Community", destination:
-                            Text("Learn more info about upcoming community."))
-                    } header: {
-                        Text("Account")
-                            .foregroundColor(.DarkBlue)
-                            .fontWeight(.semibold)
-                    }
-                    
-                    Section {
-                        NavigationLink(destination: HelpCenterView()) {
-                            Text("Help Center")
-                        }
-                        NavigationLink("Privacy Policy", destination:
-                            Text("Privacy Policy") )
-                        NavigationLink("About", destination:
-                            Text("Blendate Mission") )
-                    } header: {
-                        Text("About")
-                            .foregroundColor(.DarkBlue)
-                            .fontWeight(.semibold)
-                    }
-                    
-                    Section {
-                        logoutButton
-                        deleteButton
-                    }
-                }
-                .listStyle(.grouped)
+        NavigationStack {
+            List {
+                notifications
+                accountSection
+                legalSection
+                buttonsSection
             }
+            .listStyle(.grouped)
             .toolbar {
-                ToolbarItem(placment: .navigationBarTrailing, title: "Done") {
-                    dismiss()
-                }
+                ToolbarItem(placment: .navigationBarTrailing, title: "Done") { dismiss() }
             }
             .navigationBarTitleDisplayMode(.inline)
-//            .foregroundColor(.DarkBlue)
-            .background(Color.LightGray)
             .navigationBarTitle("Settings")
-            .errorAlert(error: $alertError, retry: delete)
-//        }
+            .errorAlert(error: $deleteAlert, retry: delete)
+            .errorAlert(error: $logoutAlert, retry: logout)
+            .fullScreenCover(isPresented: $showMembership) {
+                MembershipView()
+            }
+        }
     }
     
+    var notifications: some View {
+        Section {
+            ToggleView("Noticications", value: $premium.settings.notifications.isOn)
+            if premium.settings.notifications.isOn {
+                ToggleView("New Messages", value: $premium.settings.notifications.messages)
+                ToggleView("New Match", value: $premium.settings.notifications.matches)
+                HStack {
+                    if !premium.hasPremium {
+                        Image(systemName: "lock")
+                    }
+                    ToggleView("Liked You", value: $premium.settings.notifications.likes)
+                }
+                    .disabled(!premium.hasPremium)
+                    .onTapGesture {
+                        if !premium.hasPremium {
+                            showMembership = true
+                        }
+                    }
+            }
+        } header: {
+            Text("Notifications")
+                .foregroundColor(.DarkBlue)
+                .fontWeight(.semibold)
+        }
+    }
     
+    var accountSection: some View {
+        Section {
+            Button {
+                showMembership = true
+            } label: {
+                HStack {
+                    Text(premium.hasPremium ? "Manage Membership":"Premium Membership")
+                        .foregroundColor(.primary)
+                    Spacer()
+                    Text(premium.hasPremium ? "Active" : "Purchase")
+                        .foregroundColor(.Blue)
+                }
+            }
+            if let provider = getProvider() {
+                HStack {
+                    Text(provider.0.rawValue)
+                    Spacer()
+                    Text(provider.1 ?? "")
+                }
+            }
+
+            NavigationLink("Community", destination:
+                Text("Learn more info about upcoming community."))
+        } header: {
+            Text("Account")
+                .foregroundColor(.DarkBlue)
+                .fontWeight(.semibold)
+        }
+    }
+    
+    var legalSection: some View {
+        Section {
+            NavigationLink(destination: HelpCenterView()) {
+                Text("Help Center")
+            }
+            NavigationLink("Privacy Policy", destination:
+                Text("Privacy Policy") )
+            NavigationLink("About", destination:
+                Text("Blendate Mission") )
+        } header: {
+            Text("Blendate")
+                .foregroundColor(.DarkBlue)
+                .fontWeight(.semibold)
+        }
+    }
+    
+    var buttonsSection: some View {
+        Section {
+            logoutButton
+            deleteButton
+        }
+    }
+}
+
+extension SettingsView {
+
     var logoutButton: some View {
         Button{
-            dismiss()
-            try? auth.auth.signOut()
+            self.deleteAlert = AlertError(
+                title: "Logout",
+                message: "Are you sure you want to logout?",
+                recovery: "Logout",
+                destructive: true)
         } label: {
             HStack {
                 Spacer()
@@ -94,7 +140,7 @@ struct SettingsView: View {
     
     var deleteButton: some View {
         Button{
-            self.alertError = AlertError(
+            self.deleteAlert = AlertError(
                 title: "Delete Account",
                 message: "Are you sure you want to delete your account?",
                 recovery: "Delete",
@@ -110,10 +156,7 @@ struct SettingsView: View {
         }
     }
     
-    @MainActor
-    func showMembership(){
-        premium.showMembership = true
-    }
+
     
     private func delete(){
         dismiss()
@@ -121,64 +164,42 @@ struct SettingsView: View {
         try? auth.auth.signOut()
 
     }
+    
+    private func logout(){
+        dismiss()
+        try? auth.auth.signOut()
+    }
+    
+    func getProvider() -> (Provider, String?)? {
+        guard let user = auth.auth.currentUser else {return nil }
+        let email = user.email
+        let phone = user.phoneNumber
+        for i in user.providerData {
+            if i.providerID != "firebase" || i.providerID != "Firebase"{//.equals("facebook.com")) {
+                switch i.providerID {
+                case "apple.com":
+                    return (.apple, email)
+                case "facebook.com":
+                    return (.facebook, email ?? phone)
+                default:
+                    return (.phone, phone)
+                }
+            }
+        }
+        return nil
+    }
 }
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView()
-            .environmentObject( SessionViewModel(user: dev.michael))
+            .environmentObject(SessionViewModel(user: dev.michael))
             .environmentObject(FirebaseAuthState())
+            .environmentObject(PremiumViewModel(dev.michael.id!))
     }
 }
 
 
-//    static func getUsersID(userId1: String, userId2: String) -> String {userId1 > userId2 ? userId1 + userId2 : userId2 + userId1}
-//
-//    func getProviders() -> [Provider]? {
-//        guard let user = auth.currentUser else {return nil }
-//
-//        var providers = [Provider]()
-//        for i in user.providerData {
-//            if i.providerID != "firebase" || i.providerID != "Firebase"{//.equals("facebook.com")) {
-//                switch i.providerID {
-//                case "apple.com":
-//                    providers.append(Provider(type: .apple, email: i.email) )
-//                case "facebook.com":
-//                    providers.append(Provider(type: .facebook, email: i.email) )
-//                case "google.com":
-//                    providers.append(Provider(type: .google, email: i.email) )
-//                case "twitter.com":
-//                    providers.append(Provider(type: .twitter, email: i.email) )
-//                default:
-//                    providers.append(Provider(type: .email, email: i.email) )
-//                }
-//            }
-//        }
-//        return providers
-//    }
-    
 
     
-//    func getProvider() -> Provider? {
-//        guard let user = auth.currentUser else {return nil }
-//
-//        for i in user.providerData {
-//            if i.providerID != "firebase" || i.providerID != "Firebase"{//.equals("facebook.com")) {
-//                switch i.providerID {
-//                case "apple.com":
-//                    return .apple
-//                case "facebook.com":
-//                    return Provider(type: .facebook, email: i.email ?? "")
-//                case "google.com":
-//                    return Provider(type: .google, email: i.email ?? "")
-//                case "twitter.com":
-//                    return Provider(type: .twitter, email: i.email ?? "")
-//                default:
-//                    return Provider(type: .email, email: i.email ?? "")
-//                }
-//            } else {
-//                return nil
-//            }
-//        }
-//        return nil
-//    }
+

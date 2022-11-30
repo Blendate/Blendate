@@ -25,6 +25,7 @@ struct RelationshipView: View {
             HStack{
                 ItemButton($relationship, Status.other).padding(.trailing)
             }
+            OpenToAllButton($relationship, isFilter)
             Spacer()
         }
     }
@@ -35,6 +36,6 @@ struct RelationshipView: View {
 struct RelationshipView_Previews: PreviewProvider {
     static var previews: some View {
         PreviewSignup(.relationship)
-
+        RelationshipView(relationship: .constant(Status.single.rawValue), isFilter: true)
     }
 }

@@ -21,8 +21,8 @@ struct PoliticsView: View {
             HStack{
                 ItemButton($politics, Politics.centrist)
                 ItemButton($politics, Politics.other)
-
             }
+            OpenToAllButton($politics, isFilter)
             Spacer()
         }
     }

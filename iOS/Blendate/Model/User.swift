@@ -26,33 +26,11 @@ class User: Codable, Identifiable {
     var info: Stats = Stats(.detail)
     var filters = Stats(.filter)
 
-    var premium: Premium = Premium()
     var color: Color = .Blue
     
     init(id: String){
         self.id = id
     }
-    private enum CodingKeys: String, CodingKey {
-        case id
-        case firstname
-        case lastname
-        case birthday
-        case gender
-        // isParent
-        case bio
-        case photos
-
-        case workTitle
-        case schoolTitle
-        case interests
-        
-        case info
-        case filters
-
-        case premium
-        case color
-    }
-
 }
 
 extension User {
@@ -69,16 +47,7 @@ extension User {
     }
     
     var ageString: String {
-        if premium.active, premium.hideAge {
-            return ""
-        } else {
-            return String(birthday.age)
-        }
+        return String(birthday.age)
     }
 }
 
-struct Premium: Codable {
-    var active: Bool = false
-    var invisbleBlending: Bool = false
-    var hideAge: Bool = false
-}

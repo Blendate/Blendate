@@ -44,9 +44,17 @@ struct HeightView: View {
                 }
             }
 
-            Text("Please don’t exaggerate by too much")
-                .fontType(.regular, 14, .white)
+            if isFilter {
+                Button(kOpenString) {
+                    height = 48
+                }
+                .capsuleButton(color: .Blue, fontsize: 18)
                 .padding(.vertical, 50)
+            } else {
+                Text("Please don’t exaggerate by too much")
+                    .fontType(.regular, 14, .white)
+                    .padding(.vertical, 50)
+            }
         }
         .onChange(of: offset) { newValue in
             height = offsetToInches(newValue)
@@ -205,6 +213,7 @@ struct HeightSlider<Content: View> : UIViewRepresentable {
 struct HeightView_Previews: PreviewProvider {
     static var previews: some View {
         PreviewSignup(.height)
+        HeightView(height: .constant(49), isFilter: true)
     }
 }
 #endif

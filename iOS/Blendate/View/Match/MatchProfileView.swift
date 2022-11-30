@@ -12,6 +12,7 @@ struct MatchProfileView: View {
     @EnvironmentObject var session: SessionViewModel
     @EnvironmentObject var premium: PremiumViewModel
     
+    var user: User? = nil
     
     var body: some View {
         if let details = vm.lineup.first {

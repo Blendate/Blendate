@@ -36,6 +36,12 @@ extension MembershipView {
     static let Yearly_ID = "com.blendate.blendate.yearly"
     static let Monthly_ID = "com.blendate.blendate.monthly"
     static let SemiAnnual_ID = "com.blendate.blendate.semiAnnual"
+    static let Lifetime_ID = "com.blendate.blendate.lifeMembership"
+}
+
+extension PurchaseLikesView {
+    static let Attention = "Get their attention with a Super Like"
+    static let SuperLike = "Super Likes put you at the top of their list and gives you a better chance at matching"
 }
 
 // MARK: - Signup Titles

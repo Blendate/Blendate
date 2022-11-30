@@ -101,7 +101,7 @@ extension PropertyView {
                 }
             }
         }
-        .edgesIgnoringSafeArea(signup ? .bottom : .leading)
+        .edgesIgnoringSafeArea(.bottom)
     }
 }
 
@@ -190,7 +190,7 @@ extension PropertyView {
         case .vices:
             VicesView(vices: valueType.vices, isFilter: isFilter)
         case .interests:
-            InterestsView(interests: details.interests, isFilter: isFilter)
+            InterestsView(interests: details.interests, isFilter: isFilter, isSignup: signup)
         case .seeking:
             GenderView(gender: valueType.seeking, detail: Detail.seeking, isFilter: isFilter)
         case .maxDistance:

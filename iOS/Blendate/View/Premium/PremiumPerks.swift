@@ -40,5 +40,4 @@ enum PremiumPerks: String, Identifiable, CaseIterable {
             return "Your profile will be seen by more users"
         }
     }
-    
 }

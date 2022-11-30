@@ -20,6 +20,7 @@ struct ReligionView: View {
                     ForEach(Religion.allCases, id: \.self) { item in
                         ItemButton($religion, item)
                     }
+                    OpenToAllButton($religion, isFilter)
                 }
             }
         }

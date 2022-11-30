@@ -9,34 +9,61 @@ import SwiftUI
 
 struct EditProfileView: View {
     @Environment(\.dismiss) private var dismiss
-    
+    @EnvironmentObject var premium: PremiumViewModel
+    @State private var showMembership = false
     @Binding var details: User
     @State private var edit = true
     var body: some View {
-        VStack {
-            editControl
-            Divider()
-            if edit {
-                List {
-                    detailsView
-                }.listStyle(.grouped)
-                Spacer()
-            } else {
-                ViewProfileView(details: details)
+        NavigationStack {
+            VStack {
+                editControl
+                Divider()
+                if edit {
+                    List {
+
+                        detailsView
+                    }.listStyle(.grouped)
+                    Spacer()
+                } else {
+                    ViewProfileView(details: details)
+                }
+            }
+            .toolbar {
+                ToolbarItem(placment: .navigationBarTrailing, title: "Done") {
+                    dismiss()
+                }
+            }
+            .fullScreenCover(isPresented: $showMembership){
+                MembershipView()
+                    .environmentObject(premium)
             }
         }
-        .toolbar {
-            ToolbarItem(placment: .navigationBarTrailing, title: "Done") {
-                dismiss()
-            }
-        }
+    }
+    
+    var premiumSection: some View {
+        Section {
+                Button{
+                    if !premium.hasPremium {
+                        showMembership = true
+                    }
+                } label: {
+                    VStack {
+                        ToggleView("Invisivle Blending", value: $premium.settings.premium.invisbleBlending)
+                        ToggleView("Hide Age", value: $premium.settings.premium.hideAge)
+                    }
+                }
+
+        } header: {
+            Text("Premium")
+        }.textCase(nil)
+            .disabled(!premium.hasPremium)
     }
     
     var detailsView: some View {
         ForEach(Detail.DetailGroup.allCases){ group in
             Section {
                 ForEach(group.cells(isParent: details.info.isParent)) { cell in
-                    DetailCellView(detail: cell, details: $details, type: .detail)
+                    DetailCellView(detail: cell, details: $details, type: .detail, showMembership: $showMembership)
                 }
             } header: {
                 Text(group.id)

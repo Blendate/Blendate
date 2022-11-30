@@ -17,6 +17,7 @@ struct MobilityView: View {
             ItemButton($mobility, Mobility.notWilling).padding(.bottom)
             ItemButton($mobility, Mobility.willing).padding(.bottom)
             ItemButton($mobility, Mobility.dontCare)
+            OpenToAllButton($mobility, isFilter)
             Spacer()
         }
     }

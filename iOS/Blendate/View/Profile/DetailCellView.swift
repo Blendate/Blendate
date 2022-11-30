@@ -14,6 +14,7 @@ struct DetailCellView: View {
     let detail: Detail
     @Binding var details: User
     let type: PropType
+    @Binding var showMembership: Bool
     
     var body: some View {
         if detail == .ageRange {
@@ -30,7 +31,7 @@ struct DetailCellView: View {
         
         if detail.isPremium && !premium.hasPremium && type == .filter {
             Button {
-                showMembership()
+                showMembership = true
             } label: {
                 HStack {
                     label
@@ -52,11 +53,7 @@ struct DetailCellView: View {
             }
         }
     }
-    
-    @MainActor
-    func showMembership(){
-        premium.showMembership.toggle()
-    }
+
     
     var maxDistanceCell: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -116,10 +113,10 @@ struct DetailCellView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             List {
-                DetailCellView(detail: .maxDistance, details: .constant(dev.michael), type: .filter)
-                DetailCellView(detail: .ageRange, details: .constant(dev.michael), type: .filter)
-                DetailCellView(detail: .gender, details: .constant(dev.michael), type: .detail)
-                DetailCellView(detail: .seeking, details: .constant(dev.michael), type: .filter)
+                DetailCellView(detail: .maxDistance, details: .constant(dev.michael), type: .filter, showMembership: .constant(false))
+                DetailCellView(detail: .ageRange, details: .constant(dev.michael), type: .filter, showMembership: .constant(false))
+                DetailCellView(detail: .gender, details: .constant(dev.michael), type: .detail, showMembership: .constant(false))
+                DetailCellView(detail: .seeking, details: .constant(dev.michael), type: .filter, showMembership: .constant(false))
             }
         }
     }

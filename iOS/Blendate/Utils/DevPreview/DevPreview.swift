@@ -72,6 +72,7 @@ struct PreviewSignup: View {
     var body: some View {
         NavigationView {
             PropertyView(type, signup: true)
+                .environmentObject(SessionViewModel("1234567890"))
         }
     }
 }

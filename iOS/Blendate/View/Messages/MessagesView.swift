@@ -11,6 +11,8 @@ import MapKit
 struct MessagesView: View {
     @StateObject var vm: MessagesViewModel
     @EnvironmentObject var session: SessionViewModel
+    @EnvironmentObject var match: MatchViewModel
+    @EnvironmentObject var premium: PremiumViewModel
     
     init(uid: String){
         self._vm = StateObject(wrappedValue: MessagesViewModel(uid: uid))
@@ -45,10 +47,10 @@ struct MessagesView: View {
             }
             else {
                 ScrollView(.horizontal, showsIndicators: false){
-                    LazyHStack(spacing: 20){
+                    LazyHStack(spacing: 15){
                         likedYou
                         ForEach(vm.matches.sorted(by: {$0.timestamp > $1.timestamp})){ match in
-                            MatchAvatarView(match, uid: vm.uid)
+                            MatchAvatarView(match)
                         }
                     }
                     .padding(.leading)
@@ -61,17 +63,26 @@ struct MessagesView: View {
     
     var likedYou: some View {
         Button {
-            session.selectedTab = .likes
+            if premium.hasPremium {
+                session.selectedTab = .likes
+            } else {
+                premium.showMembership = true
+            }
         } label: {
-            VStack {
-                ZStack {
-                    Circle().fill(Color.Blue)
-                        .frame(width: 70, height: 70)
+            ZStack {
+                Circle()
+                    .stroke( Color.DarkBlue,lineWidth: 2)
+                    .frame(width: 80, height: 80, alignment: .center)
+                PhotoView.Avatar(url: match.lineup.last?.avatar, size: 70, isCell: true)
+                    .blur(radius: premium.hasPremium ? 0 : 20)
+                    .clipShape(Circle())
+//                    Circle().fill(Color.Blue)
+//                        .frame(width: 70, height: 70)
+                VStack(spacing: 0) {
                     Text("10")
-                        .fontType(.semibold, .title3, .white)
-                        .fixedSize()
+                    Text("Likes")
                 }
-                Text("Likes")
+                .fontType(.semibold, .body, .white)
             }
         }
 

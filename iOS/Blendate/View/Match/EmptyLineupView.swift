@@ -36,9 +36,7 @@ struct EmptyLineupView: View {
         .sheet(isPresented: $showFilters) {
             try? session.saveUser()
         } content: {
-            NavigationStack {
-                FiltersView()
-            }
+            FiltersView()
         }
 //        .elipseBackground(true)
 
