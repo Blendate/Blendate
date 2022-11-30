@@ -58,7 +58,9 @@ struct WelcomeView: View {
     var accountButtons: some View {
         VStack(spacing: 16) {
             Button {
-                
+                withAnimation {
+                    siginTapped = true
+                }
             } label: {
                 HStack {
                     Spacer()
