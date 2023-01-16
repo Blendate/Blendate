@@ -78,7 +78,7 @@ struct SettingsView: View {
                         .foregroundColor(.Blue)
                 }
             }
-            if let provider = getProvider() {
+            if let provider = auth.provider {
                 HStack {
                     Text(provider.0.rawValue)
                     Spacer()
@@ -160,34 +160,16 @@ extension SettingsView {
     
     private func delete(){
         dismiss()
-        auth.auth.currentUser?.delete()
-        try? auth.auth.signOut()
+        auth.delete()
 
     }
     
     private func logout(){
         dismiss()
-        try? auth.auth.signOut()
+        auth.signout()
     }
     
-    func getProvider() -> (Provider, String?)? {
-        guard let user = auth.auth.currentUser else {return nil }
-        let email = user.email
-        let phone = user.phoneNumber
-        for i in user.providerData {
-            if i.providerID != "firebase" || i.providerID != "Firebase"{//.equals("facebook.com")) {
-                switch i.providerID {
-                case "apple.com":
-                    return (.apple, email)
-                case "facebook.com":
-                    return (.facebook, email ?? phone)
-                default:
-                    return (.phone, phone)
-                }
-            }
-        }
-        return nil
-    }
+
 }
 
 struct SettingsView_Previews: PreviewProvider {

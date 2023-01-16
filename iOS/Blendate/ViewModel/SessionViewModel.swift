@@ -33,6 +33,7 @@ class SessionViewModel: ObservableObject {
     func fetchFirebase() async {
         do {
             self.user = try await userService.fetch(fid: uid)
+            print(user)
             withAnimation(.spring()) {
                 self.loadingState = user.firstname.isEmpty ? .noUser : .user
             }

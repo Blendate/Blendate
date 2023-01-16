@@ -11,13 +11,19 @@ import FirebaseAnalytics
 import FacebookCore
 import RevenueCat
 
+extension String {
+    static let kFCMstring = "fcm"
+}
 class AppDelegate: NSObject, UIApplicationDelegate {
-    let gcmMessageIDKey = "gcm.message_id"
+    private let gcmMessageIDKey = "gcm.message_id"
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        config()
-        config_notifications()
-        application.registerForRemoteNotifications()
+        Purchases.logLevel = .debug
+        RevenueCatService.configure(withAPIKey: Secrets.revenueCat)
+        RevenueCatService.setFirebaseAppInstanceId( Analytics.appInstanceID() )
+        FirebaseApp.configure()
+        
+        config_notifications(application)
 
         FBSDKCoreKit.ApplicationDelegate.shared
             .application(application,
@@ -27,36 +33,22 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         return true
     }
 
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any],
-                     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+//        let messageID = userInfo[gcmMessageIDKey]
 
-      if let messageID = userInfo[gcmMessageIDKey] {
-        print("Message ID: \(messageID)")
-      }
-
-      print(userInfo)
-
-      completionHandler(UIBackgroundFetchResult.newData)
-    }
-}
-
-extension AppDelegate {
-    private func config() {
-        Purchases.logLevel = .error
-        RevenueCatService.configure(withAPIKey: Secrets.revenueCat)
-        RevenueCatService.setFirebaseAppInstanceId(Analytics.appInstanceID())
-        FirebaseApp.configure()
+        completionHandler(UIBackgroundFetchResult.newData)
     }
     
-    private func config_notifications(){
+    private func config_notifications(_ application: UIApplication){
         Messaging.messaging().delegate = self
         UNUserNotificationCenter.current().delegate = self
         let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
-        UNUserNotificationCenter.current().requestAuthorization(
-          options: authOptions,
-          completionHandler: {_, _ in })
-
-
+        UNUserNotificationCenter.current()
+            .requestAuthorization(
+              options: authOptions,
+              completionHandler: {_, _ in }
+            )
+        application.registerForRemoteNotifications()
     }
 }
 
@@ -73,21 +65,35 @@ extension AppDelegate: MessagingDelegate {
 
 extension AppDelegate : UNUserNotificationCenterDelegate {
 
-  // Receive displayed notifications for iOS 10 devices.
-  func userNotificationCenter(_ center: UNUserNotificationCenter,
-                              willPresent notification: UNNotification,
-    withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-    let userInfo = notification.request.content.userInfo
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification,
+                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+          
+        let userInfo = notification.request.content.userInfo
 
-    if let messageID = userInfo[gcmMessageIDKey] {
-        print("Message ID: \(messageID)")
+        if let messageID = userInfo[gcmMessageIDKey] {
+            print("Message ID: \(messageID)")
+        }
+
+        print(userInfo)
+
+        completionHandler([[.banner, .badge, .sound]])
     }
 
-    print(userInfo)
 
-    // Change this to your preferred presentation option
-    completionHandler([[.banner, .badge, .sound]])
-  }
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                              didReceive response: UNNotificationResponse,
+                              withCompletionHandler completionHandler: @escaping () -> Void) {
+        let userInfo = response.notification.request.content.userInfo
+
+        if let messageID = userInfo[gcmMessageIDKey] {
+          print("Message ID from userNotificationCenter didReceive: \(messageID)")
+        }
+
+        print(userInfo)
+
+        completionHandler()
+    }
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
 
@@ -96,24 +102,8 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
 
     }
-
-  func userNotificationCenter(_ center: UNUserNotificationCenter,
-                              didReceive response: UNNotificationResponse,
-                              withCompletionHandler completionHandler: @escaping () -> Void) {
-    let userInfo = response.notification.request.content.userInfo
-
-    if let messageID = userInfo[gcmMessageIDKey] {
-      print("Message ID from userNotificationCenter didReceive: \(messageID)")
-    }
-
-    print(userInfo)
-
-    completionHandler()
-  }
 }
-extension String {
-    static public var kFCMstring: String { "fcm" }
-}
+
 
 //class AppDelegate: NSObject, UIApplicationDelegate {
 //    let gcmMessageIDKey = "gcm.message_id"

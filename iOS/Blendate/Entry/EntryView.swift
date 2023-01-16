@@ -6,10 +6,6 @@
 //
 
 import SwiftUI
-import Firebase
-import FacebookCore
-import UIKit
-import FirebaseAuth
 
 struct EntryView: View {
     @EnvironmentObject var authState: FirebaseAuthState
@@ -26,45 +22,18 @@ struct EntryView: View {
             }
         }
 //        .onOpenURL(perform: firebaseSignin)
-        .onAppear(perform: UIApplication.shared.addTapGestureRecognizer )
 
     }
-    
+
+}
+
+//import FacebookCore
+//extension EntryView {
 //    private func firebaseSignin(with url: URL){
 //        let link = url.absoluteString
 //        print("🔗 [URL] \(link)")
 //        FBSDKCoreKit.ApplicationDelegate.shared.application(UIApplication.shared, open: url, sourceApplication: nil, annotation: UIApplication.OpenURLOptionsKey.annotation)
 //    }
-}
+//}
 
 
-@MainActor
-class FirebaseAuthState: ObservableObject {
-    
-    enum FirebaseState {
-        case loading, noUser, uid(String)
-    }
-    
-    let auth = Auth.auth()
-    
-//    @Published var firUser: FirebaseAuth.User?
-    @Published var state:FirebaseState = .loading
-    
-    private let firebase = Firestore.firestore()
-    
-    init(){
-        auth.addStateDidChangeListener { (auth,user) in
-            print("🔥 [Auth] Changed: \(user?.uid ?? "No User")")
-//            self.firUser = user
-            if let uid = user?.uid {
-                self.state = .uid(uid)
-            } else {
-                self.state = .noUser
-            }
-        }
-    }
-    
-    func signout(){
-        try? auth.signOut()
-    }
-}

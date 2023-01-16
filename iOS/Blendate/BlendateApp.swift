@@ -11,10 +11,12 @@ import SwiftUI
 struct BlendateApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject var authState = FirebaseAuthState()
+    
     var body: some Scene {
         WindowGroup {
             EntryView()
                 .environmentObject(authState)
+                .onAppear(perform: UIApplication.shared.addTapGestureRecognizer )
         }
     }
 }

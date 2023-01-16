@@ -9,8 +9,6 @@ import SwiftUI
 
 enum ProfileType { case view, match, session }
 
-
-
 struct ProfileCardView: View {
     let profileType: ProfileType
     let details: User
@@ -61,8 +59,11 @@ struct ProfileCard: View {
                 VStack {
                     Text(details.firstname + ", " + details.ageString)
                         .fontType(.semibold, .title, .white)
-                    Text(details.info.location.name)
-                        .fontType(.semibold, .body, .white)
+                    if profileType == .session {
+                        Text(details.info.location.name)
+                            .fontType(.semibold, .body, .white)
+                    }
+                    children
                 }
                 .padding(.bottom)
                 .padding(.top, avatarSize/1.5)
@@ -76,6 +77,36 @@ struct ProfileCard: View {
         .padding(.horizontal)
     }
     
+    var children: some View {
+        let children = details.info.children
+        var childrenText: String {
+            if children == 0 {
+                return ""
+            } else if children == 1 {
+                return "Child"
+            } else {
+                return "Children"
+            }
+        }
+        return HStack(spacing: 4) {
+            if !details.info.isParent {
+                Text("No Children")
+            } else {
+                Text(children.description)
+                Text(childrenText)
+                Text(" | ")
+                if children > 1 {
+                    Text("Ages:")
+                    Text(details.info.childrenRange.label(max: 21))
+                } else {
+                    Text("Age")
+                    Text(details.info.childrenRange.min.description)
+                }
+            }
+        }
+        .fontType(.semibold, .body, .white)
+
+    }
     var matchButtons: some View {
         HStack {
             if profileType == .match {

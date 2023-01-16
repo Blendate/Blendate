@@ -441,6 +441,7 @@
 				4C0E9495278F79CA00740252 /* Blendate.entitlements */,
 				4C02579527F78FAB00844565 /* LaunchScreen.storyboard */,
 				4C8059A527601ED900D85D14 /* BlendateApp.swift */,
+				4C9306A227960A99000ABD89 /* AppDelegate.swift */,
 				4C9C0290281E0D1600EBE008 /* Model */,
 				4C02578327F774BB00844565 /* Entry */,
 				4C2A19A0292DD770002A1F48 /* View */,
@@ -465,8 +466,6 @@
 		4C805A512760461C00D85D14 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				4CD080D32936BC27006B5641 /* AuthState.swift */,
-				4C9306A227960A99000ABD89 /* AppDelegate.swift */,
 				4C2A19A1292DE12C002A1F48 /* Constants */,
 				4C918233281770C600D5CF62 /* Extensions */,
 				4C91822528173C7300D5CF62 /* DevPreview */,
@@ -687,6 +686,7 @@
 		4CF33D222937E9F00041E6C8 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				4CD080D32936BC27006B5641 /* AuthState.swift */,
 				4C02578827F7766400844565 /* SessionViewModel.swift */,
 				4CD080D52936C16E006B5641 /* PremiumViewModel.swift */,
 				4CC1358827F649D100719F48 /* MatchViewModel.swift */,

@@ -114,7 +114,7 @@ extension Detail {
 }
 
 extension Detail {
-    #warning("Fix All SVGs")
+    #warning("Switch to SVGs")
     var svgName: String? {
         switch self {
         case .name: return "Family"
@@ -128,6 +128,7 @@ extension Detail {
         case .religion: return "Religion"
         case .politics: return "Politics"
         case .ethnicity: return "Ethnicity"
+        case .seeking: return "Interested"
         default:
             return nil
         }

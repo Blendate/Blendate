@@ -165,6 +165,8 @@ extension PropertyView {
             
         case .location:
             LocationView(location: details.info.location, maxDistance: filters.maxDistance)
+        case .seeking:
+            GenderView(gender: valueType.seeking, detail: Detail.seeking, isFilter: isFilter)
         case .bio:
             AboutView(about: details.bio)
         case .photos:
@@ -191,8 +193,7 @@ extension PropertyView {
             VicesView(vices: valueType.vices, isFilter: isFilter)
         case .interests:
             InterestsView(interests: details.interests, isFilter: isFilter, isSignup: signup)
-        case .seeking:
-            GenderView(gender: valueType.seeking, detail: Detail.seeking, isFilter: isFilter)
+
         case .maxDistance:
             LocationView(location: details.info.location, maxDistance: filters.maxDistance)
         case .ageRange:
@@ -201,4 +202,14 @@ extension PropertyView {
     }
 }
 
+
+struct PropertyView_Previews: PreviewProvider {
+    static var previews: some View {
+        NavigationView {
+            PropertyView(.seeking, signup: true, propType: .detail)
+                .environmentObject(SessionViewModel(user: dev.michael))
+
+        }
+    }
+}
 

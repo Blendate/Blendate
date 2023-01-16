@@ -65,6 +65,7 @@ extension DeveloperPreview {
             }
             return arr
         }()
+        details.info = info
         
         return details
     }

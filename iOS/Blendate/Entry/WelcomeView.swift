@@ -15,11 +15,7 @@ struct WelcomeView: View {
             header
             Spacer()
             terms
-            if siginTapped {
-                signinButtons
-            } else {
-                accountButtons
-            }
+            
         }
         .padding(.horizontal, 32)
         .background(Color.Blue)
@@ -36,7 +32,15 @@ struct WelcomeView: View {
             }
         }
     }
-
+    
+    @ViewBuilder
+    var buttons: some View {
+        if siginTapped {
+            signinButtons
+        } else {
+            accountButtons
+        }
+    }
         
     var signinButtons: some View {
         VStack {
@@ -87,7 +91,7 @@ struct WelcomeView: View {
             .padding(12)
             .background(Color.clear)
             .clipShape(Capsule())
-            .overlay( /// apply a rounded border
+            .overlay(
                 Capsule()
                     .stroke(.white, lineWidth: 2)
             )
