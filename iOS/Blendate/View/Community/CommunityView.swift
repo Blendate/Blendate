@@ -7,37 +7,9 @@
 
 import SwiftUI
 
-class CommunityViewModel: ObservableObject {
-    @Published var topics: [CommunityTopic] = []
-    
-    let service = CommunityService()
-    
-    init() {
-        fetchTopics()
-    }
-    
-    func fetchTopics(){
-        service.collection
-            .addSnapshotListener { snapshot, error in
-                guard error == nil else {
-                    print("Fetch Messages Error: \(error?.localizedDescription)")
-                    return
-                }
-                snapshot?.documentChanges.forEach({ change in
-                    if change.type == .added {
-                        if let topic = try? change.document.data(as: CommunityTopic.self){
-                            self.topics.append(topic)
-                        } else {
-                            print("Decode Error For: \(change.document.documentID)")
-                        }
-                    }
-                })
-            }
-
-    }
-}
-
 struct CommunityView: View {
+    @EnvironmentObject var session: SessionViewModel
+
     @StateObject var model = CommunityViewModel()
     @State var title: String = ""
     @State var text: String = ""
@@ -49,12 +21,10 @@ struct CommunityView: View {
                 header
                 newDiscussion
                 List {
-                    ForEach(model.topics) { topic in
+                    ForEach(model.fetched) { topic in
                         CommunityCell(topic: topic)
                             .listRowSeparator(.hidden)
                     }
-
-                    
                 }.listStyle(.plain)
             }
             .padding(.top, 10)
@@ -62,7 +32,9 @@ struct CommunityView: View {
             .sheet(isPresented: $showNew) {
                 NewCommunityView()
                 .environmentObject(model)
+                .environmentObject(session)
             }
+            .errorAlert(error: $model.alert)
         }
     }
     
@@ -138,6 +110,9 @@ struct CommunityCell: View {
 }
 
 struct NewCommunityView: View {
+    @Environment(\.dismiss) private var dismiss
+
+    @EnvironmentObject var session: SessionViewModel
     @EnvironmentObject var model: CommunityViewModel
     
     @State private var title = ""
@@ -158,24 +133,16 @@ struct NewCommunityView: View {
                     Text("Description")
                 }
             }.toolbar {
-                ToolbarItem(placment: .navigationBarTrailing, systemImage: "plus") {
-//                    guard let uid = try? Fire.checkUID() else {return}
-//                    let cid = FirebaseManager.instance.Community.document().documentID
-//                    let topic = CommunityTopic(title: title, subtitle: subtitle, cid: cid, author: uid)
-//                    create(topic)
+                ToolbarItem(placement: .navigationBarTrailing){
+                    AsyncButton(systemImageName: "plus") {
+                        guard let uid = session.user.id else {return}
+                        await model.newDiscussion(author: uid, title: title, description: subtitle)
+                        dismiss()
+                    }
                 }
+
             }
         }
-    }
-    
-    private func create(_ topic: CommunityTopic){
-//        do {
-//            CommunityService().create(topic)
-//            try FirebaseManager.instance.Community.document(topic.cid)
-//                .setData(from: topic)
-//        } catch {
-//            print("Create Community Error: \(error.localizedDescription)")
-//        }
     }
 }
 

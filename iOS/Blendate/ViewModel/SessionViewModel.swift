@@ -15,7 +15,6 @@ class SessionViewModel: ObservableObject {
     @Published var loadingState: SessionState = .loading
     
     @Published var user: User
-    @Published var subsciptionState: SubsciptionState = .unknown
 
     let uid: String
     

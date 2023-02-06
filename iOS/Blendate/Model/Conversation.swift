@@ -13,14 +13,16 @@ import SwiftUI
 class Conversation: Codable, Identifiable {
     @DocumentID var id: String?
     var users: [String]
-    let timestamp: Date
-    var lastMessage: ChatMessage
-
+    var timestamp: Date = .now
+    var lastMessage: ChatMessage = ChatMessage(author: "", text: "")
+    
     init(user1: String, user2: String) {
         self.id = MessageService.getUsersID(userId1: user1, userId2: user2)
         self.users = [user1, user2]
-        self.timestamp = .now
-        self.lastMessage = ChatMessage(author: "", text: "")
+    }
+    
+    init(users: [String]) {
+        self.users = users
     }
 }
 

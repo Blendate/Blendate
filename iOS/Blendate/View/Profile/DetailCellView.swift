@@ -34,7 +34,7 @@ struct DetailCellView: View {
                 showMembership = true
             } label: {
                 HStack {
-                    label
+                    Text(label)
                     Spacer()
                     value
                 }
@@ -43,10 +43,10 @@ struct DetailCellView: View {
 
         } else {
             NavigationLink {
-                PropertyView(detail, signup: false, propType: type)
+                PropertyView(detail: detail, signup: false, isFilter: type == .filter)
             } label: {
                 HStack {
-                    label
+                    Text(label)
                     Spacer()
                     value
                 }
@@ -56,24 +56,24 @@ struct DetailCellView: View {
 
     
     var maxDistanceCell: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: 10) {
             HStack {
-                label
+                Text(label)
                 Spacer()
                 Text("\(details.filters.maxDistance) mi")
-                    .fontType(.semibold, 16, .DarkBlue)
+                    .foregroundColor(.Blue)
             }
             Slider(value: maxDistance, in: 1...50, step: 1.0)
         }
     }
     
     var ageRangeCell: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: 3) {
             HStack {
-                label
+                Text(label)
                 Spacer()
-                Text( details.filters.ageRange.label(max: KAgeRange.max) )
-                    .fontType(.semibold, 16, .DarkBlue)
+                Text( details.filters.ageRange.label(min: KAgeRange.min, max: KAgeRange.max) )
+                    .foregroundColor(.Blue)
             }
             RangeSlider(range: ageRange, in: KAgeRange.min...KAgeRange.max, step: 1)
         }
@@ -81,11 +81,26 @@ struct DetailCellView: View {
     
     var value: some View {
         Text(details.valueLabel(for: detail, type))
-            .fontType(.semibold, 16, .DarkBlue)
+            .foregroundColor(.Blue)
+//            .fontType(.regular, 16, .Blue)
     }
     
-    var label: some View {
-        Text(detail.label(type))
+    var label: String {
+        switch detail {
+        case .isParent:
+            return "Parent"
+        case .childrenRange:
+            return "Children Age Range"
+        case .bio:
+            return "About"
+        case .familyPlans:
+            return "Family Plans"
+        case .maxDistance:
+            return "Max Distance"
+        case .ageRange:
+            return "Age Range"
+        default: return detail.rawValue.camelCaseToWords()
+        }
     }
 }
 
@@ -137,20 +152,16 @@ extension User {
         case .education:
             return schoolTitle
         case .height:
-            let value = valueType.height
-            return value.cmToInches
+            return valueType.height.cmToInches
         case .relationship:
-            let value = valueType.relationship
-            return value
+            return valueType.relationship
         case .isParent:
-            let value = valueType.isParent
-            return value ? "Yes":"No"
+            return valueType.isParent ? "Yes":"No"
         case .children:
             let value = valueType.children
             return String(value)
         case .childrenRange:
-            let value = valueType.childrenRange
-            return "\(value.min) - \(value.max)"
+            return valueType.childrenRange.label(min: KKidAge.min, max: KKidAge.max)
         case .familyPlans:
             let value = valueType.familyPlans
             return value
@@ -186,8 +197,98 @@ extension User {
             let value = valueType.maxDistance
             return value.description
         case .ageRange:
-            let value = valueType.ageRange
-            return value.label(max: 70)
+            return valueType.ageRange.label(min: KAgeRange.min, max: KAgeRange.max)
         }
     }
 }
+
+//extension User {
+//    func value(for detail: Detail, isFilter: Bool) -> Any? {
+//        let valueType: Stats = isFilter ? filters : info
+//
+//        switch detail {
+//        case .name: return value(for: "firstname")
+//        case .birthday, .gender, .bio, .photos, .interests: return value(for: detail.rawValue)
+//        default: return valueType.value(for: detail.rawValue)
+//        }
+//
+//    }
+//
+//    func setValue(_ value: Any?, for detail: Detail, isFilter: Bool) {
+//        let valueType: Stats = isFilter ? filters : info
+//
+//        switch detail {
+//        case .name:
+//            if let value = value as? (String, String) {
+//                firstname = value.0
+//                lastname = value.1
+//            }
+//        case .birthday:
+//            if let value = value as? Date {
+//                birthday = value
+//            }
+//        case .gender:
+//            if let value = value as? String {
+//                gender = value
+//            }
+//        case .isParent:
+//            if let value = value as? Bool {
+//                valueType.isParent = value
+//            }
+//        case .children:
+//            if let value = value as? Int {
+//                valueType.children = value
+//            }
+//        case .childrenRange:
+//            if let value = value as? IntRange {
+//                valueType.childrenRange = value
+//            }
+//        case .location:
+//            if let value = value
+//        case .seeking:
+//            <#code#>
+//        case .bio:
+//            <#code#>
+//        case .photos:
+//            <#code#>
+//        case .relationship:
+//            <#code#>
+//        case .familyPlans:
+//            <#code#>
+//        case .work:
+//            <#code#>
+//        case .education:
+//            <#code#>
+//        case .religion:
+//            <#code#>
+//        case .politics:
+//            <#code#>
+//        case .ethnicity:
+//            <#code#>
+//        case .mobility:
+//            <#code#>
+//        case .height:
+//            <#code#>
+//        case .vices:
+//            <#code#>
+//        case .interests:
+//            <#code#>
+//        case .maxDistance:
+//            <#code#>
+//        case .ageRange:
+//            <#code#>
+//        }
+//
+//    }
+//}
+//extension Encodable {
+//    func hasKey(for path: String) -> Bool {
+//        return dictionary?[path] != nil
+//    }
+//    func value(for path: String) -> Any? {
+//        return dictionary?[path]
+//    }
+//    var dictionary: [String: Any]? {
+//        return (try? JSONSerialization.jsonObject(with: JSONEncoder().encode(self))) as? [String: Any]
+//    }
+//}

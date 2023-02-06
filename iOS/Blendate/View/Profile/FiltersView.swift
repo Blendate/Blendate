@@ -11,10 +11,6 @@ struct FiltersView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var session: SessionViewModel
     @EnvironmentObject var premium: PremiumViewModel
-
-    @State var drinking: String = "Open to all"
-    @State var smoking: String = "Open to all"
-    @State var cannabis: String = "Open to all"
     
     @State var showMembership = false
 
@@ -25,21 +21,27 @@ struct FiltersView: View {
     var body: some View {
         NavigationStack {
             List {
-                ForEach(Detail.FilterGroup.allCases){ group in
+                ForEach(FilterGroup.allCases){ group in
                     Section {
-                        ForEach(group.cells(isParent: isParent)) { cell in
-                            DetailCellView(detail: cell, details: $session.user, type: .filter, showMembership: $showMembership)
+                        let cells = group.cells(isParent: isParent)
+                        ForEach(cells) { cell in
+                            DetailCellView(
+                                detail: cell,
+                                details: $session.user,
+                                type: .filter,
+                                showMembership: $showMembership)
                         }
                     } header: {
                         HStack {
-                            Text(group.id)
+                            Text(group.id.capitalized)
                             if group == .premium {
                                 Image(systemName: premium.hasPremium ? "lock.open" : "lock")
                             }
                         }
+                        .foregroundColor(.DarkBlue)
+                        .fontWeight(.semibold)
                     }
                     .textCase(nil)
-
                 }
             }
             .listStyle(.grouped)
@@ -54,14 +56,43 @@ struct FiltersView: View {
                 MembershipView()
                     .environmentObject(premium)
             }
-            
         }
 
+    }
+
+}
+
+extension FiltersView {
+    
+    enum FilterGroup: String, Identifiable, Equatable, CaseIterable {
+        var id: String {self.rawValue}
+        case general, personal, children, background, premium
+
+        func cells(isParent: Bool) -> [Detail] {
+            switch self {
+            case .general:
+                return [.maxDistance, .ageRange, .seeking]
+            case .children:
+                if isParent {
+                    return [.isParent, .children, .familyPlans]
+                } else {
+                    return [.isParent, .familyPlans]
+                }
+            case .personal:
+                return [.relationship]
+            case .background:
+                return [.religion, .ethnicity]
+            case .premium:
+                return Detail.allCases.filter{$0.isPremium}
+            }
+        }
     }
 }
 
 struct FiltersView_Previews: PreviewProvider {
     static var previews: some View {
         FiltersView()
+            .environmentObject(SessionViewModel(user: dev.michael))
+            .environmentObject(PremiumViewModel(dev.michael.id!))
     }
 }

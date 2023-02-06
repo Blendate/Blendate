@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct CommunityChatView: View {
 //    @StateObject var model: ChatViewModel
     
@@ -69,5 +68,5 @@ struct CommunityChatView_Previews: PreviewProvider {
         CommunityChatView(topic: topic)
     }
 
-    static let topic = CommunityTopic(id: "123", title: "Travel Tips & Tricks", subtitle: "Single Mom gives advice on how to travel with kids", author: dev.michael.id!)
+    static let topic = CommunityTopic(author: dev.michael.id!, title: "Travel Tips & Tricks", subtitle: "Single Mom gives advice on how to travel with kids")
 }

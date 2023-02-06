@@ -9,7 +9,7 @@ import SwiftUI
 import FirebaseFirestoreSwift
 import CoreLocation
 
-class User: Codable, Identifiable {
+class User: NSObject, Codable, Identifiable {
     @DocumentID var id: String?
     var firstname: String = ""
     var lastname: String = ""

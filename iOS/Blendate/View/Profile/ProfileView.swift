@@ -8,37 +8,22 @@
 import SwiftUI
 
 struct ProfileView: View {
-//    @EnvironmentObject var authState: FirebaseAuthState
+    //    @EnvironmentObject var authState: FirebaseAuthState
     @Binding var user: User
     @State private var showSettings = false
     @State private var showFilters = false
     @State private var showProfile = false
-
-
+    
+    
     var body: some View {
         NavigationView {
             VStack {
+                PremiumButton(isMembership: true)
+                    .padding(.top)
+                PremiumButton(isMembership: false)
                 ProfileCardView(user, .session)
                     .padding(.vertical)
                 VStack {
-//                    NavigationLink {
-//                        EditProfileView(details: $user)
-//                    } label: {
-//                        ButtonCell(title: "Edit Profile", systemImage: "pencil")
-//                    }
-//                    Divider()
-//                    NavigationLink {
-//                        FiltersView()
-//                    } label: {
-//                        ButtonCell(title: "Change Filters", systemImage: "cloud")
-//                    }
-//                    Divider()
-//                    NavigationLink {
-//                        SettingsView()
-//                    } label: {
-//                        ButtonCell(title: "App Settings", systemImage: "gear")
-//                    }
-
                     ButtonCell(title: "Edit Profile", systemImage: "pencil"){
                         showProfile = true
                     }
@@ -52,9 +37,6 @@ struct ProfileView: View {
                     }
                 }
                 Spacer()
-                PremiumButton(isMembership: true)
-                PremiumButton(isMembership: false)
-                Spacer()
             }
             .padding(.horizontal)
             .toolbar {
@@ -63,12 +45,16 @@ struct ProfileView: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
-            .fullScreenCover(isPresented: $showSettings) { SettingsView() }
             .fullScreenCover(isPresented: $showProfile) { EditProfileView(details: $user) }
             .fullScreenCover(isPresented: $showFilters) { FiltersView() }
-
+            .fullScreenCover(isPresented: $showSettings) { SettingsView() }
+            
         }
     }
+}
+
+
+extension ProfileView {
     
     struct PremiumButton: View {
         @EnvironmentObject var premium: PremiumViewModel

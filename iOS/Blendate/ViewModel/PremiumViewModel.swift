@@ -8,12 +8,10 @@
 import SwiftUI
 import RevenueCat
 
-enum SubsciptionState { case unknown, subscribed, notSubscribed }
-enum OfferingsState { case unknown, fetched, noOfferings }
 
-class PremiumViewModel: ObservableObject {
-    @Published var subsciptionState: SubsciptionState = .unknown
-    @Published var offeringsState: OfferingsState = .unknown
+class PremiumViewModel: FirebaseService<Settings> {
+
+    @Published var hasPremium: Bool = false
     @Published var packages: [Package] = []
     
     
@@ -24,46 +22,50 @@ class PremiumViewModel: ObservableObject {
 
     private let uid: String
     
-    var hasPremium: Bool { subsciptionState == .subscribed }
-    
-    private let settingsService: FirebaseService = FirebaseService<Settings>(collection: "settings")
 
     init(_ uid: String){
         self.uid = uid
         self.settings = Settings(id: uid)
+        super.init(collection: "settings")
     }
     
-    func getOfferings() throws {
-        Task { @MainActor in
-            let offerings = try await RevenueCatService.getOfferings()
-            if let packages = offerings?.current?.availablePackages {
-                offeringsState = .fetched
-                self.packages = packages
-            } else {
-                offeringsState = .noOfferings
-            }
+    func fetchSettings() async {
+        if let settings = try? await fetch(fid: uid) {
+            self.settings = settings
+        }
+    }
+    
+    func saveSettings() {
+        try? update(settings)
+    }
+}
+
+extension PremiumViewModel {
+    
+    @MainActor
+    func fetchOfferings() async {
+        let offerings = try? await RevenueCatService.getOfferings()
+        if let packages = offerings?.current?.availablePackages {
+            self.packages = packages
         }
     }
     
     @MainActor
     func login(uid: String) async {
         do {
-            self.settings = try await settingsService.fetch(fid: uid)
+            await fetchSettings()
             let (customerInfo, _) = try await RevenueCatService.logIn(uid)
-            try await isActive(Secrets.entitlement, customerInfo: customerInfo)
+            await isActive(customerInfo)
         } catch {
             print(error)
         }
     }
     
+    
     @MainActor
-    func isActive(_ entitlementId: String, customerInfo: CustomerInfo?) async throws {
-        let isActive = try await RevenueCatService.isActive(entitlementId, customerInfo: customerInfo)
-        if let isActive = isActive {
-            subsciptionState = isActive ? .subscribed : .notSubscribed
-        } else {
-            subsciptionState = .notSubscribed
-        }
+    private func isActive(_ customerInfo: CustomerInfo?) async {
+        let isActive = try? await RevenueCatService.isActive(Secrets.entitlement, customerInfo: customerInfo)
+        self.hasPremium = isActive ?? false
     }
     
     @MainActor
@@ -73,10 +75,10 @@ class PremiumViewModel: ObservableObject {
             let likeString = package.storeProduct.productIdentifier.filter { "0"..."9" ~= $0 }
             if let likes = Int(likeString) {
                 settings.superLikes += likes
-                try saveSettings()
+                saveSettings()
             }
         } else {
-            try await isActive(Secrets.entitlement, customerInfo: customerInfo)
+            await isActive(customerInfo)
         }
     }
     
@@ -86,11 +88,6 @@ class PremiumViewModel: ObservableObject {
         } catch {
             print(error.localizedDescription)
         }
-    }
-    
-    
-    func saveSettings() throws {
-        try settingsService.update(settings)
     }
 }
 
@@ -107,12 +104,12 @@ extension PremiumViewModel {
                 let approved = try await notificationCenter.requestAuthorization(options: [.badge, .alert, .sound])
                 if let fcm = fcm, approved {
                     settings.notifications = Notifications(fcm: fcm, isOn: true)
-                    try settingsService.update(settings)
+                    try update(settings)
                 }
             case .authorized:
                 if let fcm = fcm, settings.notifications.fcm != fcm {
                     settings.notifications = Notifications(fcm: fcm, isOn: true)
-                    try settingsService.update(settings)
+                    try update(settings)
                 }
             default:
                 break

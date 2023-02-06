@@ -52,9 +52,10 @@ struct MembershipView: View {
         }
         .padding()
         .background(Color.Blue)
-        .onAppear {
-            try? model.getOfferings()
+        .task {
+            await model.fetchOfferings()
         }
+
     }
     
     func cell(_ package: Package) -> some View {

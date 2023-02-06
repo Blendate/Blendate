@@ -8,129 +8,66 @@
 import SwiftUI
 
 enum Detail: String, Identifiable, CaseIterable {
-    var id: String {self.title}
+    var id: String {self.rawValue}
     
-    case name, birthday, gender, isParent, children, childrenRange, location,seeking, bio, photos
+    case name, birthday, gender, isParent, children, childrenRange, location, seeking, bio, photos
     
     case relationship, familyPlans, work, education, religion, politics, ethnicity, mobility, height, vices, interests
     
     case maxDistance, ageRange
     
     var required: Bool {
-        switch self {
-        case .height, .relationship, .familyPlans, .work, .education, .mobility, .religion, .politics, .ethnicity, .vices:
-            return false
-        default:
-            return true
-
-        }
-    }
-    
-    func label(_ type: PropType) -> String {
-        switch self {
-        case .isParent:
-            return "Parent"
-        case .childrenRange:
-            return "Children Age Range"
-        case .bio:
-            return "About"
-        case .familyPlans:
-            return "Family Plans"
-        case .maxDistance:
-            return "Max Distance"
-        case .ageRange:
-            return "Age Range"
-        case .height:
-            return type == .filter ? "Minimum Height":"Height"
-        default: return rawValue.camelCaseToWords()
-        }
+        return Stats.Required.contains(self)
+//        case .height, .relationship, .familyPlans, .work, .education, .mobility, .religion, .politics, .ethnicity, .vices:
     }
     
     var isPremium: Bool {
-        FilterGroup.premium.cells(isParent: true).contains(self)
-    }
-
-}
-
-// MARK: - Groups
-extension Detail {
-    
-    enum FilterGroup: String, Identifiable, Equatable, CaseIterable {
-        var id: String {self.rawValue}
-        case general = "General"
-        case personal = "Personal"
-        case children = "Children"
-        case background = "Background"
-        case premium = "Premium"
-
-        func cells(isParent: Bool) -> [Detail] {
-            switch self {
-            case .general:
-                return [.maxDistance, .ageRange, .seeking]
-            case .children:
-                if isParent {
-                    return [.isParent, .children, .familyPlans]
-                } else {
-                    return [.isParent, .familyPlans]
-                }
-            case .personal:
-                return [.relationship]
-            case .background:
-                return [.religion, .ethnicity]
-            case .premium:
-                return [.childrenRange, .height, .politics, .mobility, .vices]
-            }
-        }
+        Premium.Access.contains(self)
     }
     
-    enum DetailGroup: String, Identifiable, Equatable, CaseIterable {
-        var id: String {self.rawValue}
-        case general = "General"
-        case personal = "Personal"
-        case children = "Children"
-        case background = "Background"
-        case other = "Other"
-
-        func cells(isParent: Bool) -> [Detail] {
-            switch self {
-            case .general:
-                return [.location, .photos]
-            case .personal:
-                return [.bio, .work, .education, .height, .relationship]
-            case .children:
-                if isParent {
-                    return [.isParent, .children, .childrenRange, .familyPlans]
-                } else {
-                    return [.isParent, .familyPlans]
-                }
-            case .background:
-                return [.religion, .ethnicity, .politics]
-            case .other:
-                return [.mobility, .vices, .interests]
-            }
-        }
-    }
     
+    func next(isParent: Bool = true) -> Detail {
+        if self == .isParent, !isParent {
+            return .location
+        }
+        let all = Self.allCases
+        let idx = all.firstIndex(of: self)!
+        let next = all.index(after: idx)
+        return all[next == all.endIndex ? all.startIndex : next]
+    }
+
+//    var options: [String] {
+//        switch self {
+//        case .gender:
+//            return Gender.allCases.map({$0.value})
+//        case .isParent:
+//            return Yes.allCases.map({$0.value})
+//        case .seeking:
+//            return Gender.allCases.map({$0.value})
+//        case .relationship:
+//            return Relationship.allCases.map({$0.value})
+//        case .familyPlans:
+//            return FamilyPlans.allCases.map({$0.value})
+//        case .religion:
+//            return Religion.allCases.map({$0.value})
+//        case .politics:
+//            return Politics.allCases.map({$0.value})
+//        case .ethnicity:
+//            return Ethnicity.allCases.map({$0.value})
+//        case .mobility:
+//            return Mobility.allCases.map({$0.value})
+//        case .vices:
+//            return Vices.allCases.map({$0.value})
+//        case .interests:
+//            return Interest.allCases.map({$0.value})
+//        default: return []
+//        }
+//    }
+    
+//    func value(of detail: Detail, for user: Binding<User>, isFilter: Bool = false) -> Binding<String> {
+//        let valueType: Binding<Stats> = isFilter ? user.filters : user.info
+//
+//
+//    }
 }
 
-extension Detail {
-    #warning("Switch to SVGs")
-    var svgName: String? {
-        switch self {
-        case .name: return "Family"
-        case .birthday: return "Birthday"
-        case .gender: return "Gender"
-        case .isParent, .children, .childrenRange, .familyPlans: return "Family"
-        case .relationship: return "Relationship"
-        case .work: return "Work"
-        case .education: return "Education"
-        case .mobility: return "Mobility"
-        case .religion: return "Religion"
-        case .politics: return "Politics"
-        case .ethnicity: return "Ethnicity"
-        case .seeking: return "Interested"
-        default:
-            return nil
-        }
-    }
-}

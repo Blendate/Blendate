@@ -43,8 +43,8 @@ struct PurchaseLikesView: View {
             Spacer()
         }
         .padding(.horizontal)
-        .onAppear {
-            try? model.getOfferings()
+        .task {
+            await model.fetchOfferings()
         }
     }
     

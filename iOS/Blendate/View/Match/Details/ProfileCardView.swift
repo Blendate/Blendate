@@ -63,7 +63,9 @@ struct ProfileCard: View {
                         Text(details.info.location.name)
                             .fontType(.semibold, .body, .white)
                     }
-                    children
+                    if profileType != .session {
+                        children
+                    }
                 }
                 .padding(.bottom)
                 .padding(.top, avatarSize/1.5)
@@ -97,7 +99,7 @@ struct ProfileCard: View {
                 Text(" | ")
                 if children > 1 {
                     Text("Ages:")
-                    Text(details.info.childrenRange.label(max: 21))
+                    Text(details.info.childrenRange.label(min: 0, max: 21))
                 } else {
                     Text("Age")
                     Text(details.info.childrenRange.min.description)

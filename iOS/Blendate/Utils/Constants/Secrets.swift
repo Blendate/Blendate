@@ -11,3 +11,7 @@ struct Secrets {
     static let revenueCat = "appl_HXFpLayPGxmPMaWeKjpzHpOkBKi"
     static let entitlement = "Premium"
 }
+
+extension String {
+    static let kFCMstring = "fcm"
+}

@@ -28,3 +28,8 @@ struct Premium: Codable {
     var hideAge: Bool = false
     var color: Color = .Blue
 }
+
+extension Premium {
+    
+    static let Access: [Detail] = [.childrenRange, .height, .politics, .mobility, .vices]
+}

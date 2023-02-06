@@ -7,7 +7,7 @@
 
 import Foundation
 
-class Stats: Codable {    
+class Stats:NSObject, Codable {    
     var isParent: Bool = true
     var children: Int = 0
     var childrenRange = IntRange(0,1)
@@ -41,15 +41,21 @@ class Stats: Codable {
     }
 }
 
+extension Stats {
+    static let Required: [Detail] = [.name, .birthday, .gender, .isParent, .children, .childrenRange, .location, .seeking, .bio, .photos]
+}
+
 
 struct IntRange: Codable {
     var min, max: Int
     
     init(_ min: Int, _ max: Int) { self.min = min; self.max = max }
     
-    func label(max maxValue: Int) -> String {
+    func label(min minValue: Int, max maxValue: Int) -> String {
         let maxLabel = max > (maxValue - 1) ? "\(max - 1)+" : String(max)
-        return "\(min) - \(maxLabel)"
+        let minLabel = min < (minValue + 1) ? "\(min)" : String(min)
+
+        return "\(minLabel) - \(maxLabel)"
     }
 }
 

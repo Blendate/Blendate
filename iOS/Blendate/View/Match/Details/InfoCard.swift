@@ -75,7 +75,7 @@ struct InfoCard: View {
                 if userPreferences.info.isParent {
                     InfoData("Parent", "Has Children")
                     InfoData("Children", "\(userPreferences.info.children)")
-                    InfoData("Ages", "\(userPreferences.info.childrenRange.label(max: 18))")
+                    InfoData("Ages", "\(userPreferences.info.childrenRange.label(min: 0, max: 22))")
                 }
                
                 InfoData("Family Plans", userPreferences.info.familyPlans)

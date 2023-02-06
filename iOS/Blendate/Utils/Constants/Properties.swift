@@ -7,24 +7,28 @@
 
 import SwiftUI
 
-protocol Property: Codable, CaseIterable, Identifiable, Hashable {
-    var value: String {get}
+protocol Options: Codable, CaseIterable, Identifiable, Hashable {
+    var id: String {get}
+}
+extension Options {
+    var value: String {id}
 }
 
-enum Gender: String, Property {
-    var id: String { rawValue }
+protocol Selection {}
+extension Array: Selection where Element == String {}
+extension String: Selection {}
+enum Gender: String, Options {
+    var id: String {rawValue}
+
     case male = "Male"
     case female = "Female"
     case nonBinary = "Non-Binary"
-    var value: String {id}
 
 }
 
-enum Status: String, Property {
-    var value: String {id}
-    
+enum Relationship: String, Options {
     var id: String {rawValue}
-
+    
     case single = "Single"
     case divorced = "Divorced"
     case separated = "Separated"
@@ -33,27 +37,21 @@ enum Status: String, Property {
 
 }
 
-enum FamilyPlans: String, Property {
-    var value: String {id}
-
+enum FamilyPlans: String, Options {
     var id: String { rawValue }
     case wantMore = "Want more"
     case dontWant = "Don't want more"
     case dontCare = "Dont care"
 
 }
-enum Mobility: String, Property {
-    var value: String {id}
-    
+enum Mobility: String, Options {
     var id: String { self.rawValue }
     case notWilling = "Not Willing to Move"
     case willing = "Willing to Move"
     case dontCare = "Don't Care"
 }
 
-enum Religion: String, Property {
-    var value: String {id}
-    
+enum Religion: String, Options {
     var id: String { self.rawValue }
     case atheist = "Atheist/Agnostic"
     case christian = "Christian"
@@ -67,10 +65,7 @@ enum Religion: String, Property {
     case other = "Other"
 }
 
-enum Politics: String, Property {
-    var value: String {id}
-
-    
+enum Politics: String, Options {
     var id: String { self.rawValue }
     case conservative = "Conservative"
     case liberal = "Liberal"
@@ -78,9 +73,7 @@ enum Politics: String, Property {
     case other = "Other"
 }
 
-enum Ethnicity: String, Property {
-    var value: String {id}
-    
+enum Ethnicity: String, Options {
     var id: String { rawValue }
     case caucasian = "White/Caucasian"
     case islander = "Pacific Islander"
@@ -94,10 +87,9 @@ enum Ethnicity: String, Property {
 }
 
 
-enum Vices: String, Property {
-    var value: String {id}
-
+enum Vices: String, Options {
     var id: String { rawValue }
+    
     case alcohol = "Alcohol"
     case snacker = "Night snacker"
     case weed = "Marijuana"
@@ -116,11 +108,10 @@ enum Vices: String, Property {
 }
 
 
-enum Interest: String, Property {
-    var value: String {id}
-    var title: String {id}
+enum Interest: String, Options {
     var id: String { rawValue }
-
+    
+    var title: String {id}
     case travel = "Travel"
     case childCare = "ChildCare"
     case entertainment = "Entertainment"
@@ -157,15 +148,9 @@ enum Interest: String, Property {
             return ["Special Needs", "Gender Identity", "Puberty", "Birds & Bees"]
         }
     }
-    
-//    @ViewBuilder
-//    static func getDestination(_ details: Binding<Details>) -> some View {
-//        GenderView(gender: details.gender)
-//    }
-    
 }
 
-enum Yes: String, Property {
+enum Yes: String, Options {
     var value: String {id}
     
     var id: String { self.rawValue }
