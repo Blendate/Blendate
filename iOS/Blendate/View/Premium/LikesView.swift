@@ -11,7 +11,7 @@ import CachedAsyncImage
 struct LikesView: View {
     @EnvironmentObject var session: SessionViewModel
     @EnvironmentObject var match: MatchViewModel
-    @EnvironmentObject var premium: PremiumViewModel
+    @EnvironmentObject var premium: SettingsViewModel
 
     var likes: [String] = []
     @State var showLikes = false
@@ -88,7 +88,7 @@ struct LikesView_Previews: PreviewProvider {
         LikesView(likes: ["1234"])
             .environmentObject(SessionViewModel(dev.michael.id!))
             .environmentObject(MatchViewModel(dev.michael.id!))
-            .environmentObject(PremiumViewModel(dev.michael.id!))
+            .environmentObject(SettingsViewModel(dev.michael.id!))
 //        LikesView()
 
     }

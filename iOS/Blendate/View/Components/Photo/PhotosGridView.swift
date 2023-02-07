@@ -72,7 +72,7 @@ struct PhotosGridView: View {
     }
     
     private func photo(_ index: Int)->Photo?{
-        return PhotoService.photo(photos, index)
+        return photos.photo(at: index)
     }
 
 }

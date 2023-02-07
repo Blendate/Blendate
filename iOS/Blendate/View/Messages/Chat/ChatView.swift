@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct ChatView: View {
-    @StateObject var model: ChatViewModel
+    @EnvironmentObject var session: SessionViewModel
+    @StateObject var model: ChatViewModel<Conversation>
     @Binding var withUser: User?
 
     init(_ convo: Conversation, with: Binding<User?>){
@@ -16,14 +17,16 @@ struct ChatView: View {
         self._withUser = with
     }
     
+    var sorted: [ChatMessage] { model.fetched.sorted{$0.timestamp < $1.timestamp}}
+    
     var body: some View {
         VStack {
             VStack {
                 ChatHeader(details: $withUser)
                     .background(Color.Blue)
-                if !model.chatMessages.isEmpty {
+                if !model.fetched.isEmpty {
                     ScrollView {
-                        ForEach(model.chatMessages) { message in
+                        ForEach(sorted) { message in
                             MessageBubble(message, received: message.author == withUser?.id)
                         }
                     }
@@ -31,11 +34,11 @@ struct ChatView: View {
                     .background(.white)
                     .cornerRadius(30, corners: [.topLeft, .topRight])
                 } else {
-                    IceBreakersView(noChats: $model.chatMessages, chatText: $model.text)
+                    IceBreakersView(noChats: $model.fetched, chatText: $model.text)
                 }
             }
             ChatTextField(newMessage: $model.text) {
-                await model.sendMessage(to: withUser?.id)
+                model.sendMessage(author: session.uid)
             }
 //            MessageField(message: $model.text)
         }

@@ -6,12 +6,10 @@
 //
 
 import SwiftUI
-import RevenueCat
 
 struct PurchaseLikesView: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var model: PremiumViewModel
-    var packages: [Package] { model.packages.filter{$0.isLike} }
+    @EnvironmentObject var model: SettingsViewModel
 
     var body: some View {
         VStack {
@@ -50,7 +48,7 @@ struct PurchaseLikesView: View {
     
     var packageButtons: some View {
         VStack {
-            ForEach(packages) { package in
+            ForEach(model.packages) { package in
                 AsyncButton {
                     try? await model.purchase(package)
                 } label: {
@@ -58,9 +56,9 @@ struct PurchaseLikesView: View {
                         Spacer()
                         VStack {
                             HStack {
-                                Text(package.storeProduct.localizedTitle)
+                                Text(package.title)
                                     .foregroundColor(.primary)
-                                Text(package.storeProduct.localizedPriceString)
+                                Text(package.title)
                                     .foregroundColor(.Blue)
                             }.fontWeight(.bold)
                             Text("$1.99 each")

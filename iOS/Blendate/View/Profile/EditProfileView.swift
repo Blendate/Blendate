@@ -9,7 +9,7 @@ import SwiftUI
 
 struct EditProfileView: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var premium: PremiumViewModel
+    @EnvironmentObject var premium: SettingsViewModel
     
     @Binding var details: User
     @State private var showMembership = false
@@ -87,7 +87,7 @@ extension EditProfileView {
 struct EditProfileView_Previews: PreviewProvider {
     static var previews: some View {
         EditProfileView(details: .constant(dev.michael))
-            .environmentObject(PremiumViewModel(dev.michael.id!))
+            .environmentObject(SettingsViewModel(dev.michael.id!))
     }
 }
 

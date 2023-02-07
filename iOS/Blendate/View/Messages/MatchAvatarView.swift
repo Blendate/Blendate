@@ -13,7 +13,7 @@ struct MatchAvatarView: View {
     @State var startConvo = false
     @State var details: User?
     
-    let service = UserService()
+//    let service = UserService()
 
     init(_ match: Conversation){
         self.match = match
@@ -41,7 +41,7 @@ struct MatchAvatarView: View {
     @MainActor
     func fetchUser() async {
         guard let withUID = match.withUserID(session.uid) else {return}
-        self.details = try? await service.fetch(fid: withUID)
+        self.details = try? await session.fetch(fid: withUID)
 
     }
 }

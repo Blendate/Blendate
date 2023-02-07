@@ -10,7 +10,7 @@ import SwiftUI
 struct FiltersView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var session: SessionViewModel
-    @EnvironmentObject var premium: PremiumViewModel
+    @EnvironmentObject var premium: SettingsViewModel
     
     @State var showMembership = false
 
@@ -93,6 +93,6 @@ struct FiltersView_Previews: PreviewProvider {
     static var previews: some View {
         FiltersView()
             .environmentObject(SessionViewModel(user: dev.michael))
-            .environmentObject(PremiumViewModel(dev.michael.id!))
+            .environmentObject(SettingsViewModel(dev.michael.id!))
     }
 }

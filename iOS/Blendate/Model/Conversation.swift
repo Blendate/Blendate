@@ -10,14 +10,19 @@ import Firebase
 import FirebaseFirestoreSwift
 import SwiftUI
 
-class Conversation: Codable, Identifiable {
+protocol Convo: Codable, Identifiable {
+    var id: String? {get set}
+    var users: [String] {get set}
+    var timestamp: Date {get set}
+    var lastMessage: ChatMessage {get set}
+}
+class Conversation: Convo {
     @DocumentID var id: String?
     var users: [String]
     var timestamp: Date = .now
     var lastMessage: ChatMessage = ChatMessage(author: "", text: "")
     
     init(user1: String, user2: String) {
-        self.id = MessageService.getUsersID(userId1: user1, userId2: user2)
         self.users = [user1, user2]
     }
     
@@ -31,15 +36,6 @@ extension Conversation {
         guard let uid = uid else {return nil}
         return users.first(where: {$0 != uid})
     }
-    //    func latest()->ChatMessage? {
-    //        return chats.max(by: {
-    //           $0.timestamp < $1.timestamp
-    //        })
-    //    }
-    //
-    //    var lastDate: Date {
-    //        latest()?.timestamp ?? Date()
-    //    }
 }
 
 extension Conversation: Equatable {

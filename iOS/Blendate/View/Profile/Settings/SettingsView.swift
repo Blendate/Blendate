@@ -10,7 +10,7 @@ import SwiftUI
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var session: SessionViewModel
-    @EnvironmentObject var premium: PremiumViewModel
+    @EnvironmentObject var premium: SettingsViewModel
     @EnvironmentObject var auth: FirebaseAuthState
     
     @State var logoutAlert: AlertError?
@@ -177,7 +177,7 @@ struct SettingsView_Previews: PreviewProvider {
         SettingsView()
             .environmentObject(SessionViewModel(user: dev.michael))
             .environmentObject(FirebaseAuthState())
-            .environmentObject(PremiumViewModel(dev.michael.id!))
+            .environmentObject(SettingsViewModel(dev.michael.id!))
     }
 }
 

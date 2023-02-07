@@ -31,9 +31,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     private let gcmMessageIDKey = "gcm.message_id"
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-//        Purchases.logLevel = .info
-//        RevenueCatService.configure(withAPIKey: Secrets.revenueCat)
-//        RevenueCatService.setFirebaseAppInstanceId( Analytics.appInstanceID() )
+        Purchases.logLevel = .info
+        RevenueCatService.configure(withAPIKey: Secrets.revenueCat)
+        RevenueCatService.setFirebaseAppInstanceId( Analytics.appInstanceID() )
         FirebaseApp.configure()
         FirebaseConfiguration.shared.setLoggerLevel(.min)
         Analytics.setAnalyticsCollectionEnabled(false)
@@ -41,9 +41,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         
         config_notifications(application)
 
-        FBSDKCoreKit.ApplicationDelegate.shared
-            .application(application,
-                         didFinishLaunchingWithOptions: launchOptions )
+        #warning("reactivate")
+//        FBSDKCoreKit.ApplicationDelegate.shared
+//            .application(application,
+//                         didFinishLaunchingWithOptions: launchOptions )
         
 
         return true

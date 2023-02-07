@@ -8,25 +8,21 @@
 import SwiftUI
 
 struct CommunityChatView: View {
-//    @StateObject var model: ChatViewModel
+    @EnvironmentObject var session: SessionViewModel
+    @StateObject var model: ChatViewModel<CommunityTopic>
+
     
-    let topic: CommunityTopic
-    let uid: String
-    
-    #warning("fix this")
     init(topic: CommunityTopic) {
-//        self._model = StateObject(wrappedValue: ChatViewModel(topic.cid))
-        self.topic = topic
-        self.uid = ""
+        self._model = StateObject(wrappedValue: ChatViewModel(topic))
     }
     
-    let chatMessages: [ChatMessage] = []
+    var uid: String { session.uid }
     
     var body: some View {
         VStack {
             ScrollView {
                 header
-                ForEach(chatMessages) { message in
+                ForEach(model.fetched) { message in
                     HStack(spacing: 0) {
                         if message.author != uid {
                             Circle().fill(Color.Blue).frame(width: 40)
@@ -46,9 +42,9 @@ struct CommunityChatView: View {
     var header: some View {
         HStack(alignment: .top) {
             VStack(alignment: .leading) {
-                Text(topic.title)
+                Text(model.conversation.title)
                     .fontType(.semibold, .largeTitle, .DarkBlue)
-                Text(topic.subtitle)
+                Text(model.conversation.subtitle)
                     .foregroundColor(.DarkBlue)
             }
             Spacer()

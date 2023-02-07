@@ -10,7 +10,7 @@ import Sliders
 
 
 struct DetailCellView: View {
-    @EnvironmentObject var premium: PremiumViewModel
+    @EnvironmentObject var premium: SettingsViewModel
     let detail: Detail
     @Binding var details: User
     let type: PropType

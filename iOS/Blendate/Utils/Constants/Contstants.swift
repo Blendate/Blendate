@@ -7,15 +7,6 @@
 
 import Foundation
 
-// MARK: - Messages
-extension MessagesView {
-    static let Title = "Blends"
-    static let Messages = "Messages"
-    static let EmptyMatches = "Match with profiles to Blend with others"
-    static let NoConversations = "Tap on any of your matches to start a conversation"
-    static let NoMatches = "Start matching with profiles to blend with others and start conversations"
-}
-
 // MARK: - Welcome
 extension WelcomeView {
     static let ByTapping = "By tapping Create Accout/Sign in, you agree to our"
@@ -33,10 +24,6 @@ extension NameView {
 // MARK: - Membership
 extension MembershipView {
     static let TapSubscribe = "By tapping Subscribe, your payment will be charged to your Apple App Store account, and your subscription will automatically renew for the same package length at the same price until you cancel in settings in the Apple App Store. By tapping Subscribe you agree to our Terms"
-    static let Yearly_ID = "com.blendate.blendate.yearly"
-    static let Monthly_ID = "com.blendate.blendate.monthly"
-    static let SemiAnnual_ID = "com.blendate.blendate.semiAnnual"
-    static let Lifetime_ID = "com.blendate.blendate.lifeMembership"
 }
 
 extension PurchaseLikesView {

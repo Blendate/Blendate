@@ -80,7 +80,7 @@ struct RevenueCatService {
     }
     
     @discardableResult
-    static func purchase(package: Package) async throws -> (StoreTransaction?, CustomerInfo?, Bool) {
+    static func purchase(package: RevenueCat.Package) async throws -> (StoreTransaction?, CustomerInfo?, Bool) {
         try await withCheckedThrowingContinuation({ continuation in
             Purchases.shared.purchase(package: package) { (transaction, customerInfo, error, userCancelled) in
                 if let error = error {

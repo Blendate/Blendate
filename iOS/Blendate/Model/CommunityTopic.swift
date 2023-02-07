@@ -8,7 +8,7 @@
 import Foundation
 import FirebaseFirestoreSwift
 
-class CommunityTopic: Codable, Identifiable {
+class CommunityTopic: Convo {
     @DocumentID var id: String?
     var users: [String]
     var timestamp: Date = .now

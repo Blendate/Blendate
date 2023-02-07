@@ -14,4 +14,8 @@ struct Secrets {
 
 extension String {
     static let kFCMstring = "fcm"
+    static let Yearly_ID = "com.blendate.blendate.yearly"
+    static let Monthly_ID = "com.blendate.blendate.monthly"
+    static let SemiAnnual_ID = "com.blendate.blendate.semiAnnual"
+    static let Lifetime_ID = "com.blendate.blendate.lifeMembership"
 }

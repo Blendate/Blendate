@@ -6,14 +6,11 @@
 //
 
 import SwiftUI
-import RevenueCat
 
 struct MembershipView: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var model: PremiumViewModel
-//    @Binding var premium: Premium
-    
-    var packages: [Package] { model.packages.filter{!$0.isLike} }
+    @EnvironmentObject var model: SettingsViewModel
+    //    @Binding var premium: Premium
     
     var body: some View {
         VStack {
@@ -22,10 +19,10 @@ struct MembershipView: View {
                 .font(.caption2)
                 .padding(.bottom, 8)
             VStack {
-//                Text(premium.active ? "Subscribed":"Subscribe Now")
-//                Button(premium.active ? "Unsubscribe":"Subscribe"){
-//                    premium.active.toggle()
-//                }
+                //                Text(premium.active ? "Subscribed":"Subscribe Now")
+                //                Button(premium.active ? "Unsubscribe":"Subscribe"){
+                //                    premium.active.toggle()
+                //                }
                 HStack {
                     Button { dismiss() } label: {
                         Image(systemName: "xmark")
@@ -39,9 +36,9 @@ struct MembershipView: View {
                 .font(.callout.weight(.semibold))
                 .padding()
                 PerksTabView()
-                List(packages) { package in
-                    if !package.storeProduct.productIdentifier.contains("like") {
-                        cell(package)
+                List(model.packages) { package in
+                    if !package.isLike {
+                        Cell(package: package)
                     }
                 }
                 .listStyle(.plain)
@@ -53,60 +50,48 @@ struct MembershipView: View {
         .padding()
         .background(Color.Blue)
         .task {
-            await model.fetchOfferings()
+//            await model.fetchOfferings()
         }
-
+        
     }
+}
+extension MembershipView {
     
-    func cell(_ package: Package) -> some View {
-        AsyncButton {
-            try? await model.purchase(package)
-        } label: {
-            HStack {
-                VStack(alignment: .leading, spacing: 0) {
-                    HStack {
-                        Text(title(for:package))
-                        if package.storeProduct.productIdentifier == Self.Yearly_ID {
-                            Text("Most Popular")
-                                .font(.caption2)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 6)
-                                .background(Color.Blue)
-                                .foregroundColor(.white)
-                                .cornerRadius(16)
-                        }
-                    }
+    struct Cell<P:Package>: View {
+        @EnvironmentObject var model: SettingsViewModel
+        let package: P
+        var body: some View {
+            AsyncButton {
+                try? await model.purchase(package)
+            } label: {
+                HStack {
                     VStack(alignment: .leading, spacing: 0) {
-                        
-                        Text("\(package.storeProduct.localizedPriceString)")
-                            .bold()
-//                            .foregroundColor(.green)
+                        HStack {
+                            Text(package.title)
+                            if package.membership == .yearly {
+                                Text("Most Popular")
+                                    .font(.caption2)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 6)
+                                    .background(Color.Blue)
+                                    .foregroundColor(.white)
+                                    .cornerRadius(16)
+                            }
+                        }
+                        VStack(alignment: .leading, spacing: 0) {
+                            Text("\(package.price)")
+                                .bold()
+                        }
+                        .font(.caption)
                     }
-                    .font(.caption)
+                    Spacer()
+                    Image(systemName: "chevron.right")
                 }
-                Spacer()
-                Image(systemName: "chevron.right")
+
             }
-
         }
     }
-    
 
-    
-    
-    func title(for package: Package) -> String {
-        switch package.storeProduct.productIdentifier {
-        case Self.Yearly_ID:
-            return String(12) + " Month"
-        case Self.SemiAnnual_ID:
-            return String(6) + " Month"
-        case Self.Monthly_ID:
-            return String(1) + " Month"
-        case Self.Lifetime_ID:
-            return "Lifetime"
-        default: return ""
-        }
-    }
     
     struct PerksTabView: View {
         let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
@@ -147,6 +132,7 @@ struct MembershipView: View {
 struct MembershipView_Previews: PreviewProvider {
     static var previews: some View {
         MembershipView()
+//            .environmentObject(SettingsViewModel(dev.michael.id!))
 //            .preferredColorScheme(.dark)
     }
 }

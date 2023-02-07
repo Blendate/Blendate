@@ -80,6 +80,11 @@
 		<string>LexendDeca-Regular.ttf</string>
 		<string>Montserrat-Black.ttf</string>
 	</array>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UISceneConfigurations</key>
+		<dict/>
+	</dict>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

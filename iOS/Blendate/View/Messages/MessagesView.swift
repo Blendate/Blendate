@@ -9,24 +9,23 @@ import SwiftUI
 import MapKit
 
 struct MessagesView: View {
-    @StateObject var vm: MessagesViewModel
+    @StateObject var model: MessagesViewModel
     @EnvironmentObject var session: SessionViewModel
     @EnvironmentObject var match: MatchViewModel
-    @EnvironmentObject var premium: PremiumViewModel
     
     init(uid: String){
-        self._vm = StateObject(wrappedValue: MessagesViewModel(uid: uid))
+        self._model = StateObject(wrappedValue: MessagesViewModel(uid: uid))
     }
     
     var body: some View {
         NavigationView {
             Group {
-                if vm.allConvos.isEmpty {
-                    noConvos
+                if model.fetched.isEmpty {
+                    EmptyConversations(model.fetched)
                 } else {
                     VStack{
-                        matches
-                        messages
+                        Matches(matches: model.matches)
+                        Messages(conversations: model.conversations)
                         Spacer()
                     }
                 }
@@ -40,72 +39,79 @@ struct MessagesView: View {
         }
     }
     
-    var matches: some View {
-        VStack {
-            if vm.matches.isEmpty {
-                emptyMatches
-            }
-            else {
-                ScrollView(.horizontal, showsIndicators: false){
-                    LazyHStack(spacing: 15){
-                        likedYou
-                        ForEach(vm.matches.sorted(by: {$0.timestamp > $1.timestamp})){ match in
-                            MatchAvatarView(match)
-                        }
-                    }
-                    .padding(.leading)
-                }
-                .frame(height: 120, alignment: .center)
-                .padding(.leading)
-            }
-        }.padding(.vertical)
-    }
-    
-    var likedYou: some View {
-        Button {
-            if premium.hasPremium {
-                session.selectedTab = .likes
-            } else {
-                premium.showMembership = true
-            }
-        } label: {
-            ZStack {
-                Circle()
-                    .stroke( Color.DarkBlue,lineWidth: 2)
-                    .frame(width: 80, height: 80, alignment: .center)
-                PhotoView.Avatar(url: match.lineup.last?.avatar, size: 70, isCell: true)
-                    .blur(radius: premium.hasPremium ? 0 : 20)
-                    .clipShape(Circle())
-//                    Circle().fill(Color.Blue)
-//                        .frame(width: 70, height: 70)
-                VStack(spacing: 0) {
-                    Text("10")
-                    Text("Likes")
-                }
-                .fontType(.semibold, .body, .white)
-            }
-        }
 
-    }
-    
-    
-    var messages: some View {
-        VStack {
-            HStack {
-                Text(Self.Messages)
-                    .fontType(.bold, .title3, .DarkBlue)
-                    .padding(.leading)
-                Spacer()
-            }
-            if vm.conversations.isEmpty {
-                noConvos
-            } else {
-                List {
-                    ForEach(vm.conversations, id: \.id) { conversation in
-                        ConvoCellView(conversation: conversation)
+}
+
+extension MessagesView {
+    struct Matches: View {
+        @EnvironmentObject var premium: SettingsViewModel
+        @EnvironmentObject var session: SessionViewModel
+        
+        var matches: [Conversation]
+        var body: some View {
+            VStack {
+                if matches.isEmpty {
+                    emptyMatches
+                }
+                else {
+                    ScrollView(.horizontal, showsIndicators: false){
+                        LazyHStack(spacing: 15){
+                            likedYou
+                            ForEach(matches){ match in
+                                MatchAvatarView(match)
+                            }
+                        }
+                        .padding(.leading)
                     }
-                }.listStyle(.plain)
+                    .frame(height: 120, alignment: .center)
+                    .padding(.leading)
+                }
+            }.padding(.vertical)
+        }
+        
+        var emptyMatches: some View {
+            HStack(alignment: .top) {
+                likedYou
+                Text("Match with profiles to Blend with others")
+                    .fontType(.semibold, 18, .DarkBlue)
+                Spacer()
+            }.padding(.leading)
+        }
+        
+        var firstLike: String? {
+            matches.first?.users.first{$0 != session.uid}
+        }
+        
+        var likedYou: some View {
+            Button {
+                if premium.hasPremium {
+                    session.selectedTab = .likes
+                } else {
+                    premium.showMembership = true
+                }
+            } label: {
+                ZStack {
+                    Circle()
+                        .stroke( Color.DarkBlue,lineWidth: 2)
+                        .frame(width: 80, height: 80, alignment: .center)
+                    if let firstLike {
+                        PhotoView.Avatar(url: URL(string: firstLike), size: 70, isCell: true)
+                            .blur(radius: premium.hasPremium ? 0 : 20)
+                            .clipShape(Circle())
+                    } else {
+                        Circle().fill(Color.Blue)
+                            .frame(width: 70, height: 70)
+                    }
+
+
+                    VStack(spacing: 0) {
+                        Text("10")
+                        Text("Likes")
+                    }
+                    .fontType(.semibold, .body, .white)
+                }
             }
+
         }
     }
 
@@ -113,36 +119,62 @@ struct MessagesView: View {
 
 extension MessagesView {
     
-    var emptyMatches: some View {
-        HStack(alignment: .top) {
-            likedYou
-            Text(Self.EmptyMatches)
-                .fontType(.semibold, 18, .DarkBlue)
-            Spacer()
-        }.padding(.leading)
-    }
-    
-    var noConvos: some View {
-        let message = vm.allConvos.isEmpty ? Self.NoMatches : Self.NoConversations
+    struct Messages: View {
+        var conversations: [Conversation]
         
-        return VStack {
-            Spacer()
-            VStack{
-                Divider()
-                Image("Interested")
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 270, height: 226 , alignment: .center)
-                Text(message)
-                    .fontType(.semibold, 18, .DarkBlue)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
-                    .padding(.top)
-                Spacer()
+        var body: some View {
+            VStack {
+                HStack {
+                    Text("Messages")
+                        .fontType(.bold, .title3, .DarkBlue)
+                        .padding(.leading)
+                    Spacer()
+                }
+                if conversations.isEmpty {
+                    EmptyConversations(conversations)
+                } else {
+                    List {
+                        ForEach(conversations, id: \.id) { conversation in
+                            ConvoCellView(conversation: conversation)
+                        }
+                    }.listStyle(.plain)
+                }
             }
         }
-        .navigationTitle(Self.Title)
     }
+    
+    struct EmptyConversations: View {
+        let conversations: [Conversation]
+        init(_ conversations: [Conversation]) {
+            self.conversations = conversations
+        }
+        let NoConversations = "Tap on any of your matches to start a conversation"
+        let NoMatches = "Start matching with profiles to blend with others and start conversations"
+        var message: String { conversations.isEmpty ? NoMatches : NoConversations }
+        
+        var body: some View {
+            VStack {
+                Spacer()
+                VStack{
+                    Divider()
+                    Image("Interested")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 270, height: 226 , alignment: .center)
+                    Text(message)
+                        .fontType(.semibold, 18, .DarkBlue)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
+                        .padding(.top)
+                    Spacer()
+                }
+            }
+            .navigationTitle("Blends")
+        }
+    }
+
+
+
 }
 
 

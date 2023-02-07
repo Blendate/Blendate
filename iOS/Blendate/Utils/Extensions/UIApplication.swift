@@ -10,7 +10,6 @@ import UIKit
 
 extension UIApplication {
     
-
     func addTapGestureRecognizer() {
         guard let window = windows.first else { return }
         let tapGesture = UITapGestureRecognizer(target: window, action: #selector(UIView.endEditing))

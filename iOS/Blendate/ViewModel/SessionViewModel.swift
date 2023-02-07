@@ -9,7 +9,7 @@ import SwiftUI
 
 enum SessionState {case noUser, user, loading}
 
-class SessionViewModel: ObservableObject {
+class SessionViewModel: FirestoreService<User> {
 
     @Published var selectedTab: Tab = .match
     @Published var loadingState: SessionState = .loading
@@ -17,22 +17,18 @@ class SessionViewModel: ObservableObject {
     @Published var user: User
 
     let uid: String
-    
-    private let userService: UserService = UserService()
-    private let settingsService: FirebaseService = FirebaseService<Settings>(collection: "settings")
-    
     init(_ uid: String){
         self.uid = uid
         self.user = User(id: uid)
-        print("📱 [Session] \(uid)")
+        super.init(collection: Self.Users)
+        print("Init \(uid)")
     }
     
     #warning("better check than just firstname")
     @MainActor
     func fetchFirebase() async {
         do {
-            self.user = try await userService.fetch(fid: uid)
-            print(user)
+            self.user = try await fetch(fid: uid)
             withAnimation(.spring()) {
                 self.loadingState = user.firstname.isEmpty ? .noUser : .user
             }
@@ -46,13 +42,15 @@ class SessionViewModel: ObservableObject {
 
     @MainActor
     func createUserDoc() throws {
-        try userService.create(user)
-        try settingsService.create( Settings(id: user.id) )
+        try create(user)
+        
+        let settingsService = FirestoreService<User.Settings>(collection: Self.Settings)
+        try settingsService.create( User.Settings(id: user.id) )
         loadingState = .user
     }
 
     func saveUser() throws {
-        try userService.update(user)
+        try update(user)
     }
 }
 

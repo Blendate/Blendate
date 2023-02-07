@@ -9,7 +9,10 @@ import SwiftUI
 import CachedAsyncImage
 import PhotosUI
 
+
+
 struct PhotoView: View {
+    @StateObject var model: PhotoViewModel
     @Binding var photo: Photo
     @EnvironmentObject var session: SessionViewModel
     
@@ -17,8 +20,8 @@ struct PhotoView: View {
     let isCell: Bool
     private let size: (width: CGFloat, height: CGFloat)
     @State var showPicker = false
-    @State var isLoading = false
     @State var showfull = false
+    @State var pickedImage: UIImage?
     
     
     init(_ photo: Binding<Photo>, isCell: Bool = false){
@@ -30,7 +33,7 @@ struct PhotoView: View {
             case 0,1: self.size = (160, 210)
             default: self.size = (100, 132)
         }
-
+        self._model = StateObject(wrappedValue: PhotoViewModel(photo: photo.wrappedValue))
     }
     
     init(_ photo: Photo, _ isCell: Bool = false ){
@@ -42,6 +45,7 @@ struct PhotoView: View {
             case 2,5,6: self.size = (162, 213)
             default: self.size = (162, 171)
         }
+        self._model = StateObject(wrappedValue: PhotoViewModel(photo: photo))
 
     }
     
@@ -64,7 +68,9 @@ struct PhotoView: View {
         .frame(width: size.width, height: size.height, alignment: .center)
         .sheet(isPresented: $showPicker) {
             ImagePicker { image in
-                setPhoto(image)
+                Task {
+                    await model.set(image: image, uid: session.uid)
+                }
             }
         }
         .sheet(isPresented: $showfull) {
@@ -76,32 +82,13 @@ struct PhotoView: View {
                 ProgressView()
             }
         }
-    }
-    
-    
-    @MainActor
-    func setPhoto(_ image: UIImage) {
-        guard let data = image.jpegData(compressionQuality: 0.5)
-        else { return
-//            throw FirebaseError.generic("Could Not Upload Image to Server")
-        }
-        Task {
-            do {
-                let photo = try await PhotoService().upload(photo: data, at: photo.placement, for: session.uid)
-
-                self.photo = photo
-                isLoading = false
-            } catch {
-                print("Photo Upload Error: \(error.localizedDescription)")
-                isLoading = false
-            }
-        }
 
     }
+    
     
     private func photoTapped(){
-        if editmode && !isLoading {
-            isLoading = true
+        if editmode && !model.isLoading {
+            model.isLoading = true
             showPicker = true
         } else if !isCell {
             showfull = true
@@ -119,7 +106,7 @@ struct PhotoView: View {
                 .foregroundColor(.LightGray)
                 .shadow(color: .gray, radius: 1, x: 0, y: 2)
 
-            if isLoading {
+            if model.isLoading {
                 ProgressView()
             } else {
                 Image(systemName: "plus")

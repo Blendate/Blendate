@@ -12,9 +12,9 @@ enum ProfileType { case view, match, session }
 struct ProfileCardView: View {
     let profileType: ProfileType
     let details: User
-    var swipe: (_ swipe: Swipe) -> Void
+    var swipe: (_ swipe: Swipe) async -> Void
     
-    init(_ details: User, _ profileType: ProfileType, swipe: (@escaping (_: Swipe) -> Void) = {swipe in}){
+    init(_ details: User, _ profileType: ProfileType, swipe: (@escaping (_: Swipe) async -> Void) = {swipe in}){
         self.details = details
         self.profileType = profileType
         self.swipe = swipe
@@ -44,10 +44,10 @@ struct ProfileCard: View {
     let details: User
     let profileType: ProfileType
     
-    var swipe: (_ swipe: Swipe) -> Void
+    var swipe: (_ swipe: Swipe) async -> Void
     private let avatarSize:CGFloat = 150
     
-    init(details: User, profileType: ProfileType, _ swipe: (@escaping (_: Swipe) -> Void) = {swipe in} ) {
+    init(details: User, profileType: ProfileType, _ swipe: (@escaping (_: Swipe) async -> Void) = {swipe in} ) {
         self.details = details
         self.profileType = profileType
         self.swipe = swipe

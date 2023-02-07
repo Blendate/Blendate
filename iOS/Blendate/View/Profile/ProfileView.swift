@@ -57,7 +57,7 @@ struct ProfileView: View {
 extension ProfileView {
     
     struct PremiumButton: View {
-        @EnvironmentObject var premium: PremiumViewModel
+        @EnvironmentObject var premium: SettingsViewModel
         let isMembership: Bool
         var title: String { isMembership ? "Premium Membership" : "Get more Super Likes"}
         var body: some View {

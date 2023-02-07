@@ -35,7 +35,7 @@ extension String {
 }
 extension [String] {
     func stringArrayValue() -> String {
-        var array = self
+        let array = self
         guard !array.isEmpty else {return "--"}
         if array.count >= 2 {
             let first = array.map({$0}).prefix(upTo: 2).joined(separator:", ")

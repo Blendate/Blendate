@@ -8,18 +8,15 @@
 import Foundation
 
 
-class CommunityViewModel: FirebaseService<CommunityTopic> {
-    @Published var alert: AlertError?
+class CommunityViewModel: FirestoreService<CommunityTopic> {
     
     init(){
-        super.init(collection: "community")
+        super.init(collection: Self.Community, listener: true)
     }
     
-    
     func newDiscussion(author: String, title: String, description: String) async {
-        let topic = CommunityTopic(author: author, title: title, subtitle: description)
-
         do {
+            let topic = CommunityTopic(author: author, title: title, subtitle: description)
             try create(topic)
         } catch {
             self.alert = AlertError(title: "Server Error", message: "Could not create a new discussion.", recovery: "Try Again")
@@ -27,14 +24,10 @@ class CommunityViewModel: FirebaseService<CommunityTopic> {
     }
     
     func sendMessage(to topic: CommunityTopic, message: String, author: String) async throws {
-        let chatMessage = ChatMessage(author: author, text: message)
-
         do {
-            let tid = try fid(topic, nil)
-            let topicReference = collection.document(tid)
-            let messagesReference = topicReference.collection("messages")
-            
-            try messagesReference.document().setData(from: chatMessage)
+            let chatMessage = ChatMessage(author: author, text: message)
+            let tid = try fid(topic)
+            try Messages(for: tid).document().setData(from: chatMessage)
             topic.lastMessage = chatMessage
             try update(topic)
         } catch {

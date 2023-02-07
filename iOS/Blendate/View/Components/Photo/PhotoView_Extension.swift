@@ -13,7 +13,7 @@ extension PhotoView {
 
     struct Avatar: View {
         @State private var showfull = false
-        let url: URL?
+        @State var url: URL?
         let size: CGFloat
         var isCell: Bool = false
         

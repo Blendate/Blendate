@@ -39,7 +39,8 @@ struct ConvoCellView: View {
     
     func fetchUser() async {
         guard let withUID = conversation.withUserID(session.uid) else {return}
-        self.details = try? await UserService().fetch(fid: withUID)
+        let details = try? await session.fetch(fid: withUID)
+        self.details = details
     }
 }
 

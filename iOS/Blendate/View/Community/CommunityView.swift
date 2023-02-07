@@ -9,8 +9,8 @@ import SwiftUI
 
 struct CommunityView: View {
     @EnvironmentObject var session: SessionViewModel
-
     @StateObject var model = CommunityViewModel()
+    
     @State var title: String = ""
     @State var text: String = ""
     @State var showNew = false
@@ -35,6 +35,7 @@ struct CommunityView: View {
                 .environmentObject(session)
             }
             .errorAlert(error: $model.alert)
+            .background(bottom: false)
         }
     }
     
@@ -52,10 +53,10 @@ struct CommunityView: View {
                 }
                 .padding(.vertical, 10)
                 .padding(.horizontal)
-                .foregroundColor(.DarkBlue)
+                .foregroundColor(.white)
                 .overlay(
                     Capsule()
-                        .stroke(Color.DarkBlue, lineWidth: 1)
+                        .stroke(Color.white, lineWidth: 1)
                 )
             }
             Spacer()
@@ -79,7 +80,7 @@ struct CommunityView: View {
             .fontWeight(.bold)
         }
         .padding(.horizontal)
-        .foregroundColor(.DarkBlue)
+        .foregroundColor(.white)
     }
 }
 

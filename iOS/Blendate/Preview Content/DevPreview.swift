@@ -18,8 +18,8 @@ class DeveloperPreview {
     static let instance = DeveloperPreview()
     private init() { }
     
-    var empty:Settings{
-        return Settings(id: "12345")
+    var empty:User.Settings{
+        return User.Settings(id: "12345")
     }
 //    @StateObject var session = SessionViewModel(user: DeveloperPreview.michael_)
     var conversation: Conversation {

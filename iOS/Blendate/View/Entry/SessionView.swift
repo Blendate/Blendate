@@ -9,17 +9,17 @@ import SwiftUI
 
 struct SessionView: View {
     @StateObject var session: SessionViewModel
-    @StateObject var matchVM: MatchViewModel
-    @StateObject var premium: PremiumViewModel
+    @StateObject var match: MatchViewModel
+    @StateObject var premium: SettingsViewModel
 
     init(_ uid: String){
         self._session = StateObject(wrappedValue: SessionViewModel(uid))
-        self._matchVM = StateObject(wrappedValue: MatchViewModel(uid))
-        self._premium = StateObject(wrappedValue: PremiumViewModel(uid))
+        self._match = StateObject(wrappedValue: MatchViewModel(uid))
+        self._premium = StateObject(wrappedValue: SettingsViewModel(uid))
     }
     
     var body: some View {
-        LoadingView(showLoading: matchVM.loading == true) {
+        LoadingView(showLoading: match.loading == true) {
             switch session.loadingState {
             case .user:
                 tabView
@@ -35,6 +35,8 @@ struct SessionView: View {
         .task {
             await premium.login(uid: session.uid)
             await session.fetchFirebase()
+            await match.fetchLineup()
+            await premium.fetchOfferings()
         }
     }
     
@@ -63,7 +65,7 @@ struct SessionView: View {
                 .tabItem{ Tab.profile.image }
         }
         .environmentObject(premium)
-        .environmentObject(matchVM)
+        .environmentObject(match)
         .fullScreenCover(isPresented: $premium.showMembership) {
             MembershipView()
                 .environmentObject(premium)

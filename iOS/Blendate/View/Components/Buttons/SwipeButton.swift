@@ -8,13 +8,12 @@
 import SwiftUI
 
 struct SwipeButton: View {
-    @EnvironmentObject var premium: PremiumViewModel
-
+    @EnvironmentObject var premium: SettingsViewModel
 
     let swipe: Swipe
-    var action: (_ swipe: Swipe) -> Void
+    var action: (_ swipe: Swipe) async -> Void
     
-    init(swipe: Swipe, action: @escaping (_ swipe: Swipe) -> Void) {
+    init(swipe: Swipe, action: @escaping (_ swipe: Swipe) async -> Void) {
         self.swipe = swipe
         self.action = action
     }
@@ -23,7 +22,7 @@ struct SwipeButton: View {
         swipe == .like
     }
     var body: some View {
-        Button(action: swiped) {
+        AsyncButton(action: swiped) {
             Group {
                 if swipe == .superLike {
                     Image(systemName: "star.fill")
@@ -49,14 +48,12 @@ struct SwipeButton: View {
         }
     }
 
-    
-    private func swiped(){
+    @MainActor
+    private func swiped() async {
         if swipe == .superLike && premium.settings.superLikes < 0 {
-            DispatchQueue.main.async {
-                premium.showSuperLike = true
-            }
+            premium.showSuperLike = true
         } else {
-            action(swipe)
+            await action(swipe)
         }
     }
 }

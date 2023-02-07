@@ -7,16 +7,7 @@
 
 import SwiftUI
 
-protocol Options: Codable, CaseIterable, Identifiable, Hashable {
-    var id: String {get}
-}
-extension Options {
-    var value: String {id}
-}
 
-protocol Selection {}
-extension Array: Selection where Element == String {}
-extension String: Selection {}
 enum Gender: String, Options {
     var id: String {rawValue}
 
