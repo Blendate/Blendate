@@ -8,14 +8,15 @@
 import SwiftUI
 
 struct MatchProfileView: View {
-    @EnvironmentObject var vm: MatchViewModel
+    @EnvironmentObject var model: SwipeViewModel
     @EnvironmentObject var session: SessionViewModel
-    @EnvironmentObject var premium: SettingsViewModel
+    
+    @State var newConvo: Match?
     
     var user: User? = nil
     
     var body: some View {
-        if let details = vm.lineup.first {
+        if let details = model.lineup.first {
             ScrollView(showsIndicators: false) {
                 ProfileCardView(details, .match) { await swiped(details, $0) }
                 ProfileBioView(bio: details.bio)
@@ -23,7 +24,7 @@ struct MatchProfileView: View {
                 PhotosGridView(details.photos)
                 TagCloudView(tags: details.interests)
             }
-            .sheet(item: $vm.newConvo, onDismiss: nextLineup) { convo in
+            .sheet(item: $newConvo, onDismiss: nextLineup) { convo in
                 MatchedView(details: session.user, matchedWith: details, newConvo: convo)
             }
         } else {
@@ -33,10 +34,17 @@ struct MatchProfileView: View {
 
     private func swiped(_ details: User, _ swipe: Swipe) async {
         guard let match = details.id else {return}
-        let matched = await vm.swipe(on: match, swipe)
-        if swipe == .superLike { premium.useSuperLike() }
+        let matched = await model.swipe(on: match, swipe)
+        if swipe == .superLike { session.useSuperLike() }
         if matched {
-            await vm.createConvo(with: match)
+            let conversation = Match(user1: session.uid, user2: match)
+            do {
+                let cid = try MatchesViewModel(uid: session.uid).create(conversation)
+                conversation.id = cid
+                self.newConvo = conversation
+            } catch {
+                model.alert = AlertError(title: "Server Error", message: "Could not create your match on the Blendate server.")
+            }
         } else {
             nextLineup()
         }
@@ -45,8 +53,8 @@ struct MatchProfileView: View {
     
     private func nextLineup() {
         withAnimation {
-            vm.newConvo = nil
-            vm.lineup.removeFirst()
+            self.newConvo = nil
+            model.lineup.removeFirst()
         }
     }
 
@@ -71,7 +79,7 @@ struct ViewProfileView: View {
 struct MatchProfileView_Previews: PreviewProvider {
     static var previews: some View {
         MatchProfileView()
-            .environmentObject(MatchViewModel(dev.tyler.id!))
+            .environmentObject(SwipeViewModel(dev.tyler.id!))
             .environmentObject(SessionViewModel(dev.tyler.id!))
     }
 }

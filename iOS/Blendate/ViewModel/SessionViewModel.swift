@@ -15,33 +15,30 @@ class SessionViewModel: FirestoreService<User> {
     @Published var selectedTab: Tab = .match
     @Published var loadingState: SessionState = .loading
     
+    @Published var user = User()
+    @Published var settings = User.Settings()
+    
     @Published var showMembership = false
     @Published var showSuperLike = false
-    
     @Published var hasPremium: Bool = false
+    
     @Published var packages: [RevenueCat.Package] = []
-    @Published var user: User
-    @Published var settings: User.Settings
-
-
+    
     let uid: String
+    
     init(_ uid: String){
         self.uid = uid
-        self.user = User(id: uid)
-        self.settings = User.Settings(id: uid)
-        super.init(collection: Self.Users)
+        super.init()
         print("Init \(uid)")
     }
     
     #warning("better check than just firstname")
-    #warning("Properly save settings")
+    #warning("Properly fertch settings")
     @MainActor
     func fetchFirebase() async {
         do {
             self.user = try await fetch(fid: uid)
-//            if let settings = try? await fetch(fid: uid) {
-//                self.settings = settings
-//            }
+            self.settings = try await FirestoreService<User.Settings>().fetch(fid: uid)
             withAnimation(.spring()) {
                 self.loadingState = user.firstname.isEmpty ? .noUser : .user
             }
@@ -55,10 +52,9 @@ class SessionViewModel: FirestoreService<User> {
 
     @MainActor
     func createUserDoc() throws {
-        try create(user)
-        
-        let settingsService = FirestoreService<User.Settings>(collection: Self.Settings)
-        try settingsService.create( User.Settings(id: user.id) )
+        let _ = try create(user, fid: uid)
+        let settingsService = FirestoreService<User.Settings>()
+        let _ = try settingsService.create(User.Settings(), fid: uid )
         loadingState = .user
     }
 
@@ -77,6 +73,7 @@ class SessionViewModel: FirestoreService<User> {
 
 
 // MARK: - Premium
+
 extension SessionViewModel {
     
     @MainActor
@@ -87,13 +84,11 @@ extension SessionViewModel {
         }
     }
     
-    func login(uid: String) async {
+    func login() async {
         do {
-            #warning("Properly fetch settings")
-
-//            await fetchSettings()
             let (customerInfo, _) = try await RevenueCatService.logIn(uid)
             await setMembership(customerInfo)
+            await fetchOfferings()
         } catch {
             print("RevenueCat Login", error)
         }
@@ -129,7 +124,16 @@ extension SessionViewModel {
         }
     }
 }
+protocol Package {
+    var title: String {get}
+    var isLike: Bool {get}
+    var membership: Membership? {get}
+    var price: String {get}
+}
+enum Membership: String { case monthly, semiAnnual, yearly, lifetime}
 
+
+// MARK: - Notifications
 extension SessionViewModel {
     @MainActor
     func checkNotification() async {
@@ -160,50 +164,4 @@ extension SessionViewModel {
     }
 }
 
-// MARK: Package
-protocol Package {
-    var title: String {get}
-    var isLike: Bool {get}
-    var membership: Membership? {get}
-    var price: String {get}
 
-}
-enum Membership: String { case monthly, semiAnnual, yearly, lifetime}
-extension RevenueCat.Package: Package {
-    var title: String {
-        switch storeProduct.productIdentifier {
-        case String.Yearly_ID:
-            return String(12) + " Month"
-        case String.SemiAnnual_ID:
-            return String(6) + " Month"
-        case String.Monthly_ID:
-            return String(1) + " Month"
-        case String.Lifetime_ID:
-            return "Lifetime"
-        default: return ""
-        }
-    }
-    
-    var isLike: Bool {
-        storeProduct.productIdentifier.contains("like")
-    }
-    
-    var membership: Membership? {
-        switch storeProduct.productIdentifier {
-        case String.Yearly_ID:
-            return .yearly
-        case String.SemiAnnual_ID:
-            return .semiAnnual
-        case String.Monthly_ID:
-            return .monthly
-        case String.Lifetime_ID:
-            return .lifetime
-        default: return nil
-        }
-    }
-    
-    var price: String {
-        storeProduct.localizedPriceString
-    }
-
-}

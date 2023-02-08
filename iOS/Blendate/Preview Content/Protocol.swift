@@ -20,11 +20,10 @@ extension Service {
 }
 
 extension SessionViewModel: Service { static let emoji = "📱" }
-extension SettingsViewModel: Service { static let emoji = "⚙️" }
-extension MatchViewModel: Service { static let emoji = "❤️" }
+extension SwipeViewModel: Service { static let emoji = "❤️" }
 extension PhotoViewModel: Service { static let emoji = "🖼️" }
 extension CommunityViewModel: Service { static let emoji = "👨‍👩‍👦" }
-extension MessagesViewModel: Service { static let emoji = "✉️" }
-//extension ChatViewModel<Conversation>: Service { static let emoji = "💬" }
+extension MatchesViewModel: Service { static let emoji = "✉️" }
+//extension ChatViewModel<Match>: Service { static let emoji = "💬" }
 //extension ChatViewModel<CommunityTopic>: Service { static let emoji = "💬" }
 

@@ -11,7 +11,7 @@ import Foundation
 class CommunityViewModel: FirestoreService<CommunityTopic> {
     
     init(){
-        super.init(collection: Self.Community, listener: true)
+        super.init(listener: true)
     }
     
     func newDiscussion(author: String, title: String, description: String) async {
@@ -26,8 +26,7 @@ class CommunityViewModel: FirestoreService<CommunityTopic> {
     func sendMessage(to topic: CommunityTopic, message: String, author: String) async throws {
         do {
             let chatMessage = ChatMessage(author: author, text: message)
-            let tid = try fid(topic)
-            try Messages(for: tid).document().setData(from: chatMessage)
+            try Self.Messages(for: topic).document().setData(from: chatMessage)
             topic.lastMessage = chatMessage
             try update(topic)
         } catch {

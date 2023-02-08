@@ -1,5 +1,5 @@
 //
-//  Conversation.swift
+//  Match.swift
 //  Blendate
 //
 //  Created by Michael on 12/9/21.
@@ -10,20 +10,23 @@ import Firebase
 import FirebaseFirestoreSwift
 import SwiftUI
 
-protocol Convo: Codable, Identifiable {
+protocol Convo: FirestoreObject {
     var id: String? {get set}
     var users: [String] {get set}
     var timestamp: Date {get set}
     var lastMessage: ChatMessage {get set}
 }
-class Conversation: Convo {
+class Match: Convo {
     @DocumentID var id: String?
     var users: [String]
     var timestamp: Date = .now
     var lastMessage: ChatMessage = ChatMessage(author: "", text: "")
     
-    init(user1: String, user2: String) {
+    init(user1: String, user2: String, lastMessage: ChatMessage? = nil) {
         self.users = [user1, user2]
+        if let lastMessage {
+            self.lastMessage = lastMessage
+        }
     }
     
     init(users: [String]) {
@@ -31,20 +34,20 @@ class Conversation: Convo {
     }
 }
 
-extension Conversation {
+extension Match {
     func withUserID(_ uid: String?)->String?{
         guard let uid = uid else {return nil}
         return users.first(where: {$0 != uid})
     }
 }
 
-extension Conversation: Equatable {
-    static func == (lhs: Conversation, rhs: Conversation) -> Bool {
+extension Match: Equatable {
+    static func == (lhs: Match, rhs: Match) -> Bool {
         return lhs.id == rhs.id
     }
 }
 
-struct ChatMessage: Codable, Identifiable {
+struct ChatMessage: FirestoreObject {
     @DocumentID var id: String?
     var author: String
     var text = ""

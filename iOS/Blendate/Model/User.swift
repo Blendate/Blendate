@@ -9,7 +9,7 @@ import SwiftUI
 import FirebaseFirestoreSwift
 import CoreLocation
 
-class User: NSObject, Codable, Identifiable {
+class User: NSObject, FirestoreObject {
     @DocumentID var id: String?
     var firstname: String = ""
     var lastname: String = ""
@@ -27,10 +27,6 @@ class User: NSObject, Codable, Identifiable {
     var filters = Stats(.filter)
 
     var color: Color = .Blue
-    
-    init(id: String){
-        self.id = id
-    }
 }
 
 extension User {
@@ -52,7 +48,7 @@ extension User {
 }
 
 extension User {
-    struct Settings: Codable, Identifiable  {
+    class Settings: FirestoreObject {
         @DocumentID var id: String?
         var notifications = Notifications(fcm: "", isOn: false)
         var superLikes: Int = 0

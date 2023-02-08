@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SwipeButton: View {
-    @EnvironmentObject var premium: SettingsViewModel
+    @EnvironmentObject var session: SessionViewModel
 
     let swipe: Swipe
     var action: (_ swipe: Swipe) async -> Void
@@ -50,8 +50,8 @@ struct SwipeButton: View {
 
     @MainActor
     private func swiped() async {
-        if swipe == .superLike && premium.settings.superLikes < 0 {
-            premium.showSuperLike = true
+        if swipe == .superLike && session.settings.superLikes < 0 {
+            session.showSuperLike = true
         } else {
             await action(swipe)
         }

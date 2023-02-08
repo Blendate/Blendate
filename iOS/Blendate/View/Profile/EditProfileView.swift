@@ -9,7 +9,7 @@ import SwiftUI
 
 struct EditProfileView: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var premium: SettingsViewModel
+    @EnvironmentObject var session: SessionViewModel
     
     @Binding var details: User
     @State private var showMembership = false
@@ -50,7 +50,7 @@ struct EditProfileView: View {
             }
             .fullScreenCover(isPresented: $showMembership){
                 MembershipView()
-                    .environmentObject(premium)
+                    .environmentObject(session)
             }
         }
     }
@@ -87,7 +87,7 @@ extension EditProfileView {
 struct EditProfileView_Previews: PreviewProvider {
     static var previews: some View {
         EditProfileView(details: .constant(dev.michael))
-            .environmentObject(SettingsViewModel(dev.michael.id!))
+            .environmentObject(SessionViewModel(dev.michael.id!))
     }
 }
 

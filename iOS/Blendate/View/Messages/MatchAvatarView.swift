@@ -9,13 +9,13 @@ import SwiftUI
 
 struct MatchAvatarView: View {
     @EnvironmentObject var session: SessionViewModel
-    var match: Conversation
+    var match: Match
     @State var startConvo = false
     @State var details: User?
     
 //    let service = UserService()
 
-    init(_ match: Conversation){
+    init(_ match: Match){
         self.match = match
     }
 

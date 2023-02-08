@@ -97,3 +97,41 @@ struct RevenueCatService {
     }
 }
 
+extension RevenueCat.Package: Package {
+    var title: String {
+        switch storeProduct.productIdentifier {
+        case String.Yearly_ID:
+            return String(12) + " Month"
+        case String.SemiAnnual_ID:
+            return String(6) + " Month"
+        case String.Monthly_ID:
+            return String(1) + " Month"
+        case String.Lifetime_ID:
+            return "Lifetime"
+        default: return ""
+        }
+    }
+    
+    var isLike: Bool {
+        storeProduct.productIdentifier.contains("like")
+    }
+    
+    var membership: Membership? {
+        switch storeProduct.productIdentifier {
+        case String.Yearly_ID:
+            return .yearly
+        case String.SemiAnnual_ID:
+            return .semiAnnual
+        case String.Monthly_ID:
+            return .monthly
+        case String.Lifetime_ID:
+            return .lifetime
+        default: return nil
+        }
+    }
+    
+    var price: String {
+        storeProduct.localizedPriceString
+    }
+
+}

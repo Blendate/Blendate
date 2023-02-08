@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ConvoCellView: View {
-    let conversation: Conversation
+    let conversation: Match
     @State var details: User?
     @EnvironmentObject var session: SessionViewModel
 

@@ -9,7 +9,6 @@ import SwiftUI
 
 struct TodayView: View {
     @EnvironmentObject var session: SessionViewModel
-    @EnvironmentObject var match: MatchViewModel
     
     let todayUser: User
     @Binding var showLikes: Bool
@@ -64,14 +63,13 @@ struct TodayView: View {
     func sendMessage() async {
         if session.hasPremium {
             guard let id = todayUser.id else {return}
-            let convo = Conversation(user1: id, user2: session.uid)
+            var convo = Match(user1: id, user2: session.uid)
             do {
-                try await MatchViewModel.Swipes(for: session.uid, .superLike)
+                try await SwipeViewModel.Swipes(for: session.uid, .superLike)
                     .document(id)
                     .setData(["timestamp":Date()])
-                await match.createConvo(with: id)
-                #warning("SEND CHATMESSAGE")
-//                try await MessageService().sendMessage(convo: convo, message: message, author: session.uid)
+                convo.id = try MatchesViewModel(uid: session.uid).create(convo)
+                ChatViewModel(convo, text: message).sendMessage(author: session.uid)
             } catch {
                 print(error.localizedDescription)
             }

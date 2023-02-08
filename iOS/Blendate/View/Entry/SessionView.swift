@@ -9,13 +9,11 @@ import SwiftUI
 
 struct SessionView: View {
     @StateObject var session: SessionViewModel
-    @StateObject var match: MatchViewModel
-    @StateObject var premium: SettingsViewModel
+    @StateObject var match: SwipeViewModel
 
     init(_ uid: String){
         self._session = StateObject(wrappedValue: SessionViewModel(uid))
-        self._match = StateObject(wrappedValue: MatchViewModel(uid))
-        self._premium = StateObject(wrappedValue: SettingsViewModel(uid))
+        self._match = StateObject(wrappedValue: SwipeViewModel(uid))
     }
     
     var body: some View {
@@ -33,10 +31,9 @@ struct SessionView: View {
         }
         .environmentObject(session)
         .task {
-            await premium.login(uid: session.uid)
             await session.fetchFirebase()
+            await session.login()
             await match.fetchLineup()
-            await premium.fetchOfferings()
         }
     }
     
@@ -64,19 +61,18 @@ struct SessionView: View {
                 .tag(Tab.profile)
                 .tabItem{ Tab.profile.image }
         }
-        .environmentObject(premium)
         .environmentObject(match)
-        .fullScreenCover(isPresented: $premium.showMembership) {
+        .fullScreenCover(isPresented: $session.showMembership) {
             MembershipView()
-                .environmentObject(premium)
+                .environmentObject(session)
         }
-        .sheet(isPresented: $premium.showSuperLike) {
+        .sheet(isPresented: $session.showSuperLike) {
             PurchaseLikesView()
                 .presentationDetents([.medium])
-                .environmentObject(premium)
+                .environmentObject(session)
         }
         .task {
-            await premium.checkNotification()
+            await session.checkNotification()
         }
     }
 }

@@ -47,7 +47,8 @@ extension DeveloperPreview {
         return filters
     }
     var michael: User {
-        var details = User(id: "1234")
+        let details = User()
+        details.id = "1234"
         details.firstname = "Michael"
         details.lastname = "Wilkowski"
         details.birthday = Date()
@@ -70,7 +71,8 @@ extension DeveloperPreview {
         return details
     }
     var tyler: User {
-        var details = User(id: "4321")
+        let details = User()
+        details.id = "4321"
         details.firstname = "Tyler"
         details.lastname = "Davis"
         details.birthday = Date()

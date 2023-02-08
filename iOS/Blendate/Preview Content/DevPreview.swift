@@ -19,11 +19,11 @@ class DeveloperPreview {
     private init() { }
     
     var empty:User.Settings{
-        return User.Settings(id: "12345")
+        return User.Settings()
     }
 //    @StateObject var session = SessionViewModel(user: DeveloperPreview.michael_)
-    var conversation: Conversation {
-        Conversation(user1: michael.id!, user2: tyler.id!)
+    var conversation: Match {
+        Match(user1: michael.id!, user2: tyler.id!)
     }
     let chatmessage = ChatMessage(author: "1234", text: "Testing a short message")
     let longChatMessage = ChatMessage(author: "", text: String(lorem.prefix(140)))

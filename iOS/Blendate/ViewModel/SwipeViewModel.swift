@@ -8,23 +8,22 @@
 import SwiftUI
 
 @MainActor
-class MatchViewModel: FirestoreService<User> {
+class SwipeViewModel: FirestoreService<User> {
     
     @Published var lineup: [User] = []
     @Published var loading = true
-    @Published var newConvo: Conversation?
     @Published var likedyou: [User] = []
     private let uid: String
     
     init(_ uid: String){
         self.uid = uid
-        super.init(collection: Self.Users, listener: false)
+        super.init()
     }
     
     #warning("fix this to only 10")
     @MainActor
     func fetchLineup() async {
-        let swipeHistory = await Self.allSwipes(for: uid)
+        let swipeHistory = await allSwipes(for: uid)
         
         do {
             let snapshot = try await collection.getDocuments().documents
@@ -55,12 +54,7 @@ class MatchViewModel: FirestoreService<User> {
             print("Lineup", error)
         }
     }
-    
-    
-}
 
-// MARK: Swipe Logic
-extension MatchViewModel {
     @MainActor
     func swipe(on match: String, _ swipe: Swipe) async -> Bool  {
         do {
@@ -79,23 +73,24 @@ extension MatchViewModel {
     private func isMatch(_ match: String, _ swipe: Swipe)async->Bool {
         return swipe == .superLike
         guard swipe != .pass else {return false}
-        let likes = await Self.getHistory(for: match, .like)
-        let superLikes = await Self.getHistory(for: match, .superLike)
+        let likes = await getHistory(for: match, .like)
+        let superLikes = await getHistory(for: match, .superLike)
         let allLikes = likes + superLikes
         return allLikes.contains(uid)
     }
     
-    @MainActor
-    func createConvo(with match: String) async {
-        let cid = FireStore.getUsersID(userId1: match, userId2: uid)
-        var convo = Conversation(user1: match, user2: uid)
-        let chats = Self.Matches
-        do {
-            try chats.document(cid).setData(from: convo)
-            convo.id = cid
-            self.newConvo = convo
-        } catch {
-            self.alert = AlertError(title: "Server Error", message: "Could not create your match on the Blendate server.")
-        }
-    }
+
 }
+//@MainActor
+//func createConvo(with match: String) async {
+//        let cid = FireStore.getUsersID(userId1: match, userId2: uid)
+//        var convo = Match(user1: match, user2: uid)
+//        let chats = Matches
+//        do {
+//            try chats.document(cid).setData(from: convo)
+//            convo.id = cid
+//            self.newConvo = convo
+//        } catch {
+//            self.alert = AlertError(title: "Server Error", message: "Could not create your match on the Blendate server.")
+//        }
+//}

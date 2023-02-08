@@ -57,7 +57,7 @@ struct ProfileView: View {
 extension ProfileView {
     
     struct PremiumButton: View {
-        @EnvironmentObject var premium: SettingsViewModel
+        @EnvironmentObject var session: SessionViewModel
         let isMembership: Bool
         var title: String { isMembership ? "Premium Membership" : "Get more Super Likes"}
         var body: some View {
@@ -99,9 +99,9 @@ extension ProfileView {
         @MainActor
         func tapped(){
             if isMembership {
-                premium.showMembership = true
+                session.showMembership = true
             } else {
-                premium.showSuperLike = true
+                session.showSuperLike = true
             }
         }
     }

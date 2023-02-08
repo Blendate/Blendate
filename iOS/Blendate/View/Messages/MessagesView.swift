@@ -9,19 +9,19 @@ import SwiftUI
 import MapKit
 
 struct MessagesView: View {
-    @StateObject var model: MessagesViewModel
+    @StateObject var model: MatchesViewModel
     @EnvironmentObject var session: SessionViewModel
-    @EnvironmentObject var match: MatchViewModel
+//    @EnvironmentObject var match: SwipeViewModel
     
     init(uid: String){
-        self._model = StateObject(wrappedValue: MessagesViewModel(uid: uid))
+        self._model = StateObject(wrappedValue: MatchesViewModel(uid: uid))
     }
     
     var body: some View {
         NavigationView {
             Group {
                 if model.fetched.isEmpty {
-                    EmptyConversations(model.fetched)
+                    EmptyMatchs(model.fetched)
                 } else {
                     VStack{
                         Matches(matches: model.matches)
@@ -44,10 +44,9 @@ struct MessagesView: View {
 
 extension MessagesView {
     struct Matches: View {
-        @EnvironmentObject var premium: SettingsViewModel
         @EnvironmentObject var session: SessionViewModel
         
-        var matches: [Conversation]
+        var matches: [Match]
         var body: some View {
             VStack {
                 if matches.isEmpty {
@@ -84,10 +83,10 @@ extension MessagesView {
         
         var likedYou: some View {
             Button {
-                if premium.hasPremium {
+                if session.hasPremium {
                     session.selectedTab = .likes
                 } else {
-                    premium.showMembership = true
+                    session.showMembership = true
                 }
             } label: {
                 ZStack {
@@ -96,7 +95,7 @@ extension MessagesView {
                         .frame(width: 80, height: 80, alignment: .center)
                     if let firstLike {
                         PhotoView.Avatar(url: URL(string: firstLike), size: 70, isCell: true)
-                            .blur(radius: premium.hasPremium ? 0 : 20)
+                            .blur(radius: session.hasPremium ? 0 : 20)
                             .clipShape(Circle())
                     } else {
                         Circle().fill(Color.Blue)
@@ -120,7 +119,7 @@ extension MessagesView {
 extension MessagesView {
     
     struct Messages: View {
-        var conversations: [Conversation]
+        var conversations: [Match]
         
         var body: some View {
             VStack {
@@ -131,7 +130,7 @@ extension MessagesView {
                     Spacer()
                 }
                 if conversations.isEmpty {
-                    EmptyConversations(conversations)
+                    EmptyMatchs(conversations)
                 } else {
                     List {
                         ForEach(conversations, id: \.id) { conversation in
@@ -143,14 +142,14 @@ extension MessagesView {
         }
     }
     
-    struct EmptyConversations: View {
-        let conversations: [Conversation]
-        init(_ conversations: [Conversation]) {
+    struct EmptyMatchs: View {
+        let conversations: [Match]
+        init(_ conversations: [Match]) {
             self.conversations = conversations
         }
-        let NoConversations = "Tap on any of your matches to start a conversation"
+        let NoMatchs = "Tap on any of your matches to start a conversation"
         let NoMatches = "Start matching with profiles to blend with others and start conversations"
-        var message: String { conversations.isEmpty ? NoMatches : NoConversations }
+        var message: String { conversations.isEmpty ? NoMatches : NoMatchs }
         
         var body: some View {
             VStack {

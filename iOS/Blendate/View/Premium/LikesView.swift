@@ -10,28 +10,28 @@ import CachedAsyncImage
 
 struct LikesView: View {
     @EnvironmentObject var session: SessionViewModel
-    @EnvironmentObject var match: MatchViewModel
-    @EnvironmentObject var premium: SettingsViewModel
+//    @EnvironmentObject var match: MatchViewModel
+    @State var likedyou: [User] = []
 
     var likes: [String] = []
     @State var showLikes = false
     @State var chosenUser: User?
     
     var activeMembership: Bool {
-        premium.hasPremium
+        session.hasPremium
     }
     
     private let columns = [GridItem(.flexible()), GridItem(.flexible())]
 
     var body: some View {
-        if let first = match.lineup.last, !showLikes {
+        if let first = likedyou.last, !showLikes {
             TodayView(todayUser: first, showLikes: $showLikes)
         } else {
             ZStack(alignment: .bottom) {
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: 20) {
-                        if match.lineup.count > 6 {
-                            let array = Array(match.lineup.prefix(upTo: 6))
+                        if likedyou.count > 6 {
+                            let array = Array(likedyou.prefix(upTo: 6))
                             ForEach(array) { user in
                                 VStack {
                                     if let url = user.avatar {
@@ -60,7 +60,7 @@ struct LikesView: View {
                                     if activeMembership {
                                         self.chosenUser = user
                                     } else {
-                                        premium.showMembership = true
+                                        session.showMembership = true
                                     }
                                 }
                                 
@@ -87,8 +87,7 @@ struct LikesView_Previews: PreviewProvider {
     static var previews: some View {
         LikesView(likes: ["1234"])
             .environmentObject(SessionViewModel(dev.michael.id!))
-            .environmentObject(MatchViewModel(dev.michael.id!))
-            .environmentObject(SettingsViewModel(dev.michael.id!))
+            .environmentObject(SwipeViewModel(dev.michael.id!))
 //        LikesView()
 
     }

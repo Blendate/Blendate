@@ -15,7 +15,7 @@ struct MatchedView: View {
     @State var showChat = false
     var details: User
     var matchedWith: User
-    let newConvo: Conversation
+    let newConvo: Match
 
     var body: some View {
         NavigationStack {

@@ -92,6 +92,5 @@ struct FiltersView_Previews: PreviewProvider {
     static var previews: some View {
         FiltersView()
             .environmentObject(SessionViewModel(user: dev.michael))
-            .environmentObject(SettingsViewModel(dev.michael.id!))
     }
 }

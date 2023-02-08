@@ -9,10 +9,10 @@ import SwiftUI
 
 struct ChatView: View {
     @EnvironmentObject var session: SessionViewModel
-    @StateObject var model: ChatViewModel<Conversation>
+    @StateObject var model: ChatViewModel<Match>
     @Binding var withUser: User?
 
-    init(_ convo: Conversation, with: Binding<User?>){
+    init(_ convo: Match, with: Binding<User?>){
         self._model = StateObject(wrappedValue: ChatViewModel(convo))
         self._withUser = with
     }

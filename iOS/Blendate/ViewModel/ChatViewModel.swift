@@ -15,19 +15,19 @@ class ChatViewModel<C:Convo>: FirestoreService<ChatMessage> {
     
     var conversation: C
         
-    init(_ conversation: C){
+    init(_ conversation: C, text: String = ""){
         self.conversation = conversation
-        super.init(collection: Self.Messages(for: conversation), listener: true)
+        self.text = text
+        let collection = Self.Messages(for: conversation)
+        super.init(parent: collection, listener: true)
     }
         
     func sendMessage(author: String) {
         do {
             let chatMessage = ChatMessage(author: author, text: text)
-            try create(chatMessage)
-            if let cid = conversation.id {
-                conversation.lastMessage = chatMessage
-                try? Self.Collection(for: conversation).document(cid).setData(from: conversation)
-            }
+            let _ = try create(chatMessage)
+            conversation.lastMessage = chatMessage
+            try? FirestoreService<C>().update(conversation)
             clear()
         } catch {
             print("Send Message Error: \(error.localizedDescription)")

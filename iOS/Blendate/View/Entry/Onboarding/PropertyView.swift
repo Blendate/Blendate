@@ -29,35 +29,52 @@ struct PropertyView: View {
             .toolbar {
                 if signup {
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        NavigationLink {
-                            PropertyView(detail: next, signup: signup)
-                        } label: {
-                            nextLabel
-                        }.disabled((!valueValid && detail.required) || detail == .interests)
+                        if detail == .interests {
+                            startButton
+                        } else {
+                            nextButton
+                        }
                     }
                 }
-
             }
             .navigationViewStyle(StackNavigationViewStyle())
-
     }
 }
 
 extension PropertyView {
         
-    var nextLabel: some View {
-        var string: String {
-            if detail == .interests {
-                return "Start Blending"
-            } else {
-                return Stats.Required.contains(detail) ? (valueValid ? "Next":"Skip") : "Next"
-            }
+    @ViewBuilder
+    var nextButton: some View {
+        let label = Stats.Required.contains(detail) ? "Next" : (valueValid ? "Next":"Skip")
+        NavigationLink {
+            PropertyView(detail: next, signup: signup)
+        } label: {
+            Text(label)
+                .fontWeight(.bold)
+                .tint(.Blue)
+        }.disabled((!valueValid && detail.required) || detail == .interests)
+    }
+    
+    @ViewBuilder
+    var startButton: some View {
+        Button {
+            
+        } label: {
+            Text("Start Blending")
+                .fontWeight(.bold)
+                .tint(.Blue)
         }
-        return Text(string)
-            .fontWeight(.bold)
-            .tint(.Blue)
 
     }
+    
+//    @MainActor
+//    func createUserDoc() throws {
+//        try create(user)
+//
+//        let settingsService = FirestoreService<User.Settings>(collection: Self.Settings)
+//        try settingsService.create( User.Settings(id: user.id) )
+//        loadingState = .user
+//    }
 
 }
 
