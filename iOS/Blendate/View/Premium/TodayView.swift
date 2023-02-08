@@ -9,7 +9,6 @@ import SwiftUI
 
 struct TodayView: View {
     @EnvironmentObject var session: SessionViewModel
-    @EnvironmentObject var premium: SettingsViewModel
     @EnvironmentObject var match: MatchViewModel
     
     let todayUser: User
@@ -63,7 +62,7 @@ struct TodayView: View {
     }
     
     func sendMessage() async {
-        if premium.hasPremium {
+        if session.hasPremium {
             guard let id = todayUser.id else {return}
             let convo = Conversation(user1: id, user2: session.uid)
             do {
@@ -77,7 +76,7 @@ struct TodayView: View {
                 print(error.localizedDescription)
             }
         } else {
-            premium.showMembership = true
+            session.showMembership = true
         }
     }
     

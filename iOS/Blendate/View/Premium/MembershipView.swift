@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MembershipView: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var model: SettingsViewModel
+    @EnvironmentObject var model: SessionViewModel
     //    @Binding var premium: Premium
     
     var body: some View {
@@ -58,7 +58,7 @@ struct MembershipView: View {
 extension MembershipView {
     
     struct Cell<P:Package>: View {
-        @EnvironmentObject var model: SettingsViewModel
+        @EnvironmentObject var model: SessionViewModel
         let package: P
         var body: some View {
             AsyncButton {

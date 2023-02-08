@@ -64,7 +64,7 @@ extension PropertyView {
 
 extension PropertyView {
     
-    struct TextFieldP: View {
+    struct Textfield: View {
         @Binding var string: String
         var body: some View {
             TextField("", text: $string)
@@ -149,7 +149,7 @@ extension PropertyView {
         case .familyPlans:
             OptionGridView<FamilyPlans, String>(valueType.familyPlans)
         case .work:
-            TextFieldP(string: details.workTitle)
+            Textfield(string: details.workTitle)
         case .education:
             VStack {
                 Text("What University, College, or High School did you attend?")
@@ -157,7 +157,7 @@ extension PropertyView {
                     .padding(.top,5)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
-                TextFieldP(string: details.schoolTitle)
+                Textfield(string: details.schoolTitle)
             }
             
 //            EducationView(schoolTitle: details.schoolTitle, isFilter: isFilter)
@@ -189,6 +189,45 @@ extension PropertyView {
 }
 
 
+extension PropertyView {
+    
+    struct SignupTitle: View {
+        let detail: Detail
+        let isFilter: Bool
+        
+        init(_ detail: Detail, _ isFilter: Bool){
+            self.detail = detail; self.isFilter = isFilter
+        }
+
+        var body: some View {
+            if let title {
+                Text(title)
+                    .fontType(.semibold, 32, .DarkBlue)
+                    .multilineTextAlignment(.center)
+                    .padding(.vertical)
+                    .padding(.horizontal)
+            }
+        }
+        
+        var title: String? {
+            switch detail {
+            case .name, .bio, .photos: return nil
+            case .gender: return isFilter ? "Seeking" : "I identify as"
+            case .work: return "Job Title"
+            case .isParent: return isFilter ? "Are they a parent?" : "Do you have children?"
+            case .children: return isFilter ? "How many children?" : "How many children do you have?"
+            case .childrenRange: return "Children's age range"
+            case .height: return isFilter ? "Height Requirement" : "How tall are you?"
+            case .relationship: return "Relationship Staus"
+            case .familyPlans: return "Family Plans"
+            case .maxDistance: return "Max Distance"
+            case .ageRange: return "Age Range"
+            default: return detail.rawValue.capitalized
+            }
+        }
+    }
+}
+
 struct PropertyView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
@@ -197,17 +236,4 @@ struct PropertyView_Previews: PreviewProvider {
 
         }
     }
-}
-
-
-extension PropertyView {
-    
-    //    var value: Binding<Any?> {
-    //        .init {
-    //            session.user.value(for: detail, isFilter: isFilter)
-    //        } set: {
-    //            session.user.setValue($0, for: detail, isFilter: isFilter)
-    //        }
-    //
-    //    }
 }

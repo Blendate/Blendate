@@ -10,10 +10,11 @@ import Sliders
 
 
 struct DetailCellView: View {
-    @EnvironmentObject var premium: SettingsViewModel
+    @EnvironmentObject var session: SessionViewModel
     let detail: Detail
     @Binding var details: User
     let type: PropType
+    var isFilter: Bool { type == .filter }
     @Binding var showMembership: Bool
     
     var body: some View {
@@ -29,7 +30,7 @@ struct DetailCellView: View {
     
     @ViewBuilder var detailCell: some View {
         
-        if detail.isPremium && !premium.hasPremium && type == .filter {
+        if detail.isPremium && !session.hasPremium && isFilter {
             Button {
                 showMembership = true
             } label: {
@@ -43,7 +44,7 @@ struct DetailCellView: View {
 
         } else {
             NavigationLink {
-                PropertyView(detail: detail, signup: false, isFilter: type == .filter)
+                PropertyView(detail: detail, signup: false, isFilter: isFilter)
             } label: {
                 HStack {
                     Text(label)
@@ -80,7 +81,7 @@ struct DetailCellView: View {
     }
     
     var value: some View {
-        Text(details.valueLabel(for: detail, type))
+        Text(details.valueLabel(for: detail, isFilter))
             .foregroundColor(.Blue)
 //            .fontType(.regular, 16, .Blue)
     }
@@ -139,8 +140,8 @@ struct DetailCellView_Previews: PreviewProvider {
 
 
 extension User {
-    func valueLabel(for detail: Detail, _ type: PropType) -> String {
-        let valueType: Stats = type == .filter ? filters : info
+    func valueLabel(for detail: Detail, _ isFilter: Bool) -> String {
+        let valueType: Stats = isFilter ? filters : info
         
         switch detail {
         case .photos:

@@ -80,3 +80,23 @@ struct SessionView: View {
         }
     }
 }
+enum Tab: String, CaseIterable, Identifiable {
+    var id: String {self.rawValue }
+    case match, likes, messages, community, profile
+
+    var image: Image {
+        switch self {
+
+        case .match:
+            return Image("icon-2")
+        case .likes:
+            return Image(systemName: "star")
+        case .messages:
+            return Image("chat")
+        case .community:
+            return Image(systemName: "person.3")
+        case .profile:
+            return Image("profile")
+        }
+    }
+}
