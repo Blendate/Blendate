@@ -8,12 +8,12 @@
 import SwiftUI
 import RevenueCat
 
-enum SessionState {case noUser, user, loading}
+enum SessionState {case noUser, user}
 
 class SessionViewModel: FirestoreService<User> {
 
     @Published var selectedTab: Tab = .match
-    @Published var loadingState: SessionState = .loading
+    @Published var state: SessionState = .user
     
     @Published var user = User()
     @Published var settings = User.Settings()
@@ -40,12 +40,12 @@ class SessionViewModel: FirestoreService<User> {
             self.user = try await fetch(fid: uid)
             self.settings = try await FirestoreService<User.Settings>().fetch(fid: uid)
             withAnimation(.spring()) {
-                self.loadingState = user.firstname.isEmpty ? .noUser : .user
+                self.state = user.firstname.isEmpty ? .noUser : .user
             }
         } catch {
             print(error.localizedDescription)
             withAnimation(.spring()) {
-                loadingState = .noUser
+                state = .noUser
             }
         }
     }
@@ -55,7 +55,7 @@ class SessionViewModel: FirestoreService<User> {
         let _ = try create(user, fid: uid)
         let settingsService = FirestoreService<User.Settings>()
         let _ = try settingsService.create(User.Settings(), fid: uid )
-        loadingState = .user
+        state = .user
     }
 
     func saveUser() throws {
@@ -84,7 +84,7 @@ extension SessionViewModel {
         }
     }
     
-    func login() async {
+    func loginRevenueCat() async {
         do {
             let (customerInfo, _) = try await RevenueCatService.logIn(uid)
             await setMembership(customerInfo)
