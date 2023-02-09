@@ -19,7 +19,7 @@ struct ConvoCellView: View {
                 ChatView(cid, with: $details)
             } label: {
                 HStack(spacing: 0){
-                    PhotoView.Avatar(url: details?.avatar, size: 75, isCell: true)
+                    PhotoView.MatchAvatar(match: conversation, details: $details)
                     VStack(alignment: .leading) {
                         Text(details?.firstname ?? "")
                             .fontType(.semibold, .title3)
@@ -33,17 +33,9 @@ struct ConvoCellView: View {
                 }
             }
             .buttonStyle(.plain)
-            .task {
-                await fetchUser()
-            }
         }
     }
     
-    func fetchUser() async {
-        guard let withUID = conversation.withUserID(session.uid) else {return}
-        let details = try? await session.fetch(fid: withUID)
-        self.details = details
-    }
 }
 
 struct ConvoCellView_Previews: PreviewProvider {

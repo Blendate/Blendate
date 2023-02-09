@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var session: SessionViewModel
+    @EnvironmentObject var settings: SettingsViewModel
     @EnvironmentObject var auth: FirebaseAuthState
     
     @State var logoutAlert: AlertError?
@@ -40,19 +40,19 @@ struct SettingsView: View {
     
     var notifications: some View {
         Section {
-            ToggleView("Noticications", value: $session.settings.notifications.isOn)
-            if session.settings.notifications.isOn {
-                ToggleView("New Messages", value: $session.settings.notifications.messages)
-                ToggleView("New Match", value: $session.settings.notifications.matches)
+            ToggleView("Noticications", value: $settings.settings.notifications.isOn)
+            if settings.settings.notifications.isOn {
+                ToggleView("New Messages", value: $settings.settings.notifications.messages)
+                ToggleView("New Match", value: $settings.settings.notifications.matches)
                 HStack {
-                    if !session.hasPremium {
+                    if !settings.hasPremium {
                         Image(systemName: "lock")
                     }
-                    ToggleView("Liked You", value: $session.settings.notifications.likes)
+                    ToggleView("Liked You", value: $settings.settings.notifications.likes)
                 }
-                    .disabled(!session.hasPremium)
+                    .disabled(!settings.hasPremium)
                     .onTapGesture {
-                        if !session.hasPremium {
+                        if !settings.hasPremium {
                             showMembership = true
                         }
                     }
@@ -70,10 +70,10 @@ struct SettingsView: View {
                 showMembership = true
             } label: {
                 HStack {
-                    Text(session.hasPremium ? "Manage Membership":"Premium Membership")
+                    Text(settings.hasPremium ? "Manage Membership":"Premium Membership")
                         .foregroundColor(.primary)
                     Spacer()
-                    Text(session.hasPremium ? "Active" : "Purchase")
+                    Text(settings.hasPremium ? "Active" : "Purchase")
                         .foregroundColor(.Blue)
                 }
             }

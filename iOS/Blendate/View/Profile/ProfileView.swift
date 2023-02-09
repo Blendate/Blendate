@@ -13,16 +13,17 @@ struct ProfileView: View {
     @State private var showSettings = false
     @State private var showFilters = false
     @State private var showProfile = false
-    
+    @State private var viewProfile = false
+
     
     var body: some View {
         NavigationView {
             VStack {
-                PremiumButton(isMembership: true)
-                    .padding(.top)
-                PremiumButton(isMembership: false)
-                ProfileCardView(user, .session)
-                    .padding(.vertical)
+                Spacer()
+                PhotoView.Avatar(url: user.avatar, size: 150)
+                    .onTapGesture {
+                        viewProfile = true
+                    }
                 VStack {
                     ButtonCell(title: "Edit Profile", systemImage: "pencil"){
                         showProfile = true
@@ -37,6 +38,9 @@ struct ProfileView: View {
                     }
                 }
                 Spacer()
+                PremiumButton(isMembership: true)
+                PremiumButton(isMembership: false)
+                Spacer()
             }
             .padding(.horizontal)
             .toolbar {
@@ -45,6 +49,7 @@ struct ProfileView: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
+            .fullScreenCover(isPresented: $viewProfile) { EditProfileView(details: $user, showProfile: true) }
             .fullScreenCover(isPresented: $showProfile) { EditProfileView(details: $user) }
             .fullScreenCover(isPresented: $showFilters) { FiltersView() }
             .fullScreenCover(isPresented: $showSettings) { SettingsView() }
@@ -57,7 +62,7 @@ struct ProfileView: View {
 extension ProfileView {
     
     struct PremiumButton: View {
-        @EnvironmentObject var session: SessionViewModel
+        @EnvironmentObject var settings: SettingsViewModel
         let isMembership: Bool
         var title: String { isMembership ? "Premium Membership" : "Get more Super Likes"}
         var body: some View {
@@ -99,9 +104,9 @@ extension ProfileView {
         @MainActor
         func tapped(){
             if isMembership {
-                session.showMembership = true
+                settings.showMembership = true
             } else {
-                session.showSuperLike = true
+                settings.showSuperLike = true
             }
         }
     }

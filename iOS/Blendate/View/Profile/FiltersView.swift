@@ -9,8 +9,9 @@ import SwiftUI
 
 struct FiltersView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var settings: SettingsViewModel
     @EnvironmentObject var session: SessionViewModel
-    
+
     @State var showMembership = false
 
     var isParent: Bool {
@@ -34,7 +35,7 @@ struct FiltersView: View {
                         HStack {
                             Text(group.id.capitalized)
                             if group == .premium {
-                                Image(systemName: session.hasPremium ? "lock.open" : "lock")
+                                Image(systemName: settings.hasPremium ? "lock.open" : "lock")
                             }
                         }
                         .foregroundColor(.DarkBlue)
@@ -53,7 +54,7 @@ struct FiltersView: View {
             }
             .fullScreenCover(isPresented: $showMembership){
                 MembershipView()
-                    .environmentObject(session)
+                    .environmentObject(settings)
             }
         }
 

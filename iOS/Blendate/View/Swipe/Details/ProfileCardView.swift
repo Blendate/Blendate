@@ -10,73 +10,62 @@ import SwiftUI
 enum ProfileType { case view, match, session }
 
 struct ProfileCardView: View {
-    let profileType: ProfileType
     let details: User
-    var swipe: (_ swipe: Swipe) async -> Void
-    
-    init(_ details: User, _ profileType: ProfileType, swipe: (@escaping (_: Swipe) async -> Void) = {swipe in}){
-        self.details = details
-        self.profileType = profileType
-        self.swipe = swipe
-    }
-    
+    let type: ProfileType
+    var swipe: (_ swipe: Swipe) async -> Void = {swipe in}
     
     var body: some View {
-        if profileType == .session {
-            ProfileCard(details: details, profileType: profileType)
+        if type == .session {
+            ProfileCard(details: details, type: type)
         } else {
             cardWithCover
         }
     }
     
     var cardWithCover: some View {
-        ZStack(alignment: .bottom) {
-            VStack(spacing: 0) {
-                PhotoView.Cover(url: details.cover)
-                Spacer()
-            }
-            ProfileCard(details: details, profileType: profileType, swipe)
-        }.frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/1.78)
+        ZStack(alignment: .top) {
+            PhotoView.Cover(url: details.cover)
+                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/1.78)
+            ProfileCard(details: details, type: type, swipe: swipe)
+        }
     }
 }
 
 struct ProfileCard: View {
     let details: User
-    let profileType: ProfileType
-    
-    var swipe: (_ swipe: Swipe) async -> Void
-    private let avatarSize:CGFloat = 150
-    
-    init(details: User, profileType: ProfileType, _ swipe: (@escaping (_: Swipe) async -> Void) = {swipe in} ) {
-        self.details = details
-        self.profileType = profileType
-        self.swipe = swipe
-    }
-    
+    let type: ProfileType
+    var avatarSize:CGFloat = 250
+    var padding: CGFloat { avatarSize/2 }
+
+    var swipe: (_ swipe: Swipe) async -> Void = {swipe in}
+
     var body: some View {
         ZStack(alignment: .top) {
             VStack {
                 VStack {
                     Text(details.firstname + ", " + details.ageString)
                         .fontType(.semibold, .title, .white)
-                    if profileType == .session {
+                        .padding(.top, 8)
+                    if type == .session {
                         Text(details.info.location.name)
                             .fontType(.semibold, .body, .white)
                     }
-                    if profileType != .session {
+                    if type != .session {
                         children
                     }
                 }
-                .padding(.bottom)
-                .padding(.top, avatarSize/1.5)
+                .padding(.top, padding)
                 matchButtons
             }
             .background(details.color.opacity(0.6))
             .mask(RoundedRectangle(cornerRadius: 25.0))
-            .padding(.top, avatarSize/2)
+            .padding(.top, padding)
             PhotoView.Avatar(url: details.avatar, size: avatarSize)
+
+//            PhotoView.Avatar(url: details.avatar, size: avatarSize)
         }
         .padding(.horizontal)
+        .padding(.top, padding*2)
     }
     
     var children: some View {
@@ -111,7 +100,7 @@ struct ProfileCard: View {
     }
     var matchButtons: some View {
         HStack {
-            if profileType == .match {
+            if type == .match {
                 Spacer()
                 SwipeButton(swipe: .pass, action: swipe)
                 Spacer()
@@ -130,16 +119,19 @@ struct ProfileCard: View {
 struct ProfileCarView_Previews: PreviewProvider {
     
     static var previews: some View {
-        ProfileCardView(dev.michael, .view)
+        ScrollView {
+            ProfileCardView(details: dev.michael, type: .match)
+                .previewLayout(.sizeThatFits)
+                .previewDisplayName("Match")
+        }
+        .edgesIgnoringSafeArea(.top)
+        ProfileCardView(details: dev.michael, type: .view)
             .previewLayout(.sizeThatFits)
             .previewDisplayName("View")
-        ProfileCardView(dev.michael, .match)
-            .previewLayout(.sizeThatFits)
-            .previewDisplayName("Match")
-        ProfileCardView(dev.michael, .session)
+
+        ProfileCardView(details: dev.michael, type: .session)
             .previewLayout(.sizeThatFits)
             .previewDisplayName("Session")
-
     }
 }
 

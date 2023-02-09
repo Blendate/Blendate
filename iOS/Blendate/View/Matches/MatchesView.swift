@@ -8,14 +8,9 @@
 import SwiftUI
 import MapKit
 
-struct MessagesView: View {
-    @StateObject var model: MatchesViewModel
-    @EnvironmentObject var session: SessionViewModel
-//    @EnvironmentObject var match: SwipeViewModel
-    
-    init(uid: String){
-        self._model = StateObject(wrappedValue: MatchesViewModel(uid: uid))
-    }
+struct MatchesView: View {
+    @EnvironmentObject var model: MatchesViewModel
+
     
     var body: some View {
         NavigationView {
@@ -38,13 +33,51 @@ struct MessagesView: View {
             }
         }
     }
-    
-
 }
 
-extension MessagesView {
+extension MatchesView {
+    
+    struct MatchCell: View {
+        @EnvironmentObject var settings: SettingsViewModel
+        
+        let match: Match
+        @State var details: User?
+        var blur: Bool = false
+        
+        var body: some View {
+            if let cid = match.id {
+                NavigationLink {
+                    ChatView(cid, with: $details)
+                } label: {
+                    VStack {
+                        ZStack{
+                            Circle()
+                                .stroke(  Color.DarkBlue, lineWidth: 2)
+                                .frame(width: 80, height: 80, alignment: .center)
+                            image
+                        }
+                    }
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        
+        @ViewBuilder
+        var image: some View {
+            if blur {
+                PhotoView.MatchAvatar(match: match, details: $details)
+                .blur(radius: settings.hasPremium ? 0 : 20)
+                .clipShape(Circle())
+            } else {
+                PhotoView.MatchAvatar(match: match, details: $details)
+
+            }
+        }
+    }
+    
     struct Matches: View {
         @EnvironmentObject var session: SessionViewModel
+        @EnvironmentObject var settings: SettingsViewModel
         
         var matches: [Match]
         var body: some View {
@@ -54,15 +87,14 @@ extension MessagesView {
                 }
                 else {
                     ScrollView(.horizontal, showsIndicators: false){
-                        LazyHStack(spacing: 15){
+                        HStack(spacing: 15){
                             likedYou
-                            ForEach(matches){ match in
-                                MatchAvatarView(match)
-                            }
+                            ForEach(matches){ MatchCell(match: $0) }
                         }
                         .padding(.leading)
                     }
-                    .frame(height: 120, alignment: .center)
+                    .padding(.vertical, 4)
+//                    .frame(height: 125, alignment: .center)
                     .padding(.leading)
                 }
             }.padding(.vertical)
@@ -77,26 +109,18 @@ extension MessagesView {
             }.padding(.leading)
         }
         
-        var firstLike: String? {
-            matches.first?.users.first{$0 != session.uid}
-        }
         
         var likedYou: some View {
             Button {
-                if session.hasPremium {
+                if settings.hasPremium {
                     session.selectedTab = .likes
                 } else {
-                    session.showMembership = true
+                    settings.showMembership = true
                 }
             } label: {
                 ZStack {
-                    Circle()
-                        .stroke( Color.DarkBlue,lineWidth: 2)
-                        .frame(width: 80, height: 80, alignment: .center)
-                    if let firstLike {
-                        PhotoView.Avatar(url: URL(string: firstLike), size: 70, isCell: true)
-                            .blur(radius: session.hasPremium ? 0 : 20)
-                            .clipShape(Circle())
+                    if let firstLike = matches.first {
+                        MatchCell(match: firstLike, blur: true)
                     } else {
                         Circle().fill(Color.Blue)
                             .frame(width: 70, height: 70)
@@ -116,7 +140,7 @@ extension MessagesView {
 
 }
 
-extension MessagesView {
+extension MatchesView {
     
     struct Messages: View {
         var conversations: [Match]
@@ -179,6 +203,7 @@ extension MessagesView {
 
 struct MessagesView_Previews: PreviewProvider {
     static var previews: some View {
-        MessagesView(uid: dev.tyler.id!)
+        MatchesView()
+            .environmentObject(MatchesViewModel(dev.tyler.id!))
     }
 }

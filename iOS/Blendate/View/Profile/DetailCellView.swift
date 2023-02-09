@@ -10,7 +10,7 @@ import Sliders
 
 
 struct DetailCellView: View {
-    @EnvironmentObject var session: SessionViewModel
+    @EnvironmentObject var settings: SettingsViewModel
     let detail: Detail
     @Binding var details: User
     let type: PropType
@@ -30,7 +30,7 @@ struct DetailCellView: View {
     
     @ViewBuilder var detailCell: some View {
         
-        if detail.isPremium && !session.hasPremium && isFilter {
+        if detail.isPremium && !settings.hasPremium && isFilter {
             Button {
                 showMembership = true
             } label: {

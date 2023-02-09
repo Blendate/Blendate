@@ -11,6 +11,50 @@ import PhotosUI
 
 
 
+struct PhotoView2: View {
+    @StateObject var model: PhotoViewModel
+    private let size: (width: CGFloat, height: CGFloat)
+
+    var request: URLRequest? {
+        if let url = model.photo.url {
+            return URLRequest(url: url)
+        } else {
+            return nil
+        }
+    }
+    
+
+    init(_ photo: Photo, isCell:Bool = true, editMode: Bool = false) {
+        self._model = StateObject(wrappedValue: PhotoViewModel(photo: photo))
+        if editMode {
+            switch photo.placement {
+                case 0,1: self.size = (160, 210)
+                default: self.size = (100, 132)
+            }
+        } else {
+            switch photo.placement {
+                case 2,5,6: self.size = (162, 213)
+                default: self.size = (162, 171)
+            }
+        }
+
+    }
+    
+    var body: some View {
+        CachedAsyncImage(urlRequest: request, urlCache: .imageCache) { image in
+            image
+                .resizable()
+                .scaledToFill()
+                .frame(width: size.width, height: size.height, alignment: .center)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+        } placeholder: {
+            PlaceHolder
+        }
+        .frame(width: size.width, height: size.height, alignment: .center)
+    }
+}
+
+
 struct PhotoView: View {
     @StateObject var model: PhotoViewModel
     @Binding var photo: Photo
@@ -133,3 +177,27 @@ extension URLCache {
     static let imageCache = URLCache(memoryCapacity: 512*1000*1000, diskCapacity: 10*1000*1000*1000)
 }
 
+
+extension PhotoView2 {
+    var PlaceHolder: some View {
+        ZStack {
+            Rectangle()
+                .foregroundColor(.white)
+                .cornerRadius(15)
+                .shadow(color: .gray, radius: 2, x: 0, y: 2)
+            Circle()
+                .frame(width: 50)
+                .foregroundColor(.LightGray)
+                .shadow(color: .gray, radius: 1, x: 0, y: 2)
+
+            if model.isLoading {
+                ProgressView()
+            } else {
+                Image(systemName: "plus")
+                    .foregroundColor(.DarkBlue)
+            }
+            
+        }
+        .frame(width: size.width, height: size.height, alignment: .center)
+    }
+}

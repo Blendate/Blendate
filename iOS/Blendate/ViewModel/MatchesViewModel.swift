@@ -9,6 +9,8 @@ import Foundation
 
 @MainActor
 class MatchesViewModel: FirestoreService<Match> {
+    private let uid: String
+
     var matches: [Match] {
         fetched
         .filter{$0.lastMessage.isEmpty}
@@ -20,7 +22,20 @@ class MatchesViewModel: FirestoreService<Match> {
         .sorted{$0.timestamp > $1.timestamp}
     }
     
-    init(uid: String){
+    func create(with: String, message: ChatMessage? = nil) throws -> Match {
+        let cid = FireStore.getUsersID(userId1: uid, userId2: with)
+        let match = Match(user1: uid, user2: with)
+        let fid = try create(match, fid: cid)
+        match.id = cid
+        if let message {
+            try ChatViewModel<Match>(cid: fid, text: message.text, listener: false).sendMessage(message)
+        }
+        return match
+    }
+    
+    
+    init(_ uid: String){
+        self.uid = uid
         super.init()
         self.collection
         .whereField("users", arrayContains: uid)

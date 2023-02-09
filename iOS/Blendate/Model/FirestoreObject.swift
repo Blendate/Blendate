@@ -24,6 +24,7 @@ class FireStore: NSObject {
 }
 
 protocol FirestoreObject: Codable, Identifiable {
+//    init(_ fid: String)
     var id: String? {get set}
     static var collection: CollectionReference {get}
     static var firestore: Firestore {get}
@@ -83,19 +84,6 @@ extension FirestoreService {
 //        return collection.document(fid).collection("chats")
 //    }
 //
-    func getHistory(for uid: String, _ swipe: Swipe) async -> [String] {
-        let documents = try? await Self.Swipes(for: uid, .like).getDocuments().documents
-        let array = documents?.compactMap{$0.documentID} ?? []
-        return array
-    }
-    
-    func allSwipes(for uid: String) async -> [String] {
-        var combine: [String] = []
-        for swipe in Swipe.allCases {
-            let history = await getHistory(for: uid, swipe)
-            combine.append(contentsOf: history)
-        }
-        return combine.isEmpty ? ["empty"] : combine
-    }
+//
     
 }

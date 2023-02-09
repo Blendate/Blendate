@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MembershipView: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var model: SessionViewModel
+    @EnvironmentObject var settings: SettingsViewModel
     //    @Binding var premium: Premium
     
     var body: some View {
@@ -29,14 +29,14 @@ struct MembershipView: View {
                     }
                     Spacer()
                     AsyncButton("Restore") {
-                        await model.restore()
+                        await settings.restore()
                     }
                 }
                 .foregroundColor(.Blue)
                 .font(.callout.weight(.semibold))
                 .padding()
                 PerksTabView()
-                List(model.packages) { package in
+                List(settings.packages) { package in
                     if !package.isLike {
                         Cell(package: package)
                     }
@@ -58,11 +58,11 @@ struct MembershipView: View {
 extension MembershipView {
     
     struct Cell<P:Package>: View {
-        @EnvironmentObject var model: SessionViewModel
+        @EnvironmentObject var settings: SettingsViewModel
         let package: P
         var body: some View {
             AsyncButton {
-                try? await model.purchase(package)
+                try? await settings.purchase(package)
             } label: {
                 HStack {
                     VStack(alignment: .leading, spacing: 0) {

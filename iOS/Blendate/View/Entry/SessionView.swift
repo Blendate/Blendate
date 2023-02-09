@@ -9,72 +9,63 @@ import SwiftUI
 
 struct SessionView: View {
     @StateObject var session: SessionViewModel
-    @StateObject var match: SwipeViewModel
+    @StateObject var swipe: SwipeViewModel
+    @StateObject var match: MatchesViewModel
+    @StateObject var settings: SettingsViewModel
 
     init(_ uid: String){
         self._session = StateObject(wrappedValue: SessionViewModel(uid))
-        self._match = StateObject(wrappedValue: SwipeViewModel(uid))
+        self._swipe = StateObject(wrappedValue: SwipeViewModel(uid))
+        self._match = StateObject(wrappedValue: MatchesViewModel(uid))
+        self._settings = StateObject(wrappedValue: SettingsViewModel(uid))
     }
     
     var body: some View {
-        LoadingView(showLoading: match.loading == true) {
-            switch session.loadingState {
-            case .user:
-                tabView
-            case .noUser:
+        Group {
+            if session.state == .noUser {
                 NavigationView {
                     PropertyView(detail: .name, signup: true)
                 }
-            case .loading:
-                Text("Loading")
+            } else {
+                LoadingView(showLoading: swipe.loading == true) {
+                    TabView(selection: $session.selectedTab) {
+                        SwipeProfileView()
+                            .tag(Tab.match).tabItem{ Tab.match.image }
+                        CommunityView()
+                            .tag(Tab.community).tabItem{Tab.community.image.environment(\.symbolVariants, .none)}
+                        PremiumView()
+                            .tag(Tab.likes).tabItem{Tab.likes.image.environment(\.symbolVariants, .none)}
+                        MatchesView()
+                            .tag(Tab.messages).tabItem{ Tab.messages.image }
+                        ProfileView(user: $session.user)
+                            .tag(Tab.profile).tabItem{ Tab.profile.image }
+                    }
+                }
+                .environmentObject(settings)
+                .environmentObject(match)
+                .environmentObject(swipe)
+                .task {
+                    await swipe.fetchLineup()
+                    await settings.login()
+                    await settings.checkNotification()
+
+                }
             }
         }
         .environmentObject(session)
         .task {
             await session.fetchFirebase()
-            await session.login()
-            await match.fetchLineup()
         }
-    }
-    
-    var tabView: some View {
-        TabView(selection: $session.selectedTab) {
-            MatchProfileView()
-                .tag(Tab.match)
-                .tabItem{ Tab.match.image }
-            CommunityView()
-                .tag(Tab.community)
-                .tabItem{
-                    Tab.community.image
-                        .environment(\.symbolVariants, .none)
-                }
-            LikesView()
-                .tag(Tab.likes)
-                .tabItem{
-                    Tab.likes.image
-                        .environment(\.symbolVariants, .none)
-                }
-            MessagesView(uid: session.uid)
-                .tag(Tab.messages)
-                .tabItem{ Tab.messages.image }
-            ProfileView(user: $session.user)
-                .tag(Tab.profile)
-                .tabItem{ Tab.profile.image }
+        .fullScreenCover(isPresented: $settings.showMembership) {
+            MembershipView().environmentObject(settings)
         }
-        .environmentObject(match)
-        .fullScreenCover(isPresented: $session.showMembership) {
-            MembershipView()
-                .environmentObject(session)
-        }
-        .sheet(isPresented: $session.showSuperLike) {
+        .sheet(isPresented: $settings.showSuperLike) {
             PurchaseLikesView()
+                .environmentObject(settings)
                 .presentationDetents([.medium])
-                .environmentObject(session)
-        }
-        .task {
-            await session.checkNotification()
         }
     }
+
 }
 enum Tab: String, CaseIterable, Identifiable {
     var id: String {self.rawValue }

@@ -12,7 +12,7 @@ import FirebaseFirestore
 class FirestoreService<Object: FirestoreObject>{
     @Published var fetched: [Object] = []
     @Published var alert: AlertError?
-    
+        
     let collection: CollectionReference
     
     init(collection: CollectionReference = Object.collection, listener: Bool = false){
@@ -61,9 +61,9 @@ class FirestoreService<Object: FirestoreObject>{
         }
     }
     
-    func fetch(fid id: String) async throws -> Object {
+    func fetch(fid id: String, at collection: CollectionReference? = nil) async throws -> Object {
         let fid: String = try fid(id)
-        
+        let collection = collection ?? self.collection
         do {
             let document = try await collection.document(fid).getDocument()
             let object = try document.data(as: Object.self)
@@ -94,6 +94,20 @@ class FirestoreService<Object: FirestoreObject>{
         }
     }
     
+    func fetch<O:FirestoreObject>(fid id: String) async throws -> O? {
+        let collection = O.collection
+        do {
+            let fid: String = try fid(id)
+            let document = try await collection.document(fid).getDocument()
+            let object = try document.data(as: O.self)
+            print("Fetched \(O.self): /\(collection.path)/\(fid)")
+            return object
+        } catch {
+            print("Fetch Error \(Object.self) \(fid)")
+            Swift.print(error)
+            throw Self.serverError
+        }
+    }
 
 }
 
@@ -103,7 +117,7 @@ class FirestoreService<Object: FirestoreObject>{
 extension FirestoreService where Object == ChatMessage {
     func sendMessage(_ message: Object) throws {
         let _ = try create(message)
-        collection.parent?.setData(["lastMessage":message.text])
+        collection.parent?.updateData(["lastMessage":message.text])// .setData(["lastMessage":message.text])
     }
 }
 

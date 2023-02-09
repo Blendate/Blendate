@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PurchaseLikesView: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var session: SessionViewModel
+    @EnvironmentObject var settings: SettingsViewModel
 
     var body: some View {
         VStack {
@@ -42,15 +42,15 @@ struct PurchaseLikesView: View {
         }
         .padding(.horizontal)
         .task {
-            await session.fetchOfferings()
+            await settings.fetchOfferings()
         }
     }
     
     var packageButtons: some View {
         VStack {
-            ForEach(session.packages) { package in
+            ForEach(settings.packages) { package in
                 AsyncButton {
-                    try? await session.purchase(package)
+                    try? await settings.purchase(package)
                 } label: {
                     HStack {
                         Spacer()

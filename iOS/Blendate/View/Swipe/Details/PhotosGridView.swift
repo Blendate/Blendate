@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CachedAsyncImage
 
 struct PhotosGridView: View {
     
@@ -36,6 +37,8 @@ struct PhotosGridView: View {
         self.editMode = editMode
     }
     #warning("fix this to a grid with 2 collumns alternating")
+    @State var selected: Photo?
+    
     var body: some View {
         if !photos.isEmpty {
             VStack{
@@ -43,31 +46,52 @@ struct PhotosGridView: View {
                     HStack{
                         VStack{
                             if let photo = photo(2), let _ = photo.url {
-                                PhotoView(photo)
+                                PhotoView2(photo)
+                                    .onTapGesture {
+                                        selected = photo
+                                    }
                             }
                             if let photo = photo(3), let _ = photo.url {
-                                PhotoView(photo)
+                                PhotoView2(photo)
+                                    .onTapGesture {
+                                        selected = photo
+                                    }
                             }
                         }.padding(.vertical)
                         VStack{
                             if let photo = photo(4), let _ = photo.url {
-                                PhotoView(photo)
+                                PhotoView2(photo)
+                                    .onTapGesture {
+                                        selected = photo
+                                    }
                             }
                             if let photo = photo(5), let _ = photo.url {
-                                PhotoView(photo)
+                                PhotoView2(photo)
+                                    .onTapGesture {
+                                        selected = photo
+                                    }
                             }
                         }
                         VStack{
                             if let photo = photo(6), let _ = photo.url {
-                                PhotoView(photo)
+                                PhotoView2(photo)
+                                    .onTapGesture {
+                                        selected = photo
+                                    }
                             }
                             if let photo = photo(7), let _ = photo.url {
-                                PhotoView(photo)
+                                PhotoView2(photo)
+                                    .onTapGesture {
+                                        selected = photo
+                                    }
                             }
                         }
                     }
                 })
             }.padding()
+                .sheet(item: $selected) { photo in
+                    PhotoTabView(photos: photos, selected: photo)
+                }
         }
     }
     
@@ -75,6 +99,31 @@ struct PhotosGridView: View {
         return photos.photo(at: index)
     }
 
+}
+
+struct PhotoTabView: View {
+    let photos: [Photo]
+    @State var selected: Photo
+
+    var body: some View {
+        TabView(selection: $selected) {
+            ForEach(photos) { photo in
+                VStack {
+                    CachedAsyncImage(urlRequest: photo.request, urlCache: .imageCache) { image in
+                        image
+                            .resizable()
+                            .scaledToFill()
+                    } placeholder: {
+                        ProgressView()
+                    }
+                    Text(photo.description ?? "")
+                        .font(.title)
+                    
+                }
+                .tag(photo)
+            }
+        }.tabViewStyle(.page(indexDisplayMode: .always))
+    }
 }
 
 struct PhotosGridView_Previews: PreviewProvider {

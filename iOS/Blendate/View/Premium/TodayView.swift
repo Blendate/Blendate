@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct TodayView: View {
-    @EnvironmentObject var session: SessionViewModel
-    
+    @EnvironmentObject var settings: SettingsViewModel
+    @EnvironmentObject var match: MatchesViewModel
+    @EnvironmentObject var swipe: SwipeViewModel
+
     let todayUser: User
     @Binding var showLikes: Bool
 
@@ -42,7 +44,7 @@ struct TodayView: View {
                     .capsuleButton(color: .Blue, fontsize: 18)
                     .offset(y: -25)
                 }.padding(.top, 70)
-                PhotoView.Avatar(url: todayUser.avatar, size: 140, isCell: true)
+                PhotoView.Avatar(url: todayUser.avatar, size: 140)
                     .onTapGesture {
                         showProfile = true
                     }
@@ -61,21 +63,18 @@ struct TodayView: View {
     }
     
     func sendMessage() async {
-        if session.hasPremium {
+        if settings.hasPremium {
             guard let id = todayUser.id else {return}
-            var convo = Match(user1: id, user2: session.uid)
             do {
-                try await SwipeViewModel.Swipes(for: session.uid, .superLike)
-                    .document(id)
-                    .setData(["timestamp":Date()])
-                #warning("create super like view in matchview")
-                let cid = try MatchesViewModel(uid: session.uid).create(convo)
-                ChatViewModel<Match>(cid: cid, text: message).sendMessage(author: session.uid)
+                let _ = await swipe.swipe(on: id, .superLike)
+                let message = ChatMessage(author: settings.uid, text: message)
+                let match = try self.match.create(with: id, message: message)
+                showLikes = true
             } catch {
                 print(error.localizedDescription)
             }
         } else {
-            session.showMembership = true
+            settings.showMembership = true
         }
     }
     

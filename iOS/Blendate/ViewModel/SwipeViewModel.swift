@@ -13,10 +13,14 @@ class SwipeViewModel: FirestoreService<User> {
     @Published var lineup: [User] = []
     @Published var loading = true
     @Published var likedyou: [User] = []
+    
+    @Published var showing: User?
+    
     private let uid: String
     
-    init(_ uid: String){
+    init(_ uid: String, lineup: [User] = []){
         self.uid = uid
+        self.lineup = lineup
         super.init()
     }
     
@@ -31,6 +35,7 @@ class SwipeViewModel: FirestoreService<User> {
             self.lineup = snapshot
                         .filter{ !swipeHistory.contains($0.documentID) && $0.documentID != uid }
                         .compactMap { try? $0.data(as: User.self) }
+            self.showing = lineup.first
 //            
 //            self.likedyou = snapshot
 //                            .filter{ documentSnapshot in
@@ -77,6 +82,21 @@ class SwipeViewModel: FirestoreService<User> {
         let superLikes = await getHistory(for: match, .superLike)
         let allLikes = likes + superLikes
         return allLikes.contains(uid)
+    }
+    
+    func getHistory(for uid: String, _ swipe: Swipe) async -> [String] {
+        let documents = try? await Self.Swipes(for: uid, .like).getDocuments().documents
+        let array = documents?.compactMap{$0.documentID} ?? []
+        return array
+    }
+
+    func allSwipes(for uid: String) async -> [String] {
+        var combine: [String] = []
+        for swipe in Swipe.allCases {
+            let history = await getHistory(for: uid, swipe)
+            combine.append(contentsOf: history)
+        }
+        return combine.isEmpty ? ["empty"] : combine
     }
     
 

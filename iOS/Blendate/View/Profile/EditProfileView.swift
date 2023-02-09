@@ -13,7 +13,7 @@ struct EditProfileView: View {
     
     @Binding var details: User
     @State private var showMembership = false
-    @State private var showProfile = false
+    @State var showProfile = false
     
     var body: some View {
         NavigationStack {

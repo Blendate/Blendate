@@ -23,7 +23,9 @@ class DeveloperPreview {
     }
 //    @StateObject var session = SessionViewModel(user: DeveloperPreview.michael_)
     var conversation: Match {
-        Match(user1: michael.id!, user2: tyler.id!)
+        let match = Match(user1: michael.id!, user2: tyler.id!)
+        match.id = FireStore.getUsersID(userId1: michael.id!, userId2: tyler.id!)
+        return match
     }
     let chatmessage = ChatMessage(author: "1234", text: "Testing a short message")
     let longChatMessage = ChatMessage(author: "", text: String(lorem.prefix(140)))

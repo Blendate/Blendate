@@ -7,23 +7,28 @@
 
 import SwiftUI
 
-struct MatchProfileView: View {
+struct SwipeProfileView: View {
     @EnvironmentObject var model: SwipeViewModel
+    @EnvironmentObject var match: MatchesViewModel
     @EnvironmentObject var session: SessionViewModel
-    
+    @EnvironmentObject var settings: SettingsViewModel
+
     @State var newConvo: Match?
     
-    var user: User? = nil
+    var user: User?
+    
+    var showing: User? { user ?? model.showing}
     
     var body: some View {
-        if let details = model.lineup.first {
+        if let details = showing, let withUID = details.id {
             ScrollView(showsIndicators: false) {
-                ProfileCardView(details, .match) { await swiped(details, $0) }
-                ProfileBioView(bio: details.bio)
+                ProfileCardView(details: details, type: .match) { await swiped(on: withUID, $0) }
                 InfoCardsView(details: details)
+                ProfileBioView(bio: details.bio)
                 PhotosGridView(details.photos)
                 TagCloudView(tags: details.interests)
             }
+            .edgesIgnoringSafeArea(.top)
             .sheet(item: $newConvo, onDismiss: nextLineup) { convo in
                 MatchedView(details: session.user, matchedWith: details, newConvo: convo)
             }
@@ -32,15 +37,12 @@ struct MatchProfileView: View {
         }
     }
 
-    private func swiped(_ details: User, _ swipe: Swipe) async {
-        guard let match = details.id else {return}
-        let matched = await model.swipe(on: match, swipe)
-        if swipe == .superLike { session.useSuperLike() }
+    private func swiped(on uid: String, _ swipe: Swipe) async {
+        let matched = await model.swipe(on: uid, swipe)
         if matched {
-            let conversation = Match(user1: session.uid, user2: match)
             do {
-                let cid = try MatchesViewModel(uid: session.uid).create(conversation)
-                conversation.id = cid
+                let conversation = try self.match.create(with: uid)
+                if swipe == .superLike { settings.useSuperLike() }
                 self.newConvo = conversation
             } catch {
                 model.alert = AlertError(title: "Server Error", message: "Could not create your match on the Blendate server.")
@@ -55,6 +57,7 @@ struct MatchProfileView: View {
         withAnimation {
             self.newConvo = nil
             model.lineup.removeFirst()
+            model.showing = model.lineup.first
         }
     }
 
@@ -65,9 +68,9 @@ struct ViewProfileView: View {
     
     var body: some View {
         ScrollView(showsIndicators: false) {
-            ProfileCardView(details, .view)
-            ProfileBioView(bio: details.bio)
+            ProfileCardView(details:details, type: .view)
             InfoCardsView(details: details)
+            ProfileBioView(bio: details.bio)
             PhotosGridView(details.photos)
             TagCloudView(tags: details.interests)
         }
@@ -78,9 +81,12 @@ struct ViewProfileView: View {
 
 struct MatchProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        MatchProfileView()
-            .environmentObject(SwipeViewModel(dev.tyler.id!))
+        SwipeProfileView()
+            .environmentObject(SwipeViewModel(dev.tyler.id!, lineup: [dev.michael]))
             .environmentObject(SessionViewModel(dev.tyler.id!))
+            .environmentObject(MatchesViewModel(dev.tyler.id!))
+            .environmentObject(SettingsViewModel(dev.tyler.id!))
+
     }
 }
 

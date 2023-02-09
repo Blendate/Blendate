@@ -14,8 +14,17 @@ struct Photo: Codable {
     var description: String? = nil
     var isEmpty: Bool {url == nil}
 }
+extension Photo {
+    var request: URLRequest? {
+        if let url {
+            return URLRequest(url: url)
+        } else {
+            return nil
+        }
+    }
+}
 
-extension Photo: Identifiable, Equatable {
+extension Photo: Identifiable, Equatable, Hashable {
     var id: Int {self.placement}
     static func == (lhs: Photo, rhs: Photo) -> Bool {
         return lhs.placement == rhs.placement

@@ -27,7 +27,7 @@ struct MatchedView: View {
                         .opacity(0.4)
                     Text("It's A Blend!")
                 }
-                .fontType(.regular, 42, .Blue)
+                .fontType(.regular, 42, .white)
                 VStack(spacing: 0) {
                     HStack{
                         userCircle
@@ -46,25 +46,17 @@ struct MatchedView: View {
                             .padding(.top)
                     } label: {
                         Text("Start Chatting")
-                            .font(.system(size: 22, weight: .semibold))
+                            .font(.title2.weight(.semibold))
                             .foregroundColor(.white)
                             .padding()
                             .background(Color.Blue)
+                            .cornerRadius(16)
+                        
                     }
                 }
-
-//                Button("Start Chatting"){
-//                    withAnimation(.spring()) {
-//                        showChat = true
-//                    }
-//                }
-//                .fontType(.semibold, 22)
-//                .tint(.Blue)
-//                .buttonStyle(.borderedProminent)
-//                .buttonBorderShape(.capsule)
-//                .controlSize(.large)
                 Spacer()
             }
+            .background(bottom: false)
         }
     }
 
@@ -74,7 +66,7 @@ struct MatchedView: View {
                 .stroke(Color.DarkBlue, lineWidth: 8)
                 .frame(width: circleSize, height: circleSize)
                 .shadow(radius: 10)
-            PhotoView.Avatar(url: details.avatar, size: imageSize, isCell: true)
+            PhotoView.Avatar(url: details.avatar, size: imageSize)
 //                            Circle()
 //                                .frame(width: imageSize, height: imageSize)
                 .shadow(radius: 5)
@@ -89,7 +81,7 @@ struct MatchedView: View {
                 .offset(y: -60)
                 .shadow(radius: 5)
 
-            PhotoView.Avatar(url: matchedWith.avatar, size: imageSize, isCell: true)
+            PhotoView.Avatar(url: matchedWith.avatar, size: imageSize)
 //                                .frame(width: imageSize, height: imageSize)
                 .offset(y: -60)
                 .shadow(radius: 10)
