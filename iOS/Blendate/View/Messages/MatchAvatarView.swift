@@ -20,21 +20,23 @@ struct MatchAvatarView: View {
     }
 
     var body: some View {
-        NavigationLink {
-            ChatView(match, with: $details)
-        } label: {
-            VStack {
-                ZStack{
-                    Circle()
-                        .stroke( Color.DarkBlue,lineWidth: 2)
-                        .frame(width: 80, height: 80, alignment: .center)
-                    PhotoView.Avatar(url: details?.avatar, size: 70, isCell: true)
+        if let cid = match.id {
+            NavigationLink {
+                ChatView(cid, with: $details)
+            } label: {
+                VStack {
+                    ZStack{
+                        Circle()
+                            .stroke( Color.DarkBlue,lineWidth: 2)
+                            .frame(width: 80, height: 80, alignment: .center)
+                        PhotoView.Avatar(url: details?.avatar, size: 70, isCell: true)
+                    }
                 }
             }
-        }
-        .buttonStyle(.plain)
-        .task {
-            await fetchUser()
+            .buttonStyle(.plain)
+            .task {
+                await fetchUser()
+            }
         }
     }
     

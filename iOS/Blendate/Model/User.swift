@@ -49,6 +49,7 @@ extension User {
 
 extension User {
     class Settings: FirestoreObject {
+
         @DocumentID var id: String?
         var notifications = Notifications(fcm: "", isOn: false)
         var superLikes: Int = 0

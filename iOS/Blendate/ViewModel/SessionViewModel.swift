@@ -8,12 +8,12 @@
 import SwiftUI
 import RevenueCat
 
-enum SessionState {case noUser, user}
+enum SessionState {case noUser, user, loading}
 
 class SessionViewModel: FirestoreService<User> {
 
     @Published var selectedTab: Tab = .match
-    @Published var state: SessionState = .user
+    @Published var loadingState: SessionState = .loading
     
     @Published var user = User()
     @Published var settings = User.Settings()
@@ -24,6 +24,7 @@ class SessionViewModel: FirestoreService<User> {
     
     @Published var packages: [RevenueCat.Package] = []
     
+    
     let uid: String
     
     init(_ uid: String){
@@ -33,19 +34,18 @@ class SessionViewModel: FirestoreService<User> {
     }
     
     #warning("better check than just firstname")
-    #warning("Properly fertch settings")
     @MainActor
     func fetchFirebase() async {
         do {
             self.user = try await fetch(fid: uid)
             self.settings = try await FirestoreService<User.Settings>().fetch(fid: uid)
             withAnimation(.spring()) {
-                self.state = user.firstname.isEmpty ? .noUser : .user
+                self.loadingState = user.firstname.isEmpty ? .noUser : .user
             }
         } catch {
             print(error.localizedDescription)
             withAnimation(.spring()) {
-                state = .noUser
+                loadingState = .noUser
             }
         }
     }
@@ -55,7 +55,7 @@ class SessionViewModel: FirestoreService<User> {
         let _ = try create(user, fid: uid)
         let settingsService = FirestoreService<User.Settings>()
         let _ = try settingsService.create(User.Settings(), fid: uid )
-        state = .user
+        loadingState = .user
     }
 
     func saveUser() throws {
@@ -63,7 +63,7 @@ class SessionViewModel: FirestoreService<User> {
     }
     
     func saveSettings() {
-//        try? update(settings)
+        try? FirestoreService<User.Settings>().update(settings)
     }
     func useSuperLike(){
         settings.superLikes -= 1
@@ -73,7 +73,6 @@ class SessionViewModel: FirestoreService<User> {
 
 
 // MARK: - Premium
-
 extension SessionViewModel {
     
     @MainActor
@@ -84,7 +83,7 @@ extension SessionViewModel {
         }
     }
     
-    func loginRevenueCat() async {
+    func login() async {
         do {
             let (customerInfo, _) = try await RevenueCatService.logIn(uid)
             await setMembership(customerInfo)

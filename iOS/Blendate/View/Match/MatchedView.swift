@@ -40,9 +40,9 @@ struct MatchedView: View {
                         matchedCircle
                     }.padding(.horizontal, 50)
                 }
-                if let newConvo = newConvo {
+                if let newConvo = newConvo, let cid = newConvo.id {
                     NavigationLink {
-                        ChatView(newConvo, with: .constant(matchedWith))
+                        ChatView(cid, with: .constant(matchedWith))
                             .padding(.top)
                     } label: {
                         Text("Start Chatting")

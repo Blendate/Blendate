@@ -71,7 +71,7 @@ class SwipeViewModel: FirestoreService<User> {
     }
     
     private func isMatch(_ match: String, _ swipe: Swipe)async->Bool {
-        return swipe == .superLike
+        return swipe == .like
         guard swipe != .pass else {return false}
         let likes = await getHistory(for: match, .like)
         let superLikes = await getHistory(for: match, .superLike)

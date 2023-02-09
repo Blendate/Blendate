@@ -12,7 +12,7 @@ class CommunityTopic: Convo {
     @DocumentID var id: String?
     var users: [String]
     var timestamp: Date = .now
-    var lastMessage: ChatMessage = ChatMessage(author: "", text: "")
+    var lastMessage: String = ""
     
     var title: String
     var subtitle: String
@@ -21,7 +21,7 @@ class CommunityTopic: Convo {
     init(author: String, title: String, subtitle: String) {
         self.users = [author]
         self.timestamp = .now
-        self.lastMessage = ChatMessage(author: "", text: "")
+        self.lastMessage = ""
         self.title = title
         self.subtitle = subtitle
         self.author = author

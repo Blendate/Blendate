@@ -68,8 +68,9 @@ struct TodayView: View {
                 try await SwipeViewModel.Swipes(for: session.uid, .superLike)
                     .document(id)
                     .setData(["timestamp":Date()])
-                convo.id = try MatchesViewModel(uid: session.uid).create(convo)
-                ChatViewModel(convo, text: message).sendMessage(author: session.uid)
+                #warning("create super like view in matchview")
+                let cid = try MatchesViewModel(uid: session.uid).create(convo)
+                ChatViewModel<Match>(cid: cid, text: message).sendMessage(author: session.uid)
             } catch {
                 print(error.localizedDescription)
             }

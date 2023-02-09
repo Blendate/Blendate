@@ -10,23 +10,31 @@ import Firebase
 import FirebaseFirestoreSwift
 import SwiftUI
 
+
 protocol Convo: FirestoreObject {
     var id: String? {get set}
     var users: [String] {get set}
     var timestamp: Date {get set}
-    var lastMessage: ChatMessage {get set}
+    var lastMessage: String {get set}
 }
+
+//protocol Message: FirestoreObject {
+//    var id: String? {get set}
+//    var author: String {get set}
+//    var text: String {get set}
+//    var timestamp: Date {get set}
+//
+//}
 class Match: Convo {
+    
     @DocumentID var id: String?
     var users: [String]
     var timestamp: Date = .now
-    var lastMessage: ChatMessage = ChatMessage(author: "", text: "")
+    var lastMessage: String = ""
     
-    init(user1: String, user2: String, lastMessage: ChatMessage? = nil) {
+    init(user1: String, user2: String, lastMessage: String = "") {
         self.users = [user1, user2]
-        if let lastMessage {
-            self.lastMessage = lastMessage
-        }
+        self.lastMessage = lastMessage
     }
     
     init(users: [String]) {

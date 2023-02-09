@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import FirebaseFirestore
 
 @MainActor
 class ChatViewModel<C:Convo>: FirestoreService<ChatMessage> {
@@ -13,21 +14,18 @@ class ChatViewModel<C:Convo>: FirestoreService<ChatMessage> {
     @Published var text: String = ""
     @Published var error: AlertError?
     
-    var conversation: C
+    var cid: String
         
-    init(_ conversation: C, text: String = ""){
-        self.conversation = conversation
+    init(cid: String, text: String = "", listener: Bool = true){
+        self.cid = cid
         self.text = text
-        let collection = Self.Messages(for: conversation)
-        super.init(parent: collection, listener: true)
+        super.init(collection: C.messages(for: cid), listener: listener)
     }
-        
+    
     func sendMessage(author: String) {
+        let chatMessage = ChatMessage(author: author, text: text)
         do {
-            let chatMessage = ChatMessage(author: author, text: text)
-            let _ = try create(chatMessage)
-            conversation.lastMessage = chatMessage
-            try? FirestoreService<C>().update(conversation)
+            try sendMessage(chatMessage)
             clear()
         } catch {
             print("Send Message Error: \(error.localizedDescription)")
@@ -41,3 +39,5 @@ class ChatViewModel<C:Convo>: FirestoreService<ChatMessage> {
     }
 
 }
+
+

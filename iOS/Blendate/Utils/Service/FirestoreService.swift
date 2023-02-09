@@ -8,55 +8,19 @@
 import Foundation
 import FirebaseFirestore
 
-protocol FirestoreObject: Codable, Identifiable {
-    var id: String? {get set}
-}
 
 class FirestoreService<Object: FirestoreObject>{
     @Published var fetched: [Object] = []
-    @Published var object: Object?
-    
     @Published var alert: AlertError?
     
-//    let collection: CollectionReference
-    let parent: CollectionReference?
+    let collection: CollectionReference
     
-    var collection: CollectionReference {
-        let firestore = FireStore.instance.firestore
-        let string: String
-        switch Object.self {
-        case is User.Type: string = "mock_users"
-        case is User.Settings.Type: string = "settings"
-        case is Match.Type: string = "matches"
-        case is CommunityTopic.Type: string = "community"
-        case is ChatMessage.Type:
-            guard let parent else { string = "chats"; break}
-            return parent
-            //string = "messages"
-        default: string = "mock_users"
-        }
-        return firestore.collection(string)
-    }
-
-    
-    init(parent: CollectionReference? = nil, listener: Bool = false){
-        self.parent = parent
+    init(collection: CollectionReference = Object.collection, listener: Bool = false){
+        self.collection = collection
         if listener {
             addSnapshotListener()
         }
     }
-    
-
-    
-    @MainActor
-    func fetch() async {
-        let object = try? await self.fetch(fid: nil)
-        self.object = object
-    }
-    
-
-}
-extension FirestoreService {
     
     func fid(_ id: String?) throws -> String {
         try self.fid(for: nil, id)
@@ -74,6 +38,7 @@ extension FirestoreService {
     func create(_ object: Object, fid: String? = nil) throws -> String{
         let fid = fid ?? collection.document().documentID
         print("Creating \(Object.self) \(fid)")
+        
         do {
             try collection.document(fid).setData(from: object)
             return fid
@@ -83,8 +48,6 @@ extension FirestoreService {
             throw Self.serverError
         }
     }
-    
-    
     
     func update(_ object: Object, _ id: String? = nil) throws {
         let fid: String = try fid(for: object, id)
@@ -98,7 +61,7 @@ extension FirestoreService {
         }
     }
     
-    func fetch(fid id: String?) async throws -> Object {
+    func fetch(fid id: String) async throws -> Object {
         let fid: String = try fid(id)
         
         do {
@@ -112,7 +75,9 @@ extension FirestoreService {
             throw Self.serverError
         }
     }
-        
+    
+    
+    
     func addSnapshotListener(){
         collection.addSnapshotListener { querySnapshot, error in
             guard let documents = querySnapshot?.documentChanges else {return}
@@ -121,98 +86,31 @@ extension FirestoreService {
                     if documentSnapshot.type == .added {
                         self.fetched.append(object)
                     } else if documentSnapshot.type == .modified,
-                          let index = self.fetched.firstIndex(where: {$0.id == object.id}) {
-                              self.fetched[index] = object
-                          }
+                              let index = self.fetched.firstIndex(where: {$0.id == object.id}) {
+                        self.fetched[index] = object
+                    }
                 }
             }
         }
     }
-
+    
 
 }
 
 
-extension FirestoreService {
-    
-    
-    static var kUsers: String { "mock_users" }
-    static var kChats: String { "chats" }
-    static var kCommunity: String { "community" }
-    static var kSettings: String { "settings" }
-    static var kMessages: String { "messages" }
 
-    
-    static var Users: CollectionReference {
-        FireStore.instance.firestore.collection(Self.kUsers)
-    }
 
-    static var Settings: CollectionReference {
-        FireStore.instance.firestore.collection(Self.kSettings)
-    }
-
-    static var Matches: CollectionReference {
-        FireStore.instance.firestore.collection(Self.kChats)
-    }
-
-    static var Community: CollectionReference {
-        FireStore.instance.firestore.collection(Self.kCommunity)
-    }
-    
-    static func Swipes(for uid: String, _ swipe: Swipe) -> CollectionReference {
-        return Users.document(uid).collection(swipe.rawValue)
-    }
-    
-    static func Collection<C:Convo>(for convo: C) -> CollectionReference {
-        return C.self == Match.self ? Matches : Community
-    }
-    
-    static func Messages<C:Convo>(for convo: C) -> CollectionReference {
-        let collection = Collection(for: convo)
-        #warning("fix the optional")
-        let fid = convo.id!
-        return collection.document(fid).collection("chats")
-    }
-    
-    func getHistory(for uid: String, _ swipe: Swipe) async -> [String] {
-        let documents = try? await Self.Swipes(for: uid, .like).getDocuments().documents
-        let array = documents?.compactMap{$0.documentID} ?? []
-        return array
-    }
-    
-    func allSwipes(for uid: String) async -> [String] {
-        var combine: [String] = []
-        for swipe in Swipe.allCases {
-            let history = await getHistory(for: uid, swipe)
-            combine.append(contentsOf: history)
-        }
-        return combine.isEmpty ? ["empty"] : combine
-    }
-    
-}
-
-extension FirestoreService {
-    
-    static var serverError: AlertError { AlertError(title: "Server Error", message: "There was an error retreiving your data from the server. Please contact support") }
-}
-
-class FireStore: NSObject {
-    let firestore: Firestore
-    
-    static let instance = FireStore()
-    
-    private override init(){
-        self.firestore = Firestore.firestore()
-        super.init()
-    }
-    
-    static func getUsersID(userId1: String, userId2: String) -> String {
-        userId1 > userId2 ? userId1 + userId2 : userId2 + userId1
+extension FirestoreService where Object == ChatMessage {
+    func sendMessage(_ message: Object) throws {
+        let _ = try create(message)
+        collection.parent?.setData(["lastMessage":message.text])
     }
 }
 
 
 extension FirestoreService: ObservableObject {
+
+    static var serverError: AlertError { AlertError(title: "Server Error", message: "There was an error retreiving your data from the server. Please contact support") }
     private func print(_ string: String){
         let serviceName = String(describing: Self.self)
         let title = "🔥 [\(serviceName)] "

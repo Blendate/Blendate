@@ -12,8 +12,8 @@ struct ChatView: View {
     @StateObject var model: ChatViewModel<Match>
     @Binding var withUser: User?
 
-    init(_ convo: Match, with: Binding<User?>){
-        self._model = StateObject(wrappedValue: ChatViewModel(convo))
+    init(_ cid: String, with: Binding<User?>){
+        self._model = StateObject(wrappedValue: ChatViewModel<Match>(cid: cid ))
         self._withUser = with
     }
     
@@ -49,6 +49,6 @@ struct ChatView: View {
 
 struct ChatView_Previews: PreviewProvider {
     static var previews: some View {
-        ChatView(dev.conversation, with: .constant(dev.michael))
+        ChatView(dev.conversation.id!, with: .constant(dev.michael))
     }
 }

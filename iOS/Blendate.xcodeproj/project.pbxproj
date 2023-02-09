@@ -128,6 +128,7 @@
 		4CA917472795F3B70017DADB /* FirebaseSignin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA917462795F3B70017DADB /* FirebaseSignin.swift */; };
 		4CB4E45B27F8F38300E775D1 /* Icebreakers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB4E45A27F8F38300E775D1 /* Icebreakers.swift */; };
 		4CB9A0F327B44E28008EC500 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB9A0F227B44E28008EC500 /* ImagePicker.swift */; };
+		4CBCDD6F299464C400303EA1 /* FirestoreObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBCDD6E299464C400303EA1 /* FirestoreObject.swift */; };
 		4CC1358927F649D100719F48 /* SwipeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC1358827F649D100719F48 /* SwipeViewModel.swift */; };
 		4CC1358B27F64B4300719F48 /* MatchesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC1358A27F64B4300719F48 /* MatchesViewModel.swift */; };
 		4CC1358D27F65E6F00719F48 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC1358C27F65E6F00719F48 /* ChatViewModel.swift */; };
@@ -258,6 +259,7 @@
 		4CA917462795F3B70017DADB /* FirebaseSignin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseSignin.swift; sourceTree = "<group>"; };
 		4CB4E45A27F8F38300E775D1 /* Icebreakers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Icebreakers.swift; sourceTree = "<group>"; };
 		4CB9A0F227B44E28008EC500 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		4CBCDD6E299464C400303EA1 /* FirestoreObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreObject.swift; sourceTree = "<group>"; };
 		4CC1358827F649D100719F48 /* SwipeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeViewModel.swift; sourceTree = "<group>"; };
 		4CC1358A27F64B4300719F48 /* MatchesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchesViewModel.swift; sourceTree = "<group>"; };
 		4CC1358C27F65E6F00719F48 /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
@@ -530,6 +532,7 @@
 		4C9C0290281E0D1600EBE008 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				4CBCDD6E299464C400303EA1 /* FirestoreObject.swift */,
 				4CA3F4A029916DBA00F6D2BD /* Options.swift */,
 				4C0E947F278BF11F00740252 /* User.swift */,
 				4C197C56281A3332002DD266 /* Stats.swift */,
@@ -772,6 +775,7 @@
 			files = (
 				4CD00FC828E8DA5A00AAC16A /* EditProfileView.swift in Sources */,
 				4C57F593281CE9A20059299B /* PhotoView.swift in Sources */,
+				4CBCDD6F299464C400303EA1 /* FirestoreObject.swift in Sources */,
 				4C0A58232818DBFC0068CCCE /* View.swift in Sources */,
 				4CCFAC15280364AE0063FCA6 /* SettingCellView.swift in Sources */,
 				4CC1358D27F65E6F00719F48 /* ChatViewModel.swift in Sources */,

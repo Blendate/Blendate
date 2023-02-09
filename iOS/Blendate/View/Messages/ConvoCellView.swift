@@ -14,26 +14,28 @@ struct ConvoCellView: View {
 
     var body: some View {
         
-        NavigationLink {
-            ChatView(conversation, with: $details)
-        } label: {
-            HStack(spacing: 0){
-                PhotoView.Avatar(url: details?.avatar, size: 75, isCell: true)
-                VStack(alignment: .leading) {
-                    Text(details?.firstname ?? "")
-                        .fontType(.semibold, .title3)
-                        .foregroundColor(.DarkBlue)
-                    Text(conversation.lastMessage.text)
-                        .foregroundColor(.gray)
-                        .opacity(0.5)
+        if let cid = conversation.id {
+            NavigationLink {
+                ChatView(cid, with: $details)
+            } label: {
+                HStack(spacing: 0){
+                    PhotoView.Avatar(url: details?.avatar, size: 75, isCell: true)
+                    VStack(alignment: .leading) {
+                        Text(details?.firstname ?? "")
+                            .fontType(.semibold, .title3)
+                            .foregroundColor(.DarkBlue)
+                        Text(conversation.lastMessage)
+                            .foregroundColor(.gray)
+                            .opacity(0.5)
+                    }
+                    .padding(.leading)
+                    Spacer()
                 }
-                .padding(.leading)
-                Spacer()
             }
-        }
-        .buttonStyle(.plain)
-        .task {
-            await fetchUser()
+            .buttonStyle(.plain)
+            .task {
+                await fetchUser()
+            }
         }
     }
     

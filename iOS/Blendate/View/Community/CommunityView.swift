@@ -89,7 +89,7 @@ struct CommunityCell: View {
     
     var body: some View {
         NavigationLink {
-            CommunityChatView(topic: topic)
+            Text("Community Chat View")
         } label: {
             VStack(alignment: .leading) {
                 Text(topic.title)

@@ -24,13 +24,13 @@ class CommunityViewModel: FirestoreService<CommunityTopic> {
     }
     
     func sendMessage(to topic: CommunityTopic, message: String, author: String) async throws {
-        do {
-            let chatMessage = ChatMessage(author: author, text: message)
-            try Self.Messages(for: topic).document().setData(from: chatMessage)
-            topic.lastMessage = chatMessage
-            try update(topic)
-        } catch {
-            throw AlertError(title: "Server Error", message: "There was an error sending your message.", recovery: "Try Again")
-        }
+//        do {
+//            let chatMessage = ChatMessage(author: author, text: message)
+//            try Self.Messages(for: topic).document().setData(from: chatMessage)
+//            topic.lastMessage = chatMessage
+//            try update(topic)
+//        } catch {
+//            throw AlertError(title: "Server Error", message: "There was an error sending your message.", recovery: "Try Again")
+//        }
     }
 }
