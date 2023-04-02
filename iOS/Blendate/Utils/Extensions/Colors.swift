@@ -9,17 +9,19 @@ import SwiftUI
 import UIKit
 
 extension Color {
+    static let accent = Color("AccentColor")
     static let Blue = Color("Blue")
     static let DarkBlue = Color("DarkBlue")
-//    static let BlueAlpha = Color(UIColor(red: 0.345, green: 0.396, blue: 0.965, alpha: 0.6))
-
-//    static let LightPink = Color("LightPink")
-    static let DarkPink = Color("DarkPink")
+    static let Purple = Color("Purple")
     
-    static let LightGray = Color(UIColor.systemGray6)
-    static let LightGray2 = Color(red: 0.9, green: 0.9, blue: 0.9)
-    static let accent = Color("AccentColor")
-    static let gradient = LinearGradient(gradient: Gradient(colors: [.DarkBlue, .DarkPink]), startPoint: .bottomTrailing, endPoint: .topLeading)
+    static let LightGray5 = Color(UIColor.systemGray5)
+    static let LightGray6 = Color(UIColor.systemGray6)
+}
+extension LinearGradient {
+    static let horizontal = LinearGradient(gradient: Gradient(colors: [.Blue, .Purple]), startPoint: .leading, endPoint: .trailing)
+    static let vertical = LinearGradient(gradient: Gradient(colors: [.Blue, .Purple]), startPoint: .bottom, endPoint: .top)
+
+    static let corner = LinearGradient(gradient: Gradient(colors: [.Blue, .Purple]), startPoint: .bottomLeading, endPoint: .topTrailing)
 
 }
 

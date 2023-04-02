@@ -10,7 +10,7 @@ import SwiftUI
 enum ImageType: String {case icon}
 extension Image {
     
-    static func icon(_ size: CGFloat, _ color: Color = .Blue) -> some View {
+    static func Icon(size: CGFloat = 100, _ color: Color = .Blue) -> some View {
         Image("icon")
             .renderingMode(.template)
             .resizable()

@@ -1,0 +1,163 @@
+{
+  "identifier" : "4BE723CB",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "19.99",
+      "familyShareable" : false,
+      "internalID" : "6444812929",
+      "localizations" : [
+        {
+          "description" : "10 Super Likes",
+          "displayName" : "10 Likes",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.blendate.blendate.likes10",
+      "referenceName" : "10 Likes",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "39.99",
+      "familyShareable" : false,
+      "internalID" : "6444812787",
+      "localizations" : [
+        {
+          "description" : "25 Super Likes",
+          "displayName" : "25 Likes",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.blendate.blendate.likes25",
+      "referenceName" : "25 Likes",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "5.99",
+      "familyShareable" : false,
+      "internalID" : "6444812786",
+      "localizations" : [
+        {
+          "description" : "3 Super Likes",
+          "displayName" : "3 Likes",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.blendate.blendate.likes3",
+      "referenceName" : "3 Likes",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "199.99",
+      "familyShareable" : false,
+      "internalID" : "6444842042",
+      "localizations" : [
+        {
+          "description" : "Lifetime Membership Subscription",
+          "displayName" : "Lifetime Membership",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.blendate.blendate.lifeMembership",
+      "referenceName" : "Lifetime Membership",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "1529018915",
+    "_developerTeamID" : "QLFXX64RR2",
+    "_lastSynchronizedDate" : 698814454.32144105
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21067312",
+      "localizations" : [
+
+      ],
+      "name" : "Premium",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "9.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6444778098",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "1 Month Premium Subscription",
+              "displayName" : "1 Month Membership",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.blendate.blendate.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "1 Month",
+          "subscriptionGroupID" : "21067312",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "99.99",
+          "familyShareable" : false,
+          "groupNumber" : 3,
+          "internalID" : "6444777110",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "12 Month Premium Subscription",
+              "displayName" : "12 Month Membership",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.blendate.blendate.yearly",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "12 Months",
+          "subscriptionGroupID" : "21067312",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "69.99",
+          "familyShareable" : false,
+          "groupNumber" : 2,
+          "internalID" : "6444812705",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "6 Month Premium Subscription ",
+              "displayName" : "6 Month Membership",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.blendate.blendate.semiAnnual",
+          "recurringSubscriptionPeriod" : "P6M",
+          "referenceName" : "6 Month",
+          "subscriptionGroupID" : "21067312",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 2,
+    "minor" : 0
+  }
+}

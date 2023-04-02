@@ -1,47 +1,83 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 admin.initializeApp();
-const db = admin.firestore();
 
 const MESSAGE_TITLE = "You have a new message!";
-const MESSAGE_BODY = "You have a new message from ";
+const MESSAGE_BODY = " sent you a message";
 const MATCH_TITLE = "You have a new Blend!";
 const MATCH_BODY = "You Blended with ";
 
-exports.iosMatchNotifications = functions.firestore
-    .document("chats/{uid}")
-    .onCreate(async (snapshot, event) => {
-      console.log("New Match Triggered")
-      const conversation = snapshot.data();
-      let users = []
-      users = conversation.users
-      await sendMessages(users, true);
-    });
+
+const MATHCES_FIELD = "matches"
+const NAME_FIELD = "firstname"
 
 
-exports.iosChatNotifications = functions.firestore
-    .document("chats/{uid}")
-    .onUpdate(async (change, event) => {
+
+
+
+// Sends a notifications to all users when a new message is posted.
+exports.iosMatchNotifications = functions.firestore.document('matches/{mid}').onCreate(
+  async (snapshot) => {
+    console.log("New Match Triggered")
+    const match = snapshot.data();
+    let users = []
+    users = match.users;
+    let tokens = []
+    console.log(`Found ${users.count} Users`)
+
+    const fcm1 = await getFCM(users[0]);
+    const fcm2 = await getFCM(users[1]);
+    if (fcm1) {
+      tokens.push(fcm1);
+    }
+    if (fcm2) {
+      tokens.push(fcm2);
+    }
+
+    console.log(`Found ${tokens.count} Tokens`)
+    const payload = {
+      notification: {
+        title: `You have a new Blend!`,
+        body: 'You matched with someone!',
+        // icon: snapshot.data().profilePicUrl || '/images/profile_placeholder.png',
+        // click_action: `https://${process.env.GCLOUD_PROJECT}.firebaseapp.com`,
+      }
+    };
+
+    if (tokens.length > 0) {
+      // Send notifications to all tokens.
+      const response = await admin.messaging().sendToDevice(tokens, payload);
+      functions.logger.log('Notifications have been sent .');
+    } else {
+      console.log('Both Users dont have FCM tokens.')
+    }
+  });
+
+
+exports.iosChatNotifications = functions.firestore.document("matches/{uid}").onUpdate(
+  async (change, event) => {
       console.log("New Chat Triggered")
       const conversation = change.after.data();
-      let users = []
-      users = conversation.users
+      const users = conversation.users;
 
-      const sendUID = arr.find(element => {
+      const sendUID = users.find(element => {
         return element != conversation.lastMessage.author;
       })
 
-      if (sendUID) {
-        const user = getUser(sendUID)
-        const message = {
+      const authorName = await getName(conversation.lastMessage.author);
+      const fcm = await getFCM(sendUID);
+
+
+      if (fcm && authorName) {
+        const payload = {
           notification: {
             title: MESSAGE_TITLE,
-            body: MESSAGE_BODY + user.name,
+            body: authorName + MESSAGE_BODY,
           },
-          token: user.fcm,
+          token: fcm,
         };
 
-        admin.messaging().send(message)
+        admin.messaging().send(payload)
         .then((response) => {
           console.log('Successfully sent push notification message:', response);
           return;
@@ -50,61 +86,29 @@ exports.iosChatNotifications = functions.firestore
           console.log('Error sending message:', error);
           return;
         });
+      } else {
+        console.log("No Name for Author, or user does not have notifications set")
       }
-    });
+  });
 
 
-    const sendMessages = async (users, isMatch) => {
-        const user1 = await getUser(users[0])
-        const user2 = await getUser(users[1])
+async function getName(uid) {
+  const snapshot = await admin.firestore().collection("users").doc(uid).get();
+  const userData = snapshot.data();
+  return userData.details.firstname;
+}
 
-        const message1 = {
-          notification: {
-            title: MATCH_TITLE,
-            body: MATCH_BODY + user2.name,
-          },
-          token: user1.fcm,
-        };
 
-        const message2 = {
-          notification: {
-            title: MATCH_TITLE,
-            body: MATCH_BODY + user1.name,
-          },
-          token: user2.fcm,
-        };
-        const messages = [message1, message2];
+async function getFCM(uid) {
+  const snapshotSettings = await admin.firestore().collection("settings").doc(uid).get();
+  const userSettings = snapshotSettings.data();
+  const fcm = userSettings.notifications.fcm;
+  const isOn = userSettings.notifications.isOn;
 
-        admin.messaging().sendAll(messages)
-        .then((response) => {
-          for (r in response) {
-            console.log('Successfully sent push notification message:', r);
-          }
-          return;
-        })
-        .catch((error) => {
-          console.log('Error sending message:', error);
-          return;
-        });
-      };
-      
-      const getUser = async (uid) => {
-        const snapshot = await db.collection("users").doc(uid).get();
-        const userData = snapshot.data();
-        const name = userData.details.firstname;
-        const fcm = userData.fcm;
-        const push = userData.settings.notifications;
-        if (push && fcm !== "") {
-          return {name: name, fcm: fcm};
-        } else {
-          return null;
-        }
-      };
-
-      // exports.helloFirestore = (event, context) => {
-      //   const resource = context.resource;
-      //   // log out the resource string that triggered the function
-      //   console.log('Function triggered by change to: ' +  resource);
-      //   // now log the full event object
-      //   console.log(JSON.stringify(event));
-      // };
+  if (fcm == '') return null
+  if (isOn) {
+    return fcm;
+  } else {
+    return null
+  }
+}

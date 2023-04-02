@@ -9,17 +9,17 @@ import SwiftUI
 
 
 func getRect() -> CGRect{
+    //// getRekt
     return UIScreen.main.bounds
 }
 
 
 extension View {
-    func fontType(_ type: Font.Weight = .regular, _ size: CGFloat, _ color: Color? = nil) -> some View {
-        return self.font(.system(size: size, weight: type)).foregroundColor(color)
+    func font( _ weight: SwiftUI.Font.Weight, _ color: Color) -> some View {
+        self.fontWeight(weight).foregroundColor(color)
     }
-    
-    func fontType(_ type: Font.Weight = .regular, _ font: SwiftUI.Font = .body, _ color: Color? = nil) -> some View {
-        return self.font(font).fontWeight(type).foregroundColor(color)
+    func font( _ font: SwiftUI.Font, _ color: Color) -> some View {
+        self.font(font).foregroundColor(color)
     }
     
     func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
