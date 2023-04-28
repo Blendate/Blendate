@@ -86,7 +86,7 @@ struct EmptyMatchs: View {
                     .scaledToFill()
                     .frame(width: 270, height: 226 , alignment: .center)
                 Text(message)
-                    .font(.semibold, .DarkBlue)
+                    .font(.title3.weight(.semibold), .Blue)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
                     .padding(.top)

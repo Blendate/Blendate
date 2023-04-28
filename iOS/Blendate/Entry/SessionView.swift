@@ -12,9 +12,17 @@ struct SessionView: View {
     @StateObject var session: UserViewModel
     @StateObject var swipe: SwipeViewModel
     @StateObject var notifcationManager = NotificationManager()
-
+    
     @FirestoreQuery(collectionPath: "like_you") var likedYou: [Swipe]
     @FirestoreQuery(collectionPath: "superlike_you") var superLikedYou: [Swipe]
+    
+    init(uid: String) {
+        self._session = StateObject(wrappedValue: UserViewModel(uid))
+        self._swipe = StateObject(wrappedValue: SwipeViewModel(uid))
+        self._likedYou = FirestoreQuery(collectionPath: CollectionPath.Path(swipeYou: .like, uid: uid))
+        self._superLikedYou = FirestoreQuery(collectionPath: CollectionPath.Path(swipeYou: .superLike, uid: uid))
+
+    }
     
     private var allLikedUser: [Swipe] { likedYou + superLikedYou }
     private var uid: String { session.uid }
@@ -26,8 +34,7 @@ struct SessionView: View {
             if session.state == .user {
                 TabView(selection: $session.selectedTab) {
                     SwipeProfileView(superLikedYou: superLikedYou)
-//                    CommunityView()
-                    MatchesView(uid: uid, allLikes: allLikedUser)
+                    MatchesView(uid: session.uid, allLikes: allLikedUser)
                     PremiumView(likedYou: likedYou, superLikedYou: superLikedYou, today: nil)
                     ProfileView(user: $session.user, settings: $session.settings)
                 }
@@ -68,8 +75,8 @@ extension SessionView {
     
     private func setPredicates() {
         print("📱 [SessioView] Setting LikedYou Predicates")
-        $likedYou.path = CollectionPath.Path(swipeYou: .like, uid: uid)
-        $superLikedYou.path = CollectionPath.Path(swipeYou: .superLike, uid: uid)
+        $likedYou.path = CollectionPath.Path(swipeYou: .like, uid: session.uid)
+        $superLikedYou.path = CollectionPath.Path(swipeYou: .superLike, uid: session.uid)
     }
 }
 

@@ -7,6 +7,7 @@
 
 import Foundation
 import FirebaseFirestore
+import FirebaseFirestoreSwift
 
 
 // MARK: Functions Throw ErrorAlert.Firebase
@@ -18,28 +19,6 @@ class FireStore: NSObject {
     private override init(){
         self.firestore = Firestore.firestore()
         super.init()
-    }
-    
-    func fetchLineup(for uid: String, with filters: [String:String] = [:]) async throws -> [User] {
-
-        let swipedUIDs: [String] = try await getHistory(for: uid)
-        let path = CollectionPath.Users
-        let collection = firestore.collection(path)
-        
-        let snapshot = try await collection.getDocuments().documents
-        
-        let lineup: [User] = snapshot
-            .filter { document in
-                let fid = document.documentID
-                return !swipedUIDs.contains(fid) && fid != uid
-            }
-            .compactMap { document in
-                do { return try document.data(as: User.self) }
-                catch { print("Decode Error for \(document.documentID)", error); return nil }
-            }
-        
-        return lineup; #warning("Add Lineup Limit, maybe cloud function for lineup")
-
     }
     
     func swipe(_ swipe: Swipe.Action, on fid: String, from uid: String, message: ChatMessage? = nil) async throws -> Match? {
@@ -58,6 +37,7 @@ class FireStore: NSObject {
             let _ = try create(match, fid: mid)
             print("[Swipe] Swipe has message, sending...")
             try sendMessage(message, to: mid)
+            match.id = mid
             return match
         }
 
@@ -68,6 +48,7 @@ class FireStore: NSObject {
 
         print("\(fid) previously liked \(uid)")
         let _ = try create(match, fid: mid)
+        match.id = mid
         return match
     }
 
@@ -135,7 +116,7 @@ extension FireStore {
         }
     }
     
-    private func getHistory(for uid: String, swipes: [Swipe.Action] = Swipe.Action.allCases) async throws -> [String] {
+    func getHistory(for uid: String, swipes: [Swipe.Action] = Swipe.Action.allCases) async throws -> [String] {
         var all = [String]()
         for swipe in swipes {
             let history = try await fetch(swipes: swipe, of: uid)
@@ -156,6 +137,7 @@ extension FireStore {
         return users.first(where: {$0 != uid})
     }
 }
+
 
 
 extension FireStore {

@@ -49,7 +49,7 @@ struct LikesView: View {
         } else {
             EmptyLineupView(loading: .constant(false),
                             svg: "Interested",
-                            text: "When someone likes you they will show up here, keep Bleding and check back here to see other's that have liked you") {
+                            text: "When someone likes you they will show up here, keep Bleding and check back") {
                 FilterButton(user: $session.user, settings: $session.settings)
             } button2: {
                 Button("Today's Blend"){ showLikes = false }

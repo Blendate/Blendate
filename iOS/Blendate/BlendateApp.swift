@@ -48,13 +48,12 @@ struct BlendateApp: App {
 
 
 
-import FirebaseAnalytics
 import FirebaseAuth
 import FirebaseStorage
 extension BlendateApp {
     func firebaseConfig(){
         FirebaseConfiguration.shared.setLoggerLevel(.min)
-        Analytics.setAnalyticsCollectionEnabled(false)
+//        Analytics.setAnalyticsCollectionEnabled(false)
 #if EMULATORS
         print(
         """

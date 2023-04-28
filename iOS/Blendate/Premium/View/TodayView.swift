@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TodayView: View {
     @EnvironmentObject var session: UserViewModel
+    
     @EnvironmentObject var entitlment: EntitlementManager
     
     let todayUser: User?

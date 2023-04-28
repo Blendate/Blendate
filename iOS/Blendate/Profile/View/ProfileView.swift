@@ -82,7 +82,7 @@ extension ProfileView {
             }
             .padding(.leading, 8)
         }
-        .font(.title)
+        .font(.title3)
         .foregroundColor(.Blue)
         .padding(.horizontal)
     }
@@ -97,10 +97,15 @@ extension ProfileView {
                 Text("Super Likes")
                     .fontWeight(.semibold)
                 Spacer()
+                Text("\(settings.premium.superLikes)")
+                    .padding(8)
+                    .background(Color.Purple)
+                    .clipShape(Circle())
+                    .foregroundColor(.white)
                 Image(systemName: "chevron.right")
             }
         }
-        .font(.title)
+        .font(.title3)
         .foregroundColor(.Purple)
         .padding(.horizontal)
         .padding(.bottom)

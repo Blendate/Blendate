@@ -10,15 +10,14 @@ import PhotosUI
 import SDWebImageSwiftUI
 import FirebaseStorage
 
-struct PhotoView<S:Shape>: View {
+struct PhotoView<S:Shape, Placeholder: View>: View {
     let url: URL?
     var size: (CGFloat, CGFloat) = (75,75)
     let shape: S
+    @ViewBuilder var placeholder: Placeholder
 
     var body: some View {
-        WebImage(url: url).placeholder {
-            Color.Blue
-        }
+        WebImage(url: url).placeholder { placeholder }
         .resizable()
         .aspectRatio(contentMode: .fill)
         .frame(width: size.0, height: size.1)
@@ -41,7 +40,14 @@ struct EditPhotoView<S:Shape>: View {
     var size: (CGFloat, CGFloat) = (100,100)
     
     var body: some View {
-        PhotoView(url: photo?.url, size: size, shape: shape)
+        PhotoView(url: photo?.url, size: size, shape: shape) {
+            ZStack {
+                Color.DarkBlue
+                Image(systemName: "plus").font(.largeTitle)
+                    .foregroundColor(.white)
+
+            }
+        }
         .onChange(of: photoItem) { newValue in
             uploadImage(newValue)
         }
@@ -74,19 +80,28 @@ struct EditPhotoView<S:Shape>: View {
 }
 
 extension PhotoView {
-    init(_ photo: Photo) where S == RoundedRectangle {
+    init(_ photo: Photo) where S == RoundedRectangle, Placeholder == Color {
         switch photo.placement {
         case 2,5,6: self.size = (162, 213)
         default: self.size = (162, 171)
         }
         self.url = photo.url
         self.shape = RoundedRectangle(cornerRadius: 16)
+        self.placeholder = Color.Blue
     }
     
-    init(avatar: URL?, size: CGFloat = 70) where S == Circle {
+    init(avatar: URL?, size: CGFloat = 70) where S == Circle, Placeholder == Color {
         self.url = avatar
         self.size = (size, size)
         self.shape = Circle()
+        self.placeholder = Color.Blue
+    }
+    
+    init(url: URL?, size: (CGFloat, CGFloat) = (75,75), shape: S) where Placeholder == Color {
+        self.url = url
+        self.size = size
+        self.shape = shape
+        self.placeholder = Color.Blue
     }
 }
 
@@ -111,5 +126,6 @@ struct PhotoView_Previews: PreviewProvider {
     static var previews: some View {
         PhotoView(url: alice.details.photos[0]!.url, shape: Circle())
         PhotoView(alice.details.photos[0]!)
+        PhotoView(Photo(placement: 3, url: URL(string: "https://google.com")!))
     }
 }

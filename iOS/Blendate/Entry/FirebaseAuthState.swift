@@ -15,14 +15,17 @@ class FirebaseAuthState: ObservableObject {
     @Published var state = State.loading
     let auth = Auth.auth()
     
-    init(){
-        auth.addStateDidChangeListener { (auth,user) in
+    init() {
+        auth.addStateDidChangeListener { auth, user in
             if let uid = user?.uid { self.state = .uid(uid) }
             else { self.state = .noUser }
             print("🔥 [Auth] Changed: \(user?.uid ?? "No User")")
         }
     }
+}
 
+extension FirebaseAuthState {
+    
     func sendVerifyCode(to phone: String) async {
         let phone = "+\(phone)"
         do {

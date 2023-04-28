@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct MatchedView: View {
+    @EnvironmentObject var user: UserViewModel
     @Environment(\.dismiss) private var dismiss
     
     let circleSize: CGFloat = 200
@@ -27,6 +28,9 @@ struct MatchedView: View {
                     Text("It's A Blend!")
                 }
                 .font(.largeTitle, .white)
+                Spacer()
+                matchCircle
+                Spacer()
                 if let mid = match.id,
                     let withID = with.id,
                     let uid = FireStore.withUserID(match.users, withID) {
@@ -45,60 +49,60 @@ struct MatchedView: View {
                 }
                 Spacer()
             }
-//            .background(bottom: false)
+            .background(text: "", bottom: false)
         }
     }
 }
 
-//extension MatchedView {
-//    var matchCircle: some View {
-//        VStack(spacing: 0) {
-//            HStack{
-//                userCircle
-//                Spacer()
-//            }
-//            .padding(.horizontal,50)
-//            .padding()
-//            HStack {
-//                Spacer()
-//                matchedCircle
-//            }.padding(.horizontal, 50)
-//        }
-//    }
-//
-//    var userCircle: some View {
-//        ZStack{
-//            Circle()
-//                .stroke(Color.DarkBlue, lineWidth: 8)
-//                .frame(width: circleSize, height: circleSize)
-//                .shadow(radius: 10)
-//            PhotoView.Avatar(url: user.details.avatar, size: imageSize)
-////                            Circle()
-////                                .frame(width: imageSize, height: imageSize)
-//                .shadow(radius: 5)
-//        }
-//    }
-//
-//    var matchedCircle: some View {
-//        ZStack {
-//            Circle()
-//                .stroke(Color.Purple, lineWidth: 8)
-//                .frame(width: circleSize, height: circleSize)
-//                .offset(y: -60)
-//                .shadow(radius: 5)
-//
-//            PhotoView.Avatar(url: matchedWith.details.avatar, size: imageSize)
-////                                .frame(width: imageSize, height: imageSize)
-//                .offset(y: -60)
-//                .shadow(radius: 10)
-//
-//        }
-//    }
-//}
+extension MatchedView {
+    var matchCircle: some View {
+        VStack(spacing: 0) {
+            HStack{
+                userCircle
+                Spacer()
+            }
+            .padding(.horizontal,50)
+            .padding()
+            HStack {
+                Spacer()
+                matchedCircle
+            }.padding(.horizontal, 50)
+        }
+    }
 
-//struct MatchedView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        MatchedView(matchedWith: dev.tyler, match: dev.conversation)
-//            .environmentObject(UserViewModel("1243"))
-//    }
-//}
+    var userCircle: some View {
+        ZStack{
+            Circle()
+                .stroke(Color.DarkBlue, lineWidth: 8)
+                .frame(width: circleSize, height: circleSize)
+                .shadow(radius: 10)
+            PhotoView(avatar: user.user.details.avatar, size: imageSize)
+//                            Circle()
+//                                .frame(width: imageSize, height: imageSize)
+                .shadow(radius: 5)
+        }
+    }
+
+    var matchedCircle: some View {
+        ZStack {
+            Circle()
+                .stroke(Color.Purple, lineWidth: 8)
+                .frame(width: circleSize, height: circleSize)
+                .offset(y: -60)
+                .shadow(radius: 5)
+
+            PhotoView(avatar: with.details.avatar, size: imageSize)
+//                                .frame(width: imageSize, height: imageSize)
+                .offset(y: -60)
+                .shadow(radius: 10)
+
+        }
+    }
+}
+
+struct MatchedView_Previews: PreviewProvider {
+    static var previews: some View {
+        MatchedView(with: bob, match: conversation)
+            .environmentObject(UserViewModel(user: alice))
+    }
+}

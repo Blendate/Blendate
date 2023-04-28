@@ -34,10 +34,6 @@ struct PremiumView: TabItemView {
             MembershipView()
         }
     }
-
-
-
-
 }
 
 

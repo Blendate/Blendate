@@ -24,13 +24,13 @@ struct PhotosGridView: View {
                 ScrollView(.horizontal, showsIndicators: false, content: {
                     HStack{
                         VStack{
-                            if let photo = photos[2], let _ = photo.url {
+                            if let photo = photos[2] {
                                 PhotoView(photo)
                                     .onTapGesture {
                                         selected = photo
                                     }
                             }
-                            if let photo = photos[3], let _ = photo.url {
+                            if let photo = photos[3] {
                                 PhotoView(photo)
                                     .onTapGesture {
                                         selected = photo
@@ -38,13 +38,13 @@ struct PhotosGridView: View {
                             }
                         }.padding(.vertical)
                         VStack{
-                            if let photo = photos[4], let _ = photo.url {
+                            if let photo = photos[4] {
                                 PhotoView(photo)
                                     .onTapGesture {
                                         selected = photo
                                     }
                             }
-                            if let photo = photos[5], let _ = photo.url {
+                            if let photo = photos[5] {
                                 PhotoView(photo)
                                     .onTapGesture {
                                         selected = photo
@@ -52,13 +52,13 @@ struct PhotosGridView: View {
                             }
                         }
                         VStack{
-                            if let photo = photos[6], let _ = photo.url {
+                            if let photo = photos[6] {
                                 PhotoView(photo)
                                     .onTapGesture {
                                         selected = photo
                                     }
                             }
-                            if let photo = photos[7], let _ = photo.url {
+                            if let photo = photos[7] {
                                 PhotoView(photo)
                                     .onTapGesture {
                                         selected = photo

@@ -19,10 +19,7 @@ struct EntryView: View {
             case .noUser:
                 WelcomeView()
             case .uid(let uid):
-                SessionView(
-                    session: UserViewModel(uid),
-                    swipe: SwipeViewModel(uid)
-                )
+                SessionView(uid: uid)
             }
         }
     }

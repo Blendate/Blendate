@@ -46,6 +46,13 @@ class Stats: Codable {
         }
     }
 }
+extension Stats: Equatable {
+    static func == (lhs: Stats, rhs: Stats) -> Bool {
+        lhs.gender != rhs.gender
+    }
+    
+    
+}
 
 
 

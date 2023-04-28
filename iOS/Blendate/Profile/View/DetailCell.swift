@@ -35,7 +35,7 @@ struct DetailCell: View {
                 MaxDistance(label: detail.label, distance: $user.filters.maxDistance)
             case .childrenRange:
                 if isFilter {
-                    AgeRange(label: detail.label, ageRange: $user.filters.childrenRange, isChildren: true)
+                    AgeRange(label: detail.label, ageRange: $user.filters.childrenRange, isChildren: true, disabled: isFilter && !hasMembership)
                         .disabled(isFilter && !hasMembership)
                         .onTapGesture {
                             if !hasMembership { showMembership = true }
@@ -85,6 +85,7 @@ extension DetailCell {
             HStack {
                 Image(systemName: symbol)
                     .foregroundColor(disabled ? .gray:.black )
+                    .frame(width: 30)
                 Text(label)
                     .foregroundColor(disabled ? .gray:.black )
                 Spacer()
@@ -105,6 +106,17 @@ extension DetailCell {
         let rangeIn: IntRange
         @State var range: ClosedRange<Int>
         
+        var disabled: Bool = false
+        
+        var color: Color {
+            disabled ? .gray : .purple
+        }
+        
+        init(label: String, ageRange: Binding<IntRange?>, isChildren: Bool, disabled: Bool) {
+            self.init(label: label, ageRange: ageRange, isChildren: isChildren)
+            self.disabled = disabled
+        }
+        
         init(label: String, ageRange: Binding<IntRange?>, isChildren: Bool) {
             self.label = label
             self._ageRange = ageRange
@@ -113,6 +125,7 @@ extension DetailCell {
             let range = ageRange.wrappedValue ?? self.rangeIn
             self.range = .init(uncheckedBounds: (range.min, range.max))
             self.systemImage = isChildren ? SignupPath.childrenRange.systemImage : SignupPath.ageRange.systemImage
+//            self.disabled = disabled
         }
         
         var body: some View {
@@ -129,9 +142,9 @@ extension DetailCell {
                     .rangeSliderStyle(
                         HorizontalRangeSliderStyle( track:
                             HorizontalRangeTrack(
-                                view: Capsule().foregroundColor(.purple)
+                                view: Capsule().foregroundColor(color)
                             )
-                            .background(Capsule().foregroundColor(Color.purple.opacity(0.25)))
+                            .background(Capsule().foregroundColor(color.opacity(0.25)))
                             .frame(height: 4)
                           )
                     )
