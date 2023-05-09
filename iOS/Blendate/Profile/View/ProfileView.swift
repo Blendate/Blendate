@@ -8,48 +8,48 @@
 import SwiftUI
 
 struct ProfileView: TabItemView {
-    @Binding var user: User
-    @Binding var settings: User.Settings
-    
-    @State private var tapped: ButtonType?
-        
-    @State private var showMembership = false
-    @State private var showSuperLikes = false
+    @EnvironmentObject var navigation: NavigationManager
+    @EnvironmentObject var model: UserViewModel
 
+    @State var settings: User.Settings = .init()
+    @State private var tapped: ButtonType?
 
     var body: some View {
         NavigationView {
             VStack {
-                CardView(avatarUrl: user.details.avatar, avatarSize: 160, title: cardTitle, buttons: buttons)
+                CardView(avatarUrl: model.user.avatar, avatarSize: 160, title: cardTitle, buttons: buttons)
                     .padding(.vertical)
                     .padding(.top, 32)
-                superLikesButton
-                premiumButton
+                ProfileButtonLong(title: "Membership") {
+                    navigation.showPurchaseMembership = true
+                }.padding(.horizontal)
+                ProfileButtonLong(title: "Super Likes", subtitle: "\(settings.premium.superLikes)", systemImage: "star.fill",color: .Purple) {
+                    navigation.showPurchaseLikes = true
+                }.padding(.horizontal)
                 Spacer()
             }
             .navigationBarTitleDisplayMode(.inline)
-            .fullScreenCover(isPresented: $showMembership) { MembershipView() }
-            .sheet(isPresented: $showSuperLikes) { PurchaseLikesView(settings: $settings) }
-            .fullScreenCover(item: $tapped) { type in
+            .fullScreenCover(item: $tapped, onDismiss: model.save) { type in
                 switch type {
-                case .edit: EditStatsView(user: $user, settings: $settings, isFilter: false)
-                case .filters: EditStatsView(user: $user, settings: $settings, isFilter: true)
+                case .edit: EditProfileView()
+                case .filters: FiltersView()
                 case .settings: SettingsView(settings: $settings)
                 }
+            }
+            .errorAlert(error: $model.error) { alert in
+                Button("Try again", action: model.save)
+                Button("Cancel", role: .cancel){}
             }
         }
         .tag( Self.TabItem )
         .tabItem{ Self.TabItem.image }
     }
 
-    private func tapped(_ type: ButtonType) {
-        self.tapped = type
-    }
     
     var cardTitle: some View {
         VStack(spacing: 0){
-            Text(user.details.firstname + " " + user.details.lastname)
-            Text(user.details.location.name)
+            Text(model.user.firstname + " " + model.user.lastname)
+            Text(model.user.location.name)
         }
         .font(.title3)
         .padding(.vertical)
@@ -57,64 +57,27 @@ struct ProfileView: TabItemView {
 
     var buttons: some View {
         HStack {
-            ProfileButton(type: .edit, user: $user, settings: $settings, tapped: tapped)
+            ProfileButton(type: .edit, tapped: tapped)
             Spacer()
-            ProfileButton(type: .filters, user: $user, settings: $settings, tapped: tapped)
+            ProfileButton(type: .filters, tapped: tapped)
                 .padding(.top)
             Spacer()
-            ProfileButton(type: .settings, user: $user, settings: $settings, tapped: tapped)
+            ProfileButton(type: .settings, tapped: tapped)
         }
-        .padding(.horizontal)
-    }
-}
-
-extension ProfileView {
-    
-    var premiumButton: some View {
-        Button{showMembership = true } label: {
-            HStack {
-                Image.Icon(size: 30, .Blue)
-                Text("Premium Membership")
-                    .fontWeight(.semibold)
-                    .padding(.leading, 6)
-                Spacer()
-                Image(systemName: "chevron.right")
-            }
-            .padding(.leading, 8)
-        }
-        .font(.title3)
-        .foregroundColor(.Blue)
         .padding(.horizontal)
     }
     
-    var superLikesButton: some View {
-        Button{
-            showSuperLikes = true
-        } label: {
-            HStack {
-                Image(systemName: "star.fill")
-                    .foregroundColor(.Purple)
-                Text("Super Likes")
-                    .fontWeight(.semibold)
-                Spacer()
-                Text("\(settings.premium.superLikes)")
-                    .padding(8)
-                    .background(Color.Purple)
-                    .clipShape(Circle())
-                    .foregroundColor(.white)
-                Image(systemName: "chevron.right")
-            }
-        }
-        .font(.title3)
-        .foregroundColor(.Purple)
-        .padding(.horizontal)
-        .padding(.bottom)
+    private func tapped(_ type: ButtonType) {
+        self.tapped = type
     }
+    
 }
 
 struct EditProfile_Previews: PreviewProvider {
     @State static var show = true
     static var previews: some View {
-        ProfileView(user: .constant(alice), settings: .constant(User.Settings()))
+        ProfileView()
+            .environmentObject(UserViewModel(uid: uid, user: alice))
+            .environmentObject(NavigationManager())
     }
 }

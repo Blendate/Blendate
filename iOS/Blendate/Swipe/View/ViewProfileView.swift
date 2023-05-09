@@ -13,17 +13,14 @@ struct ViewProfileView<Buttons:View>: View {
     var reported: ()->Void
     @ViewBuilder var buttons: Buttons
     
-    var details: User.Details { user.details}
-    var info: Stats { user.info }
-    
     var body: some View {
         ScrollView(showsIndicators: false) {
-            ProfileCoverView(details: details, info: info, superLiked: superLikedYou) { buttons }
+            ProfileCoverView(user: user, superLiked: superLikedYou) { buttons }
             InfoCardsView(user: user)
-            ProfileBioView(bio: details.bio)
-            PhotosGridView(photos: details.photos)
-            TagCloudView(interests: details.interests)
-            ReportButton(uid: user.id, name: details.firstname, withName: true, reported: reported)
+            ProfileBioView(bio: user.bio)
+            PhotosGridView(photos: user.photos)
+            TagCloudView(interests: user.interests)
+            ReportButton(uid: user.id, name: user.firstname, withName: true, reported: reported)
             .padding(.bottom)
         }
         .edgesIgnoringSafeArea(.top)

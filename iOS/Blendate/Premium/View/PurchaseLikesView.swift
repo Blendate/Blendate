@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PurchaseLikesView: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var purchaseManager: PurchaseManager
+    @EnvironmentObject var purchaseManager: StoreManager
     @Binding var settings: User.Settings
     
     var body: some View {
@@ -46,9 +46,8 @@ struct PurchaseLikesView: View {
 
 import StoreKit
 extension PurchaseLikesView {
-    
     struct Cell: View {
-        @EnvironmentObject var purchaseManager: PurchaseManager
+        @EnvironmentObject var purchaseManager: StoreManager
         @EnvironmentObject var session: UserViewModel
         
         @Binding var settings: User.Settings
@@ -88,13 +87,13 @@ extension PurchaseLikesView {
                 try await purchaseManager.purchase(product)
                 if let likes = product.likeCount {
                     settings.premium.superLikes += likes
-                    try FireStore.instance.update(settings)
+                    try session.save()
                 } else {
-                    self.error = PurchaseManager.Error(message: "There was an error saving your purchase on the server, please contact support with ID \n \(session.uid)")
+                    self.error = StoreManager.Error(message: "There was an error saving your purchase on the server, please contact support with ID \n \(session.uid)")
                 }
 
             } catch {
-                self.error = PurchaseManager.Error()
+                self.error = StoreManager.Error()
                 print(error.localizedDescription)
             }
         }

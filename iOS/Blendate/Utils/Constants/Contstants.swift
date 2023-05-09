@@ -16,10 +16,10 @@ extension WelcomeView {
 }
 
 // MARK: - Signup
-extension NameView {
-    static let Lastname = "Last names help build authenticity and will only be shared with matches."
-
-}
+//extension Name.PropertyView {
+//    static let Lastname = "Last names help build authenticity and will only be shared with matches."
+//
+//}
 
 // MARK: - Membership
 extension MembershipView {

@@ -15,9 +15,7 @@ protocol ErrorAlert: LocalizedError {
 
 protocol AlertView: View {
     associatedtype E:ErrorAlert
-    
     var error: State<E?> {get set}
-    
 }
 
 

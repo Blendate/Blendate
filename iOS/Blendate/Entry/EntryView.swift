@@ -9,18 +9,25 @@ import SwiftUI
 import FirebaseAuth
 
 struct EntryView: View {
-    @EnvironmentObject var authState: FirebaseAuthState
-    
+    @EnvironmentObject var storeManager: StoreManager
+    @EnvironmentObject var navigation: NavigationManager
+
     var body: some View {
         Group {
-            switch authState.state {
+            switch navigation.state {
             case .loading:
                 LaunchView()
             case .noUser:
                 WelcomeView()
-            case .uid(let uid):
-                SessionView(uid: uid)
+            case .onboarding(let uid):
+                SignupView(model: .init(uid: uid))
+            case .user(let uid, let user):
+                SessionView(model: .init(uid: uid, user: user))
             }
+        }
+        .task {
+            await storeManager.updatePurchasedProducts()
+            await storeManager.fetchProducts()
         }
     }
 }
@@ -30,9 +37,10 @@ struct LaunchView<Background:View>: View {
     init(background: Background = Color.Blue) { self.background = background }
     var body: some View {
         ZStack {
-            background.ignoresSafeArea()
+            background
             Image.Icon(.white)
         }
+        .ignoresSafeArea()
     }
 }
 

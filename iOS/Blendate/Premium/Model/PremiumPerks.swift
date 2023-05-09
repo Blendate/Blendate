@@ -40,4 +40,17 @@ enum PremiumPerks: String, Identifiable, CaseIterable {
             return "Your profile will be seen by more users"
         }
     }
+    
+    var image: String {
+        switch self {
+        case .matches:
+            return "Relationship"
+        case .likes:
+            return "Interested"
+        case .filters:
+            return "Height"
+        case .swipes:
+            return "Family"
+        }
+    }
 }

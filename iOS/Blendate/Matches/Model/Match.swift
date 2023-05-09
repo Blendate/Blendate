@@ -35,9 +35,9 @@ extension Match: Identifiable, Equatable {
     var conversation: Bool { lastMessage != nil }
 }
 
-extension Match: FirestoreObject {
-    static let collection = CollectionPath.Matches
-}
+//extension Match: FirestoreObject {
+//    static let collection = CollectionPath.Matches
+//}
 //extension Match {
 //    func withUserID(_ uid: String?)->String?{
 //        guard let uid = uid else {return nil}

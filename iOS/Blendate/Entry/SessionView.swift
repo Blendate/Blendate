@@ -9,75 +9,49 @@ import SwiftUI
 import FirebaseFirestoreSwift
 
 struct SessionView: View {
-    @StateObject var session: UserViewModel
-    @StateObject var swipe: SwipeViewModel
+    @EnvironmentObject var navigation: NavigationManager
     @StateObject var notifcationManager = NotificationManager()
-    
-    @FirestoreQuery(collectionPath: "like_you") var likedYou: [Swipe]
-    @FirestoreQuery(collectionPath: "superlike_you") var superLikedYou: [Swipe]
-    
-    init(uid: String) {
-        self._session = StateObject(wrappedValue: UserViewModel(uid))
-        self._swipe = StateObject(wrappedValue: SwipeViewModel(uid))
-        self._likedYou = FirestoreQuery(collectionPath: CollectionPath.Path(swipeYou: .like, uid: uid))
-        self._superLikedYou = FirestoreQuery(collectionPath: CollectionPath.Path(swipeYou: .superLike, uid: uid))
 
-    }
-    
-    private var allLikedUser: [Swipe] { likedYou + superLikedYou }
-    private var uid: String { session.uid }
-    
-    var loading: Bool { session.state == .loading || swipe.loading }
+    @StateObject var model: UserViewModel
+
     
     var body: some View {
-        LoadingView(loading: loading, background: Color.Blue) {
-            if session.state == .user {
-                TabView(selection: $session.selectedTab) {
-                    SwipeProfileView(superLikedYou: superLikedYou)
-                    MatchesView(uid: session.uid, allLikes: allLikedUser)
-                    PremiumView(likedYou: likedYou, superLikedYou: superLikedYou, today: nil)
-                    ProfileView(user: $session.user, settings: $session.settings)
-                }
-                .environmentObject(session)
-                .environmentObject(swipe)
-                .onAppear(perform: setPredicates)
-                .onChange(of: session.settings.notifications.isOn, perform: notificationChanged)
-                .task {
-                    await swipe.fetchLineup(for: session.user)
-                    await requestPermission()
-                }
-            } else {
-                SignupView(uid).environmentObject(session)
-            }
+        TabView(selection: $navigation.selectedTab) {
+            SwipeProfileView(model: .init(model.uid) )
+            MatchesView(uid: model.uid)
+            PremiumView()
+            ProfileView()
+                
         }
-        .task {
-            await session.fetch()
-        }
+        .fullScreenCover(isPresented: $navigation.showPurchaseMembership) { MembershipView() }
+        .sheet(isPresented: $navigation.showPurchaseLikes) { PurchaseLikesView(settings: $model.settings) }
+        .environmentObject(model)
 
+//        .onChange(of: session.settings.notifications.isOn, perform: notificationChanged)
     }
 }
 extension SessionView {
     
-    private func requestPermission() async {
-        let granted = await notifcationManager.requestPermission()
-        notificationChanged(granted)
-    }
+//    private func requestPermission() async {
+//        let granted = await notifcationManager.requestPermission()
+//        notificationChanged(granted)
+//    }
     
-    private func notificationChanged(_ isOn: Bool) {
-        guard isOn else { session.set(fcm: ""); return }
-        
-        Task {
-            if let fcm = await notifcationManager.getFCM() {
-                session.set(fcm: fcm)
-            }
-        }
-    }
+//    private func notificationChanged(_ isOn: Bool) {
+//        guard isOn else { session.set(fcm: ""); return }
+//
+//        Task {
+//            if let fcm = await notifcationManager.getFCM() {
+//                session.set(fcm: fcm)
+//            }
+//        }
+//    }
     
-    private func setPredicates() {
-        print("📱 [SessioView] Setting LikedYou Predicates")
-        $likedYou.path = CollectionPath.Path(swipeYou: .like, uid: session.uid)
-        $superLikedYou.path = CollectionPath.Path(swipeYou: .superLike, uid: session.uid)
-    }
+//    private func setPredicates() {
+//        print("📱 [SessioView] Setting LikedYou Predicates")
+//        $likedYou.path = CollectionPath.Path(swipeYou: .like, uid: session.uid)
+//        $superLikedYou.path = CollectionPath.Path(swipeYou: .superLike, uid: session.uid)
+//    }
 }
 
 

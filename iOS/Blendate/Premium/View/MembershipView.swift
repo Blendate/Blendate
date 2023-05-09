@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MembershipView: View {
-    @EnvironmentObject var purchaseManager: PurchaseManager
+    @EnvironmentObject var purchaseManager: StoreManager
     @Environment(\.dismiss) private var dismiss
         
     let TapSubscribe = "By tapping Subscribe, your payment will be charged to your Apple App Store account, and your subscription will automatically renew for the same package length at the same price until you cancel in settings in the Apple App Store. By tapping Subscribe you agree to our Terms"
@@ -56,7 +56,7 @@ import StoreKit
 extension MembershipView {
     
     struct Cell: View {
-        @EnvironmentObject var purchase: PurchaseManager
+        @EnvironmentObject var purchase: StoreManager
         @State var error: ErrorAlert?
         let product: Product
         
@@ -121,12 +121,9 @@ extension MembershipView {
             TabView(selection: $selection) {
                 ForEach(PremiumPerks.allCases) { perk in
                     VStack {
-                        ZStack {
-                            Rectangle().fill(Color.Blue)
-                            Text("Placeholder")
-                                .foregroundColor(.white)
-                                .fontWeight(.bold)
-                        }
+                        Image(perk.image)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
                         .frame(width: 175, height: 175)
                         VStack(alignment: .leading) {
                             Text(perk.title)
@@ -155,7 +152,7 @@ extension MembershipView {
 struct MembershipView_Previews: PreviewProvider {
     static var previews: some View {
         MembershipView()
-            .environmentObject(PurchaseManager(entitlementManager: EntitlementManager()))
+            .environmentObject(StoreManager())
 //            .environmentObject(SettingsViewModel(alice.id!))
 //            .preferredColorScheme(.dark)
     }

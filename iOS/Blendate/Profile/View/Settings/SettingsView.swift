@@ -9,12 +9,12 @@ import SwiftUI
 
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var auth: FirebaseAuthState
-    @EnvironmentObject var entitlement: EntitlementManager
+    @EnvironmentObject var navigation: NavigationManager
+    @EnvironmentObject var entitlement: StoreManager
     
     @Binding var settings: User.Settings
     
-    var hasMembership: Bool { entitlement.hasPro }
+    var hasMembership: Bool { entitlement.hasMembership }
     
     @State var alert: ErrorAlert?
     @State private var showMembership = false
@@ -109,14 +109,14 @@ struct SettingsView: View {
                         .fontWeight(.bold)
                 }
             }
-            if let provider = auth.provider {
-                HStack {
-                    Image(systemName: "person")
-                    Text(provider.0.rawValue)
-                    Spacer()
-                    Text(provider.1 ?? "")
-                }
-            }
+//            if let provider = auth.provider {
+//                HStack {
+//                    Image(systemName: "person")
+//                    Text(provider.0.rawValue)
+//                    Spacer()
+//                    Text(provider.1 ?? "")
+//                }
+//            }
 //            NavigationLink {
 //                Text("Learn more info about upcoming community.")
 //            } label: {
@@ -136,22 +136,22 @@ struct SettingsView: View {
     
     var legalSection: some View {
         Section {
-            NavigationLink(destination: HelpCenterView()) {
-                HStack {
-                    Image(systemName: "info.circle")
-                    Text("Help Center")
-                    Spacer()
-                }
-            }
-//            NavigationLink(destination: Text("Privacy Policy")) {
+//            NavigationLink(destination: HelpCenterView()) {
+//                HStack {
+//                    Image(systemName: "info.circle")
+//                    Text("Help Center")
+//                    Spacer()
+//                }
+//            }
+            Link(destination: URL(string: String.PivacyLink)!) {
                 HStack {
                     Image(systemName: "doc.plaintext")
-                    Link("Privacy Policy", destination: URL(string: String.PivacyLink)!)
+                    Text("Privacy Policy")
                     Spacer()
                     Image(systemName: "chevron.right")
                 }
                 .foregroundColor(.primary)
-//            }
+            }
 //            NavigationLink(destination: Text("Blendate Mission")) {
 //                HStack {
 //                    Image("icon-2")
@@ -205,13 +205,13 @@ extension SettingsView {
 
     
     private func delete(){
-        auth.auth.currentUser?.delete()
-        logout()
+        navigation.delete()
+        dismiss()
 
     }
     
     private func logout(){
-        try? auth.auth.signOut()
+        navigation.signOut()
         dismiss()
     }
 }
@@ -223,31 +223,32 @@ extension SettingsView {
     }
 }
 
-extension FirebaseAuthState {
-    var provider: (Provider, String?)? {
-        guard let user = auth.currentUser else {return nil }
-        let email = user.email
-        let phone = user.phoneNumber
-        for i in user.providerData {
-            if i.providerID != "firebase" || i.providerID != "Firebase"{//.equals("facebook.com")) {
-                switch i.providerID {
-                case "apple.com":
-                    return (.apple, email)
-                case "facebook.com":
-                    return (.facebook, email ?? phone)
-                default:
-                    return (.phone, phone)
-                }
-            }
-        }
-        return nil
-    }
-}
+//extension FirebaseAuthState {
+//    var provider: (Provider, String?)? {
+//        guard let user = auth.currentUser else {return nil }
+//        let email = user.email
+//        let phone = user.phoneNumber
+//        for i in user.providerData {
+//            if i.providerID != "firebase" || i.providerID != "Firebase"{//.equals("facebook.com")) {
+//                switch i.providerID {
+//                case "apple.com":
+//                    return (.apple, email)
+//                case "facebook.com":
+//                    return (.facebook, email ?? phone)
+//                default:
+//                    return (.phone, phone)
+//                }
+//            }
+//        }
+//        return nil
+//    }
+//}
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView(settings: .constant(User.Settings()))
-            .environmentObject(FirebaseAuthState())
+            .environmentObject(NavigationManager.shared)
+            .environmentObject(StoreManager())
     }
 }
 

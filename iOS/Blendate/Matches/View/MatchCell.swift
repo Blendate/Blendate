@@ -30,7 +30,7 @@ struct MatchCell: View {
     }
     
     var image: some View {
-        PhotoView(avatar: withUser?.details.avatar)
+        PhotoView(avatar: withUser?.avatar)
     }
     
     var matchCell: some View {
@@ -47,7 +47,7 @@ struct MatchCell: View {
         HStack(spacing: 0){
             image
             VStack(alignment: .leading) {
-                Text(withUser?.details.firstname ?? "--")
+                Text(withUser?.firstname ?? "--")
                     .font(.title3.weight(.semibold), .DarkBlue)
                 Text(match.lastMessage?.text ?? "")
                     .foregroundColor(.gray)
@@ -63,13 +63,12 @@ struct MatchCell: View {
     @MainActor
     func fetchUser() async {
         guard withUser == nil, let withUID = FireStore.withUserID(match.users, author) else {return}
-        self.withUser = try? await FireStore.instance.fetch(fid: withUID)
+        self.withUser = try? await FireStore.instance.fetch(uid: withUID)
     }
 }
 
 struct MatchCell_Previews: PreviewProvider {
     static var previews: some View {
         MatchCell(match: match, author: aliceUID)
-        MatchCell(match: conversation, author: aliceUID)
     }
 }

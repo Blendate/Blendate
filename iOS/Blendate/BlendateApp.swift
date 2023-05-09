@@ -7,79 +7,65 @@
 
 import SwiftUI
 import Firebase
-
 import FacebookCore
 import Foundation
 
 @main
 struct BlendateApp: App {
-//    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    @StateObject private var authState = FirebaseAuthState()
-    @StateObject private var purchaseManager: PurchaseManager
-    @StateObject private var entitlementManager: EntitlementManager
+    @StateObject var purchaseManager = StoreManager()
+    @StateObject var navigation = NavigationManager.shared
 
     init(){
         FirebaseApp.configure()
-
-        let entitlementManager = EntitlementManager()
-        let purchaseManger = PurchaseManager(entitlementManager: entitlementManager)
-        
-        self._entitlementManager = StateObject(wrappedValue: entitlementManager)
-        self._purchaseManager = StateObject(wrappedValue: purchaseManger)
     }
     
     var body: some Scene {
         WindowGroup {
             EntryView()
-                .environmentObject(authState)
-                .environmentObject(purchaseManager)
-                .environmentObject(entitlementManager)
-                .task {
-                    await purchaseManager.updatePurchasedProducts()
-                    await purchaseManager.fetchProducts()
-                }
-                .onAppear {
-                    FBSDKCoreKit.ApplicationDelegate.shared.application(UIApplication.shared, didFinishLaunchingWithOptions: nil)
-                    UIApplication.shared.addTapGestureRecognizer()
-                }
+            .environmentObject(navigation)
+            .environmentObject(purchaseManager)
+            .onAppear {
+                FBSDKCoreKit.ApplicationDelegate.shared.application(UIApplication.shared, didFinishLaunchingWithOptions: nil)
+                UIApplication.shared.addTapGestureRecognizer()
+            }
         }
     }
 }
 
 
 
-import FirebaseAuth
-import FirebaseStorage
-extension BlendateApp {
-    func firebaseConfig(){
-        FirebaseConfiguration.shared.setLoggerLevel(.min)
-//        Analytics.setAnalyticsCollectionEnabled(false)
-#if EMULATORS
-        print(
-        """
-        *********************
-        Testing on Emulator
-        *********************
-        """
-        )
-        Auth.auth().useEmulator(withHost: "localhost", port: 4000)
-        Storage.storage().useEmulator(withHost: "localhost", port: 4000)
-        let settings = Firestore.firestore().settings
-        settings.host = "localhost:4000"
-        settings.isPersistenceEnabled = false
-        settings.isSSLEnabled = false
-        Firestore.firestore().settings = settings
-#elseif DEBUG
-        print(
-        """
-        *********************
-        Testing on Live
-        *********************
-        """
-        )
-#endif
-    }
-}
+//import FirebaseAuth
+//import FirebaseStorage
+//extension BlendateApp {
+//    func firebaseConfig(){
+//        FirebaseConfiguration.shared.setLoggerLevel(.min)
+////        Analytics.setAnalyticsCollectionEnabled(false)
+//#if EMULATORS
+//        print(
+//        """
+//        *********************
+//        Testing on Emulator
+//        *********************
+//        """
+//        )
+//        Auth.auth().useEmulator(withHost: "localhost", port: 4000)
+//        Storage.storage().useEmulator(withHost: "localhost", port: 4000)
+//        let settings = Firestore.firestore().settings
+//        settings.host = "localhost:4000"
+//        settings.isPersistenceEnabled = false
+//        settings.isSSLEnabled = false
+//        Firestore.firestore().settings = settings
+//#elseif DEBUG
+//        print(
+//        """
+//        *********************
+//        Testing on Live
+//        *********************
+//        """
+//        )
+//#endif
+//    }
+//}
 
 
 

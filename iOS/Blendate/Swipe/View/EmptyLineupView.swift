@@ -19,14 +19,14 @@ struct EmptyLineupView<Button1:View, Button2: View>: View {
     var body: some View {
         VStack {
             Spacer()
-            VStack(spacing: 32){
+            VStack(spacing: 16){
                 Spacer()
                 Text(text)
                     .font(.title2.weight(.semibold), .Blue)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
-                    .padding(.top,32)
-                Spacer()
+                    .padding(.vertical,32)
+//                Spacer()
                 button1
                 button2
                 Spacer()
@@ -63,9 +63,11 @@ struct EmptyLineupView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             EmptyLineupView(loading: .constant(true)) {
-                FilterButton(user: .constant(alice), settings: .constant(User.Settings()))
+                ProfileButtonLong(title: "Filters", systemImage: "slider.horizontal.3" ) {}
+                    .padding(.horizontal, 32)
             } button2: {
-                FilterButton(user: .constant(alice), settings: .constant(User.Settings()), title: "Likes You", systemName: "heart" )
+                ProfileButtonLong(title: "View Likes", systemImage: "star.fill", color: .Purple) {}
+                    .padding(.horizontal, 32)
             }
         }
     }

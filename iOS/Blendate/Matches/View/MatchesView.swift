@@ -11,10 +11,13 @@ import FirebaseFirestoreSwift
 
 struct MatchesView: TabItemView {
     @FirestoreQuery(collectionPath: "matches") var matches: [Match]
-
-    let uid: String
-    let allLikes: [Swipe]
+    @FirestoreQuery(collectionPath: "like_you") var likedYou: [Swipe]
+    @FirestoreQuery(collectionPath: "superlike_you") var superLikedYou: [Swipe]
     
+    let uid: String
+    
+    private var allLikes: [Swipe] { likedYou + superLikedYou }
+
     var remainingLikes: [Swipe] {
         var connections: [String] {
             matches.compactMap { FireStore.withUserID($0.users, uid) }
@@ -50,6 +53,10 @@ struct MatchesView: TabItemView {
                 if $matches.predicates.isEmpty {
                     $matches.predicates = [.where(field: "users", arrayContains: uid)]
                 }
+                $likedYou.path = CollectionPath.Path(swipeYou: .like, uid: uid)
+                $superLikedYou.path = CollectionPath.Path(swipeYou: .superLike, uid: uid)
+//                self._likedYou = FirestoreQuery(collectionPath: CollectionPath.Path(swipeYou: .like, uid: uid))
+//                self._superLikedYou = FirestoreQuery(collectionPath: CollectionPath.Path(swipeYou: .superLike, uid: uid))
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -102,9 +109,9 @@ struct EmptyMatchs: View {
 struct MessagesView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            MatchesView(uid: aliceUID, allLikes: likedUser)
-            MatchesView(uid: aliceUID, allLikes: [])
+            MatchesView(uid: aliceUID)
+            MatchesView(uid: aliceUID)
         }
-        .environmentObject(session)
+//        .environmentObject(session)
     }
 }

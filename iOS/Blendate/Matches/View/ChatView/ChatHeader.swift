@@ -12,7 +12,7 @@ struct ChatHeader: View {
     @Binding var user: User?
     @State private var showProfile = false
     
-    var name: String { user?.details.firstname ?? "Name" }
+    var name: String { user?.firstname ?? "Name" }
     
     var body: some View {
         HStack(spacing: 15) {
@@ -20,7 +20,7 @@ struct ChatHeader: View {
                 .font(.title3)
                 .foregroundColor(.white)
             Title
-            ReportButton(uid: user?.id, name: user?.details.firstname,
+            ReportButton(uid: user?.id, name: user?.firstname,
                          messageEnd: "Only report chats that do not meet our chat requirements") {
                 
             }
@@ -56,7 +56,7 @@ struct ChatHeader: View {
     }
     
     var image: some View {
-        AsyncImage(url: user?.details.avatar) { image in
+        AsyncImage(url: user?.avatar) { image in
             image.resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 50, height: 50)

@@ -76,7 +76,7 @@ extension MatchedView {
                 .stroke(Color.DarkBlue, lineWidth: 8)
                 .frame(width: circleSize, height: circleSize)
                 .shadow(radius: 10)
-            PhotoView(avatar: user.user.details.avatar, size: imageSize)
+            PhotoView(avatar: user.user.avatar, size: imageSize)
 //                            Circle()
 //                                .frame(width: imageSize, height: imageSize)
                 .shadow(radius: 5)
@@ -91,7 +91,7 @@ extension MatchedView {
                 .offset(y: -60)
                 .shadow(radius: 5)
 
-            PhotoView(avatar: with.details.avatar, size: imageSize)
+            PhotoView(avatar: with.avatar, size: imageSize)
 //                                .frame(width: imageSize, height: imageSize)
                 .offset(y: -60)
                 .shadow(radius: 10)
@@ -100,9 +100,9 @@ extension MatchedView {
     }
 }
 
-struct MatchedView_Previews: PreviewProvider {
-    static var previews: some View {
-        MatchedView(with: bob, match: conversation)
-            .environmentObject(UserViewModel(user: alice))
-    }
-}
+//struct MatchedView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        MatchedView(with: bob, match: conversation)
+////            .environmentObject(UserViewModel(user: alice))
+//    }
+//}

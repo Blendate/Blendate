@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-#warning("fix phone verification")
 struct WelcomeView: View {
     @State var signin = false
     private func signinTapped() { withAnimation { signin = true } }

@@ -39,7 +39,7 @@ struct MessagesList: View {
 
 struct MessagesList_Previews: PreviewProvider {
     static var previews: some View {
-        MessagesList(author: aliceUID, conversations: [conversation])
+        MessagesList(author: aliceUID, conversations: [match])
         MessagesList(author: aliceUID, conversations: [])
     }
 }

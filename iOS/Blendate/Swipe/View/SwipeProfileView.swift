@@ -10,18 +10,16 @@ import FirebaseFirestoreSwift
 
 struct SwipeProfileView: TabItemView {
     @EnvironmentObject var session: UserViewModel
-    @EnvironmentObject var model: SwipeViewModel
+    @EnvironmentObject var navigation: NavigationManager
+    @StateObject var model: SwipeViewModel
     @State var error: (any ErrorAlert)?
 
     var superLiked: Bool {
-        let uids = superLikedYou.compactMap{$0.id}
-        
-        return uids.contains(showing?.id ?? "empty")
+        false
     }
     
     ///  user when passed specifically
     var user: User? = nil
-    let superLikedYou: [Swipe]
 
     ///  the first User in the fetched lineup
     private var showing: User? { user ?? model.presenting }
@@ -42,30 +40,35 @@ struct SwipeProfileView: TabItemView {
                     MatchedView(with: showing, match: $0)
                 }
                 .sheet(isPresented: $purchaseSuperLikes){
-                    PurchaseLikesView(settings: $session.settings)
+//                    PurchaseLikesView(settings: $session.settings)
                 }
                 .errorAlert(error: $error) { error in
                     if error is Swipe.SuperLike {
                         Button("Purchase") {
                             purchaseSuperLikes = true
                         }
-                        Button("Cancel", role: .cancel){}
                     } else if error is Swipe.Error {
                         Button("Try again") {
-                            try? session.saveSettings()
+                            session.save()
                         }
-                        Button("Cancel", role: .cancel){}
                     }
+                    Button("Cancel", role: .cancel){}
 
                 }
+            } else if model.loading {
+                LaunchView()
+
             } else {
-                EmptyLineupView(
-                    loading: $model.loading,
-                    button: FilterButton(user: $session.user, settings: $session.settings)
-                )
+                Text("Empty Lineup")
+                //                EmptyLineupView(
+                //                    loading: $model.loading,
+                //                    button: FilterButton(user: $session.user, settings: $session.settings)
+                //                )
             }
         }
-
+        .task {
+            await model.fetchLineup(for: session.user)
+        }
         .tag(Self.TabItem)
         .tabItem{Self.TabItem.image}
     }
@@ -76,7 +79,7 @@ struct SwipeProfileView: TabItemView {
             try model.swipe(swipe, on: showing, superLikes: session.settings.premium.superLikes)
             if swipe == .superLike {
                 session.settings.premium.superLikes -= 1
-                try session.saveSettings()
+                session.save()
             }
         } catch let error as ErrorAlert {
             self.error = error
@@ -90,9 +93,9 @@ struct SwipeProfileView: TabItemView {
 
 struct SwipeProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        SwipeProfileView(superLikedYou: [])
-            .environmentObject(swipeModel)
+        SwipeProfileView(model: swipeModel)
             .environmentObject(session)
+            .environmentObject(NavigationManager())
 
     }
 }

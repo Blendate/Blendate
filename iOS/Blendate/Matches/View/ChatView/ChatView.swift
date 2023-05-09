@@ -66,6 +66,6 @@ struct ChatView: View {
 
 struct ChatView_Previews: PreviewProvider {
     static var previews: some View {
-        ChatView(author: aliceUID, cid: conversation.id!, with: .constant(bob))
+        ChatView(author: aliceUID, cid: match.id!, with: .constant(bob))
     }
 }

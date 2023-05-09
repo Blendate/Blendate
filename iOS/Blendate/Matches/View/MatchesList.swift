@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct MatchesList: View {
+    
     let uid: String
     let matches: [Match]
     let likedYou: [Swipe]
@@ -41,20 +42,21 @@ struct MatchesList: View {
 
 extension MatchesList {
     struct LikeYou: View {
-        @EnvironmentObject var entitlement: EntitlementManager
-        @EnvironmentObject var session: UserViewModel
+        @EnvironmentObject var navigation: NavigationManager
+        @EnvironmentObject var entitlement: StoreManager
+//        @EnvironmentObject var session: UserViewModel
         var likedYou: [Swipe]
         
         @State var firstUser: User?
         @State private var showMembership = false
         
-        var hasPremium: Bool { entitlement.hasPro }
+        var hasPremium: Bool { entitlement.hasMembership }
         
                 
         var body: some View {
             Button {
                 if hasPremium {
-                    session.selectedTab = .likes
+                    navigation.selectedTab = .likes
                 } else {
                    showMembership = true
                 }
@@ -65,7 +67,7 @@ extension MatchesList {
                             Circle()
                                 .stroke(  Color.DarkBlue, lineWidth: 2)
                                 .frame(width: 80, height: 80, alignment: .center)
-                            PhotoView(avatar: firstUser?.details.avatar)
+                            PhotoView(avatar: firstUser?.avatar)
                                 .blur(radius: hasPremium ? 0 : 20)
                                 .clipShape(Circle())
                         }
@@ -79,7 +81,7 @@ extension MatchesList {
             }
             .task {
                 guard firstUser == nil, let uid = likedYou.first?.id else {return}
-                self.firstUser = try? await FireStore.instance.fetch(fid: uid)
+                self.firstUser = try? await FireStore.instance.fetch(uid: uid)
             }
             .fullScreenCover(isPresented: $showMembership) {
                 MembershipView()
@@ -103,6 +105,6 @@ struct MatchesList_Previews: PreviewProvider {
 
         }
         .previewLayout(.sizeThatFits)
-        .environmentObject(session)
+//        .environmentObject(session)
     }
 }

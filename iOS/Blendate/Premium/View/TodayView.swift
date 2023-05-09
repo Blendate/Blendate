@@ -9,16 +9,16 @@ import SwiftUI
 
 struct TodayView: View {
     @EnvironmentObject var session: UserViewModel
-    
-    @EnvironmentObject var entitlment: EntitlementManager
+    @EnvironmentObject var navigation: NavigationManager
+    @EnvironmentObject var entitlment: StoreManager
     
     let todayUser: User?
     let likedYou: [Swipe]
-    @Binding var showMembership: Bool
     @Binding var showLikes: Bool
     
     @State var message: String = ""
     @State var showProfile = false
+    @State var showFilters = false
     
     var body: some View {
         if let todayUser {
@@ -29,7 +29,7 @@ struct TodayView: View {
                 ZStack(alignment: .top) {
                     VStack(spacing: 0) {
                         VStack {
-                            Text(todayUser.details.firstname)
+                            Text(todayUser.firstname)
                                 .font(.title2.weight(.bold), .white)
                                 .padding(.top, 70)
                             Text("Send a short message and start chating!")
@@ -47,35 +47,36 @@ struct TodayView: View {
     //                    .capsuleButton(color: .Blue, fontsize: 18)
                         .offset(y: -25)
                     }.padding(.top, 70)
-                    PhotoView(avatar: todayUser.details.avatar, size: 140)
+                    PhotoView(avatar: todayUser.avatar, size: 140)
                         .onTapGesture {
                             showProfile = true
                         }
                 }
-                Button("View Likes"){
-                    showLikes = true
-                }
-                .foregroundColor(.white)
-                .shapeButton(shape: .roundedRectangle, color: .Purple)
+                ProfileButtonLong(title: "View Likes", systemImage: "star.fill") { showLikes = true }
+                    .padding(.horizontal, 32)
                 Spacer()
             }
 //            .background(bottom: false)
             .sheet(isPresented: $showProfile) {
                 ViewProfileView(user: todayUser)
             }
+
         } else {
             EmptyLineupView(loading: .constant(false)) {
-                FilterButton(user: $session.user, settings: $session.settings)
+                ProfileButtonLong(title: "Filters", systemImage: "slider.horizontal.3" ) { showFilters = true }
+                    .padding(.horizontal, 32)
             } button2: {
-                Button("View Likes"){ showLikes = true }
-                    .shapeButton(shape: .roundedRectangle, color: .Purple)
-
+                ProfileButtonLong(title: "View Likes", systemImage: "star.fill", color: .Purple) { showLikes = true }
+                    .padding(.horizontal, 32)
+            }
+            .fullScreenCover(isPresented: $showFilters) {
+                FiltersView()
             }
         }
     }
     
     func sendTapped() {
-        if entitlment.hasPro {
+        if entitlment.hasMembership {
             guard let id = todayUser?.id else {return}
             let message = ChatMessage(author: session.uid, text: message)
             Task {
@@ -87,7 +88,7 @@ struct TodayView: View {
                 }
             }
         } else {
-            showMembership = true
+            navigation.showPurchaseMembership = true
         }
     }
 }
@@ -116,6 +117,13 @@ struct TextView: UIViewRepresentable {
 
 struct TodayView_Previews: PreviewProvider {
     static var previews: some View {
-        TodayView(todayUser: bob, likedYou: likedUser, showMembership: .constant(false), showLikes: .constant(false))
+        Group {
+            TodayView(todayUser: bob, likedYou: likedUser, showLikes: .constant(false))
+            TodayView(todayUser: nil, likedYou: likedUser, showLikes: .constant(false))
+        }
+        .environmentObject(session)
+        .environmentObject(StoreManager())
+        .environmentObject(NavigationManager())
+
     }
 }

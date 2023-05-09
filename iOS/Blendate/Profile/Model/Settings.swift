@@ -23,7 +23,7 @@ extension User {
         }
     }
 }
-extension User.Settings: FirestoreObject {
-    static let collection = CollectionPath.Settings
-}
+//extension User.Settings: FirestoreObject {
+//    static let collection = CollectionPath.Settings
+//}
 

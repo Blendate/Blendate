@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct ProfileBioView: View {
-    let bio: String
+    let bio: Bio
     
     var body: some View {
-        if !(bio.isEmpty) {
-            Text(bio)
+        if !(bio.rawValue.isEmpty) {
+            Text(bio.rawValue)
                 .foregroundColor(.DarkBlue)
                 .multilineTextAlignment(.leading)
                 .padding()
@@ -27,6 +27,6 @@ struct ProfileBioView: View {
 
 struct ProfileBioView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfileBioView(bio: alice.details.bio)
+        ProfileBioView(bio: alice.bio)
     }
 }

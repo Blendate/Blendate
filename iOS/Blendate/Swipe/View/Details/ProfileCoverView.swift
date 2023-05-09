@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct ProfileCoverView<Buttons:View>: View {
-    let details: User.Details
-    let info: Stats
+    let user: User
     var superLiked: Bool = false
     @ViewBuilder let buttons: Buttons
     
@@ -21,12 +20,12 @@ struct ProfileCoverView<Buttons:View>: View {
     }
     var body: some View {
         ZStack(alignment: .top) {
-            PhotoView(url: details.cover, size: coverSize, shape: Rectangle())
+            PhotoView(url: user.cover, size: coverSize, shape: Rectangle())
             CardView(
-                avatarUrl: details.avatar,
+                avatarUrl: user.avatar,
                 avatarSize: avatarSize,
                 superLiked: superLiked,
-                title: SubtitleView(details: details, info: info),
+                title: SubtitleView(user: user),
                 buttons: buttons
             )
             .padding(.top, avatarSize)
@@ -34,34 +33,33 @@ struct ProfileCoverView<Buttons:View>: View {
     }
 
     struct SubtitleView: View {
-        let details: User.Details
-        let info: Stats
+        let user: User
 
-        var children: Int { info.children ?? 0 }
+        var children: Children { user.children }
         var childrenText: String {
-            if info.children == 0 { return ""}
-            return info.children == 1 ? "Child" : "Children"
+            if user.children == 0 { return ""}
+            return user.children == 1 ? "Child" : "Children"
         }
         
         var body: some View {
             VStack(spacing: 4) {
-                Text(details.firstname + ", " + details.birthday.age.description)
+                Text(user.firstname + ", " + user.birthday.age.description)
                     .font(.title.weight(.semibold), .white)
-                Text(details.location.name)
+                Text(user.location.name)
 //                    .font(.title.weight(.semibold), .white)
                 HStack(spacing: 4) {
-                    if !info.isParent {
+                    if !user.isParent.rawValue {
                         Text("No Children")
                     } else {
                         Image(systemName: "figure.and.child.holdinghands")
 //                        Text(childrenText)
-                        Text(children.description)
+                        Text(children.valueLabel)
                         Text(" | ")
                         Image(systemName: "birthday.cake")
-                        if children > 1 {
-                            Text(info.childrenRange?.label(min: IntRange.KKidMin, max: IntRange.KKidMax) ?? "Has children")
+                        if children.rawValue > 1 {
+                            Text(user.childrenRange.valueLabel)
                         } else {
-                            Text(info.childrenRange?.min.description ?? "Baby" )
+                            Text(user.childrenRange.min.description)
                         }
                     }
                 }
@@ -72,14 +70,14 @@ struct ProfileCoverView<Buttons:View>: View {
 
 }
 
-struct ProfileCoverView_Previews: PreviewProvider {
-    static var previews: some View {
-        ScrollView {
-            ProfileCoverView(details: alice.details, info: alice.info) { MatchButtons { swipe in } }
-                .previewLayout(.sizeThatFits)
-                .previewDisplayName("Match")
-        }
-        .edgesIgnoringSafeArea(.top)
-    }
-}
+//struct ProfileCoverView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ScrollView {
+//            ProfileCoverView(details: alice.details, info: alice.info) { MatchButtons { swipe in } }
+//                .previewLayout(.sizeThatFits)
+//                .previewDisplayName("Match")
+//        }
+//        .edgesIgnoringSafeArea(.top)
+//    }
+//}
 

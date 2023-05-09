@@ -103,7 +103,7 @@ struct PhotoTabView: View {
 
 struct PhotosGridView_Previews: PreviewProvider {
     static var previews: some View {
-        PhotosGridView(photos: alice.details.photos)
+        PhotosGridView(photos: alice.photos)
     }
 }
 
