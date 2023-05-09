@@ -61,7 +61,7 @@ extension DevPreviewProvider {
 //            }
 //            return dict
 //        }()
-//        
+//
 //        return details
 //    }
 //    var bob_details: User.Details {
@@ -81,7 +81,7 @@ extension DevPreviewProvider {
 //            }
 //            return dict
 //        }()
-//        
+//
 //        return details
 //    }
 

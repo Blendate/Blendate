@@ -106,7 +106,7 @@ extension SwipeViewModel {
                 return user.gender == seeking && user.filters.seeking == session.gender
             }
         
-        return lineup
+        return [DevPreviewProvider.dev.alice]
 
     }
 }

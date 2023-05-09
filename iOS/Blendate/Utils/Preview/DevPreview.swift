@@ -55,7 +55,26 @@ class DevPreviewProvider {
     
     var alice: User {
         let ny = Location(name: "New York", lat: 40.7128, lon: -74.0060)
-        let user = User(
+        let photos: [Int:Photo] = {
+            var dict: [Int:Photo] = [:]
+            dict[0] = Photo(placement: 0, url: URL(string: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80")!)
+            dict[1] = Photo(placement: 1, url: URL(string: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80")!)
+            for i in 2...7 {
+                dict[i] = Photo(placement: i, url: URL(string: "https://google.com")!)
+            }
+            return dict
+        }()
+        
+        var filters = Filters(seeking: .male)
+        filters.isParent = true
+        filters.maxChildrenn = 5
+        filters.childrenRange = .init(min: 1, max: 8)
+        filters.minHeight = 56
+        filters.relationship = .none
+        filters.familyPlans = .wantMore
+        filters.politics = .liberal
+        
+        var user = User(
             id: uid,
             firstname: "Alice",
             lastname: "Lovelace",
@@ -64,11 +83,20 @@ class DevPreviewProvider {
             isParent: true,
             children: 2,
             childrenRange: .init(min: 0, max: 23),
-            bio: "",
+            bio: "I like to go to to the beach with my kids on the weekends when we don't have an event like little league scheduled",
             location: ny,
-            photos: [:],
+            photos: photos,
             filters: .init(seeking: .male)
         )
+        user.workTitle = "Teacher"
+        user.schoolTitle = "Bachelor in Education"
+        user.vices = [Vices.snacker.rawValue, Vices.chocolate.rawValue, Vices.coffee.rawValue]
+        user.height = 52
+        user.relationship = .separated
+        user.familyPlans = .wantMore
+        user.mobility = .willing
+        user.religion = .conservative
+        user.politics = .liberal
         return user
     }
     
