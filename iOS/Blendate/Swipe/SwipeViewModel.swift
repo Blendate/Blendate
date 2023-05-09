@@ -102,11 +102,15 @@ extension SwipeViewModel {
                 print("Check Gender: \(user.gender)")
                 print("Check Seeking: \(user.filters.seeking)")
                 if seeking.rawValue == "none" && user.filters.seeking.rawValue == "none" { return true}
-                guard seeking.rawValue != "none" else { return user.filters.seeking == gender}
-                return user.gender == seeking && user.filters.seeking == session.gender
+                
+                if seeking.rawValue == "none" {
+                    return user.filters.seeking == gender
+                } else {
+                    return user.gender == seeking && user.filters.seeking == gender
+                }
             }
         
-        return [DevPreviewProvider.dev.alice]
+        return lineup
 
     }
 }

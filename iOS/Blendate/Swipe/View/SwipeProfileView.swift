@@ -23,9 +23,7 @@ struct SwipeProfileView: TabItemView {
 
     ///  the first User in the fetched lineup
     private var showing: User? { user ?? model.presenting }
-    
-    ///  presented when the user is out of SuperLikes
-    @State private var purchaseSuperLikes = false
+    @State private var showFilters = false
     
     var body: some View {
         Group {
@@ -39,13 +37,10 @@ struct SwipeProfileView: TabItemView {
                 .sheet(item: $model.match, onDismiss: model.nextLineup) {
                     MatchedView(with: showing, match: $0)
                 }
-                .sheet(isPresented: $purchaseSuperLikes){
-//                    PurchaseLikesView(settings: $session.settings)
-                }
                 .errorAlert(error: $error) { error in
                     if error is Swipe.SuperLike {
                         Button("Purchase") {
-                            purchaseSuperLikes = true
+                            navigation.showPurchaseLikes = true
                         }
                     } else if error is Swipe.Error {
                         Button("Try again") {
@@ -59,15 +54,18 @@ struct SwipeProfileView: TabItemView {
                 LaunchView()
 
             } else {
-                Text("Empty Lineup")
-                //                EmptyLineupView(
-                //                    loading: $model.loading,
-                //                    button: FilterButton(user: $session.user, settings: $session.settings)
-                //                )
+                EmptyLineupView(
+                    loading: $model.loading,
+                    button: ProfileButtonLong(title: "Filters", systemImage: "slider.horizontal.3" ) { showFilters = true }
+                        .padding(.horizontal, 32)
+                )
             }
         }
         .task {
             await model.fetchLineup(for: session.user)
+        }
+        .sheet(isPresented: $showFilters) {
+            FiltersView()
         }
         .tag(Self.TabItem)
         .tabItem{Self.TabItem.image}
