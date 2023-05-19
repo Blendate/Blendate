@@ -30,12 +30,16 @@ struct PurchaseLikesView: View {
                 .multilineTextAlignment(.center)
                 .font(.footnote.weight(.semibold))
                 .foregroundColor(.white)
-            ForEach(purchaseManager.products.sorted(by: {$0.price < $1.price})) { product in
-                if product.isLike {
-                    Cell(settings: $settings, product: product)
-                }
-            }
-            .padding(.horizontal, 32)
+            Spacer()
+            Text("Coming Soon")
+                .foregroundColor(.white)
+                .font(.largeTitle.weight(.semibold))
+//            ForEach(purchaseManager.products.sorted(by: {$0.price < $1.price})) { product in
+//                if product.isLike {
+//                    Cell(settings: $settings, product: product)
+//                }
+//            }
+//            .padding(.horizontal, 32)
             Spacer()
         }
         .padding(.horizontal)
@@ -126,15 +130,16 @@ extension Product {
 }
 
 
-//
-//struct PurchaseLikesView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        VStack {
-//            Spacer()
-//        }
-//        .sheet(isPresented: .constant(true)) {
-//            PurchaseLikesView()
-//                .presentationDetents([.medium])
-//        }
-//    }
-//}
+
+struct PurchaseLikesView_Previews: PreviewProvider {
+    static var previews: some View {
+        VStack {
+            Spacer()
+        }
+        .sheet(isPresented: .constant(true)) {
+            PurchaseLikesView(settings: .constant(settings) )
+                .presentationDetents([.medium])
+                .environmentObject(StoreManager())
+        }
+    }
+}
