@@ -25,6 +25,7 @@ extension String {
 
 extension String {
     static let PivacyLink = "https://static1.squarespace.com/static/6023169df466f523d92e7d8a/t/60de4876f4d6a473bdb3e84f/1625180278612/2021-06-21+Blendate+Privacy+Policy+v1.docx.pdf"
+    static let TermsLink = "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
 }
 
 struct CollectionPath {

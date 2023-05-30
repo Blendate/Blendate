@@ -18,17 +18,17 @@ class MyAuthViewController : FUIAuthPickerViewController {
         super.viewDidLoad()
         view.backgroundColor = .clear
         
-        for each in view.subviews[0].subviews[0].subviews[0].subviews {
-            if let button = each as? UIButton {
-                button.layer.cornerRadius = 20.0
-                button.layer.masksToBounds = true
-                button.layer.backgroundColor = UIColor.clear.cgColor
-                button.layer.borderWidth = 1
-                button.layer.borderColor = UIColor.white.cgColor
-                button.setTitleColor(UIColor.white, for: .normal)
-                button.layer.shadowOpacity = 0.0
-            }
-        }
+//        for each in view.subviews[0].subviews[0].subviews[0].subviews {
+//            if let button = each as? UIButton {
+//                button.layer.cornerRadius = 20.0
+//                button.layer.masksToBounds = true
+//                button.layer.backgroundColor = UIColor.clear.cgColor
+//                button.layer.borderWidth = 1
+//                button.layer.borderColor = UIColor.white.cgColor
+//                button.setTitleColor(UIColor.white, for: .normal)
+//                button.layer.shadowOpacity = 0.0
+//            }
+//        }
 
         let scrollView = view.subviews[0] as! UIScrollView
         scrollView.isScrollEnabled = false

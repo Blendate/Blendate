@@ -148,7 +148,7 @@ struct SettingsView: View {
                 }
                 .foregroundColor(.primary)
             }
-            Link(destination: URL(string: String.PivacyLink)!) {
+            Link(destination: URL(string: String.TermsLink)!) {
                 HStack {
                     Image(systemName: "doc.plaintext")
                     Text("Terms of Use")
