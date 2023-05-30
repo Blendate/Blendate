@@ -46,9 +46,13 @@ extension User {
             var dict: [Int:Photo] = [:]
             dict[0] = Photo(placement: 0, url: URL(string: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80")!)
             dict[1] = Photo(placement: 1, url: URL(string: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80")!)
-            for i in 2...7 {
-                dict[i] = Photo(placement: i, url: URL(string: "https://google.com")!)
-            }
+            dict[2] = Photo(placement: 2, url: URL(string: "https://images.unsplash.com/photo-1520114878144-6123749968dd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8Y2l0eSxuaWdodHx8fHx8fDE2ODU0NzY1NTU&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080")! )
+            dict[3] = Photo(placement: 3, url: URL(string: "https://images.unsplash.com/photo-1505069190533-da1c9af13346?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8Y2l0eSx0cmF2ZWx8fHx8fHwxNjg1NDc2Njg2&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080")!)
+            dict[4] = Photo(placement: 4, url: URL(string: "https://images.unsplash.com/photo-1510265236892-329bfd7de7a1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8Y2l0eSx0cmF2ZWx8fHx8fHwxNjg1NDc2NzI3&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080")!)
+            dict[5] = Photo(placement: 5, url: URL(string: "https://images.unsplash.com/photo-1471623320832-752e8bbf8413?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8Y2l0eSx0cmF2ZWx8fHx8fHwxNjg1NDc2NzQz&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080")!)
+            dict[6] = Photo(placement: 6, url: URL(string: "https://images.unsplash.com/photo-1501534664411-d04203736d05?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8Y2l0eSx0cmF2ZWx8fHx8fHwxNjg1NDc2NzU4&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080")!)
+            dict[7] = Photo(placement: 7, url: URL(string: "https://images.unsplash.com/photo-1507415953574-2aadbf10e38a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8Y2l0eSx0cmF2ZWx8fHx8fHwxNjg1NDc2Nzc3&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080")!)
+
             return dict
         }()
         

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SDWebImageSwiftUI
 
 struct PhotosGridView: View {
 
@@ -82,15 +83,12 @@ struct PhotoTabView: View {
 
     var body: some View {
         TabView(selection: $selected) {
-            ForEach(photos.sorted{$0.value.placement > $1.value.placement}, id: \.key) { key, photo in
+            ForEach(photos.sorted{$0.value.placement < $1.value.placement}, id: \.key) { key, photo in
                 VStack {
-                    AsyncImage(url: photo.url) { image in
-                        image
-                            .resizable()
-                            .scaledToFill()
-                    } placeholder: {
-                        ProgressView()
-                    }
+                    WebImage(url: photo.url, options: [.scaleDownLargeImages])
+                        .placeholder { ProgressView() }
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
                     Text(photo.description ?? "")
                         .font(.title)
                     

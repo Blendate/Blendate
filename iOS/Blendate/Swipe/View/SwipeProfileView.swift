@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SwipeProfileView: View {
-    @AppStorage("firstLaunch") var firstLaunch: Bool = true
+    @AppStorage("firstLaunch3") var firstLaunch: Bool = true
 
     @EnvironmentObject var session: UserViewModel
     @EnvironmentObject var navigation: NavigationManager

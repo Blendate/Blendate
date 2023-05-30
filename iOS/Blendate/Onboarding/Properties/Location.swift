@@ -31,7 +31,7 @@ struct Location: Property {
 
     var valueLabel: String { name }
     
-    var isValid: Bool { name.isEmpty }
+    var isValid: Bool { !name.isEmpty }
     static let systemImage = "mappin"
     
 }
