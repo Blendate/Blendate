@@ -35,17 +35,14 @@ struct CollectionPath {
     
     static private let Messages = "messages"
     
-    /// /matches/123/messages/
     static func Messages(for cid: String) -> String {
         return Matches + "/\(cid)/" + Messages
     }
     
-    // /users/123/likes
     static func Path(swipe: Swipe.Action, uid: String) -> String {
         return CollectionPath.Users + "/\(uid)/\(swipe.rawValue)"
     }
     
-    // /users/123/likes_you
     static func Path(swipeYou: Swipe.Action, uid: String) -> String {
         return CollectionPath.Users + "/\(uid)/\(swipeYou.rawValue)_you"
     }

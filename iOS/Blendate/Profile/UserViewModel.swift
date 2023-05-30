@@ -24,7 +24,7 @@ class UserViewModel: ObservableObject {
     
     func save()  {
         do {
-            let collection = FireStore.instance.firestore.collection(CollectionPath.Users)
+            let collection = FireStore.shared.firestore.collection(CollectionPath.Users)
             try collection.document(uid).setData(from: user)
             try saveSettings()
         } catch {
@@ -34,7 +34,7 @@ class UserViewModel: ObservableObject {
     }
     
     private func saveSettings() throws {
-        let collection = FireStore.instance.firestore.collection(CollectionPath.Settings)
+        let collection = FireStore.shared.firestore.collection(CollectionPath.Settings)
         try collection.document(uid).setData(from: settings)
     }
     

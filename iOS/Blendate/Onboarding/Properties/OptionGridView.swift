@@ -51,57 +51,60 @@ struct OptionButton<P:Property>: View {
     @Binding var selected: P
     let property: P
     
+    var active: Bool { selected == property }
+    
+    var title: String {
+        property.valueLabel == "none" ? String.kOpenString : property.valueLabel
+    }
+    
     var body: some View {
         Button {
             selected = property
         } label: {
-            ButtonView(property: property.valueLabel, active: selected == property)
-        }
-
-    }
-        
-    struct ButtonView: View {
-        let property: String
-        let active: Bool
-        
-        var title: String {
-            property == "none" ? String.kOpenString : property
-        }
-        
-        var body: some View {
-            Text(title)
-                .foregroundColor( active ? .white:.Blue)
-                .padding(.horizontal)
-                .padding()
-                .background(active ? Color.Blue:Color.white)
-                .clipShape(Capsule())
-                .shadow(color: .Blue, radius: 1, x: 0, y: 1)
+            ButtonView(title: title, active: active)
         }
     }
 }
-extension OptionButton {
 
+struct ButtonView: View {
+    let title: String
+    var active: Bool
     
-    struct Multi: View {
-        @Binding var selection: [String]?
-        var label: String
-        var active: Bool { selection?.contains(label) ?? false }
-
-        var body: some View {
-            Button(action: {
-                selection?.tapItem(label)
-            }) {
-                ButtonView(property: label, active: active)
-            }
-        }
+    var body: some View {
+        Text(title)
+            .foregroundColor( active ? .white:.Blue)
+            .padding(.horizontal)
+            .padding()
+            .background(active ? Color.Blue:Color.white)
+            .clipShape(Capsule())
+            .shadow(color: .Blue, radius: 1, x: 0, y: 1)
     }
 }
 
-//
-//struct DetailGridView_Previews: PreviewProvider {
-//    @State static var value: String = ""
-//    static var previews: some View {
+
+struct OptionGridView_Previews: PreviewProvider {    
+    @State static var gender: Gender = .male
+    
+    static var previews: some View {
+        OptionButton(selected: $gender, property: gender)
 //        OptionGridView<Gender>(chosen: .constant("Male"), isFilter: true)
+    }
+}
+//
+//extension OptionButton {
+//
+//
+//    struct Multi: View {
+//        @Binding var selection: [String]?
+//        var label: String
+//        var active: Bool { selection?.contains(label) ?? false }
+//
+//        var body: some View {
+//            Button(action: {
+//                selection?.tapItem(label)
+//            }) {
+//                ButtonView(property: label, active: active)
+//            }
+//        }
 //    }
 //}
-//

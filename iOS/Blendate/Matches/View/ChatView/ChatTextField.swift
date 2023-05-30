@@ -45,7 +45,7 @@ struct ChatTextField: View {
     func sendMessage() {
         let chatMessage = ChatMessage(author: author, text: text)
         do {
-            try FireStore.instance.sendMessage(chatMessage, to: cid)
+            try FireStore.shared.sendMessage(chatMessage, to: cid)
             self.text = ""
         } catch let error as ErrorAlert {
             self.error = error

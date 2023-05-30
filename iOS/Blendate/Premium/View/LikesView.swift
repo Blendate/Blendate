@@ -42,14 +42,9 @@ struct LikesView: View {
 //                SwipeProfileView(user: user, superLikedYou: superLikedYou)
 //            }
         } else {
-            EmptyLineupView(loading: .constant(false),
-                            svg: "Interested",
-                            text: "When someone likes you they will show up here, keep Bleding and check back") {
-            } button2: {
+            EmptyContentView(text: String.EmptyLikes, svg: "Interested") {
                 ProfileButtonLong(title: "Today's Blend", color: .Purple) { showLikes = false }
-                    .padding(.horizontal, 32)
             }
-            
         }
     }
 }
@@ -99,7 +94,7 @@ extension LikesView {
             .cornerRadius(16)
             .task {
                 guard user == nil else {return}
-                self.user = try? await FireStore.instance.fetch(uid: uid)
+                self.user = try? await FireStore.shared.fetch(uid: uid)
             }
         }
     }

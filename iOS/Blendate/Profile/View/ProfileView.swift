@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ProfileView: TabItemView {
+struct ProfileView: View {
     @EnvironmentObject var navigation: NavigationManager
     @EnvironmentObject var model: UserViewModel
 
@@ -17,9 +17,11 @@ struct ProfileView: TabItemView {
     var body: some View {
         NavigationView {
             VStack {
+                Spacer()
                 CardView(avatarUrl: model.user.avatar, avatarSize: 160, title: cardTitle, buttons: buttons)
                     .padding(.vertical)
                     .padding(.top, 32)
+                Spacer()
                 ProfileButtonLong(title: "Membership") {
                     navigation.showPurchaseMembership = true
                 }.padding(.horizontal)
@@ -28,6 +30,7 @@ struct ProfileView: TabItemView {
                 }.padding(.horizontal)
                 Spacer()
             }
+            .background(text: nil, bottom: false)
             .navigationBarTitleDisplayMode(.inline)
             .fullScreenCover(item: $tapped, onDismiss: model.save) { type in
                 switch type {
@@ -41,8 +44,6 @@ struct ProfileView: TabItemView {
                 Button("Cancel", role: .cancel){}
             }
         }
-        .tag( Self.TabItem )
-        .tabItem{ Self.TabItem.image }
     }
 
     
@@ -77,7 +78,7 @@ struct EditProfile_Previews: PreviewProvider {
     @State static var show = true
     static var previews: some View {
         ProfileView()
-            .environmentObject(UserViewModel(uid: uid, user: alice))
+            .environmentObject(session)
             .environmentObject(NavigationManager())
     }
 }

@@ -16,9 +16,8 @@ struct Name: Property {
     var isValid: Bool { !first.isEmpty}
     
     static let systemImage = "person.text.rectangle"
-    
-
 }
+
 extension Name {
 
     struct PropertyView: PropertyViewProtocol {
@@ -30,7 +29,7 @@ extension Name {
             VStack{
                 TFView(placeholder: "First Name", field: value.first)
                 TFView(placeholder: "Last Name", field: value.last)
-                Text("Only last names")
+                Text("Last name's help build authenticity, only your first name will be shown")
                     .foregroundColor(.gray)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 60)
@@ -56,5 +55,14 @@ extension Name {
                     .padding(10)
             }
         }
+    }
+}
+
+struct Name_Previews: PreviewProvider {
+    @State static var name: Name = .init(first: "Alice", last: "Turring")
+    
+    static var previews: some View {
+        Name.PropertyView(value: $name)
+        PropertyView(Name.self, view: .init(value: $name) )
     }
 }

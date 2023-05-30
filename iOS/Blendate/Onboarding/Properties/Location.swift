@@ -149,3 +149,15 @@ extension Location {
     }
     
 }
+
+
+struct Location_Previews: PreviewProvider {
+    @State static var value = Location(name: "New York", lat: 40.7128, lon: -74.0060)
+    static var view: Location.PropertyView { .init(value: $value) }
+    
+    static var previews: some View {
+        view
+        PropertyView(Location.self, view: view)
+            .previewDisplayName("Property")
+    }
+}

@@ -9,7 +9,7 @@ import SwiftUI
 import FirebaseFirestoreSwift
 
 
-struct MatchesView: TabItemView {
+struct MatchesView: View {
     @FirestoreQuery(collectionPath: "matches") var matches: [Match]
     @FirestoreQuery(collectionPath: "like_you") var likedYou: [Swipe]
     @FirestoreQuery(collectionPath: "superlike_you") var superLikedYou: [Swipe]
@@ -46,7 +46,7 @@ struct MatchesView: TabItemView {
                         Spacer()
                     }
                 } else {
-                    EmptyMatchs(matches)
+                    EmptyContentView(text: matches.isEmpty ? String.EmptyMatches : String.EmptyMessages, svg: "Interested")
                 }
             }
             .onAppear{
@@ -55,63 +55,57 @@ struct MatchesView: TabItemView {
                 }
                 $likedYou.path = CollectionPath.Path(swipeYou: .like, uid: uid)
                 $superLikedYou.path = CollectionPath.Path(swipeYou: .superLike, uid: uid)
-//                self._likedYou = FirestoreQuery(collectionPath: CollectionPath.Path(swipeYou: .like, uid: uid))
-//                self._superLikedYou = FirestoreQuery(collectionPath: CollectionPath.Path(swipeYou: .superLike, uid: uid))
             }
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Image.Icon(size:40, .Blue)
-                }
-            }
         }
-        .tag( Self.TabItem )
-        .tabItem{ Self.TabItem.image }
         .onChange(of: matches) { newValue in
             print(matches.count)
         }
         
     }
+//    init(uid: String){
+//        self.uid = uid
+//        self._matches = FirestoreQuery(collectionPath: CollectionPath.Matches, predicates: [.where(field: "users", arrayContains: uid) ])
+//        self._likedYou = FirestoreQuery(collectionPath: CollectionPath.Path(swipeYou: .like, uid: uid))
+//        self._superLikedYou = FirestoreQuery(collectionPath: CollectionPath.Path(swipeYou: .superLike, uid: uid))
+//    }
 }
-
-struct EmptyMatchs: View {
-    let matches: [Match]
-    init(_ matches: [Match]) {
-        self.matches = matches
-    }
-    let NoMatchs = "Tap on any of your matches to start a conversation"
-    let NoMatches = "Start matching with profiles to blend with others and start conversations"
-    var message: String { matches.isEmpty ? NoMatches : NoMatchs }
-    
-    var body: some View {
-        VStack {
-            Spacer()
-            VStack{
-                Divider()
-                Image("Interested")
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 270, height: 226 , alignment: .center)
-                Text(message)
-                    .font(.title3.weight(.semibold), .Blue)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
-                    .padding(.top)
-                Spacer()
-            }
-        }
-        .navigationTitle("Blends")
-    }
-}
-
 
 
 struct MessagesView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
+            NavigationStack {
+                VStack{
+                    MatchesList(uid: aliceUID, matches: [match], likedYou: likedUser)
+                    MessagesList(author: aliceUID, conversations: [conversation])
+                    Spacer()
+                }
+                .navigationBarTitleDisplayMode(.inline)
+            }
+            NavigationStack {
+                VStack{
+                    MatchesList(uid: aliceUID, matches: [], likedYou: likedUser)
+                    MessagesList(author: aliceUID, conversations: [conversation])
+                    Spacer()
+                }
+                .navigationBarTitleDisplayMode(.inline)
+            }
+            .previewDisplayName("No Matches")
+            NavigationStack {
+                VStack{
+                    MatchesList(uid: aliceUID, matches: [match], likedYou: likedUser)
+                    MessagesList(author: aliceUID, conversations: [])
+                    Spacer()
+                }
+                .navigationBarTitleDisplayMode(.inline)
+            }
+            .previewDisplayName("No Conversations")
             MatchesView(uid: aliceUID)
-            MatchesView(uid: aliceUID)
+                .previewDisplayName("Empty")
+
         }
-//        .environmentObject(session)
+        .environmentObject(NavigationManager())
+        .environmentObject(StoreManager())
     }
 }

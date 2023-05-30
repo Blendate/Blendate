@@ -17,7 +17,6 @@ struct SettingsView: View {
     var hasMembership: Bool { entitlement.hasMembership }
     
     @State var alert: ErrorAlert?
-    @State private var showMembership = false
     @State private var showSuperLikes = false
 
     var body: some View {
@@ -34,9 +33,6 @@ struct SettingsView: View {
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarTitle("Settings")
-            .fullScreenCover(isPresented: $showMembership) {
-                MembershipView()
-            }
             .sheet(isPresented: $showSuperLikes) {
                 PurchaseLikesView(settings: $settings)
             }
@@ -69,7 +65,7 @@ struct SettingsView: View {
                     .disabled(!hasMembership)
                     .onTapGesture {
                         if !hasMembership {
-                            showMembership = true
+                            navigation.showPurchaseMembership = true
                         }
                     }
             }
@@ -83,7 +79,7 @@ struct SettingsView: View {
     var accountSection: some View {
         Section {
             Button {
-                showMembership = true
+                navigation.showPurchaseMembership = true
             } label: {
                 HStack {
                     Image("icon-2")
@@ -147,6 +143,24 @@ struct SettingsView: View {
                 HStack {
                     Image(systemName: "doc.plaintext")
                     Text("Privacy Policy")
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                }
+                .foregroundColor(.primary)
+            }
+            Link(destination: URL(string: String.PivacyLink)!) {
+                HStack {
+                    Image(systemName: "doc.plaintext")
+                    Text("Terms of Use")
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                }
+                .foregroundColor(.primary)
+            }
+            Link(destination: URL(string: String.PivacyLink)!) {
+                HStack {
+                    Image(systemName: "doc.plaintext")
+                    Text("Legal")
                     Spacer()
                     Image(systemName: "chevron.right")
                 }

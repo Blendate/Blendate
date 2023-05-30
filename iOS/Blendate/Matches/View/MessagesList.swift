@@ -22,7 +22,14 @@ struct MessagesList: View {
                 }
                 .listStyle(.plain)
             } else {
-                EmptyMatchs(conversations)
+                VStack {
+                    Image("Interested")
+                    Text(String.EmptyMessages)
+                        .font(.title3.weight(.semibold))
+                        .foregroundColor(.Blue)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 32)
+                }
             }
         }
     }
@@ -39,7 +46,8 @@ struct MessagesList: View {
 
 struct MessagesList_Previews: PreviewProvider {
     static var previews: some View {
-        MessagesList(author: aliceUID, conversations: [match])
+        MessagesList(author: aliceUID, conversations: [conversation])
         MessagesList(author: aliceUID, conversations: [])
+            .previewDisplayName("Empty")
     }
 }

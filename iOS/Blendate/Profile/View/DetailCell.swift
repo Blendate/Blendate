@@ -24,31 +24,6 @@ struct DetailCell<Destination:View, Cell: View>:View {
         }
 
     }
-    
-    init<P:Property>(_ value: Binding<P>, isFilter: Bool = false) where Destination == P.PropertyView, Cell == PropertyCell {
-        self.destination = P.PropertyView(value: value, isFilter: isFilter)
-        
-        let text = value.wrappedValue.isValid ? value.wrappedValue.valueLabel : "--"
-        self.cell = PropertyCell(title: P.label, label: text, systemImage: P.systemImage)
-        self.title = P.label
-        self.svg = P.svgImage
-    }
-    
-    init(title: String? = nil, svg: String? = nil, @ViewBuilder destination: () -> Destination, @ViewBuilder cell: () -> Cell) {
-        self.destination = destination()
-        self.cell = cell()
-        self.title = title
-        self.svg = svg
-    }
-    
-    init(_ title: String, svg: String? = nil, systemImage: String, value: String?, isFilter: Bool = false, @ViewBuilder destination: () -> Destination) where Cell == PropertyCell {
-        self.destination = destination()
-        var text = value ?? "--"
-        text = text.isEmpty ? "--" : text
-        self.title = title
-        self.svg = svg
-        self.cell = PropertyCell(title: title, label: text, systemImage: systemImage)
-    }
 }
 struct PropertyCell: View {
     let title: String
@@ -61,11 +36,35 @@ struct PropertyCell: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 20, height: 20, alignment: .center)
+                .foregroundColor(.Purple)
             Text(title)
             Spacer()
             Text(label)
                 .foregroundColor(.Blue)
         }
+    }
+}
+
+extension DetailCell {
+    
+    init<P:Property>(_ value: Binding<P>, isFilter: Bool = false) where Destination == P.PropertyView, Cell == PropertyCell {
+        self.destination = P.PropertyView(value: value, isFilter: isFilter)
+        
+        var text = value.wrappedValue.isValid ? value.wrappedValue.valueLabel : "--"
+        text = isFilter ? (text == "--" ? "Open to all" : text) : text
+        self.cell = PropertyCell(title: P.label, label: text, systemImage: P.systemImage)
+        self.title = P.label
+        self.svg = P.svgImage
+    }
+    
+    init(_ title: String, svg: String? = nil, systemImage: String, value: String?, isFilter: Bool = false, @ViewBuilder destination: () -> Destination) where Cell == PropertyCell {
+        self.destination = destination()
+        var text = value ?? "--"
+        text = text.isEmpty ? "--" : text
+        text = isFilter ? (text == "--" ? "Open to all" : text) : text
+        self.title = title
+        self.svg = svg
+        self.cell = PropertyCell(title: title, label: text, systemImage: systemImage)
     }
 }
 

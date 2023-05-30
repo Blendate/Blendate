@@ -54,7 +54,7 @@ struct SignupView: View {
         case .name:
             Name.PropertyView(value: $model.name)
         case .birthday:
-            DatePicker(selection: $model.birthday, in: ...Date.youngestBirthday, displayedComponents: [.date]) {}.datePickerStyle(.graphical).tint(.Blue)
+            Birthday.PropertyView(value: $model.birthday)
         case .gender:
             Gender.PropertyView(value: $model.gender)
         case .isParent:
@@ -108,7 +108,7 @@ extension SignupView {
         var disabled: Bool { false }
 
         var next: Onboarding {
-            if current == .isParent, model.isParent.rawValue {
+            if current == .isParent, !model.isParent.rawValue {
                 return .location
             }
             let all = Onboarding.allCases
@@ -119,11 +119,11 @@ extension SignupView {
 
         private func createDoc() {
             do {
-                let collection = FireStore.instance.firestore.collection(CollectionPath.Users)
+                let collection = FireStore.shared.firestore.collection(CollectionPath.Users)
                 let user = User (
                     firstname: model.name.first,
                     lastname: model.name.last,
-                    birthday: model.birthday,
+                    birthday: model.birthday.date,
                     gender: model.gender,
                     isParent: model.isParent,
                     children: model.children,
@@ -144,9 +144,10 @@ extension SignupView {
 
 
 
-//
-//struct SignupView2_Previews: PreviewProvider {
-//    static var previews: some View {
-//        SignupView2()
-//    }
-//}
+
+struct SignupView_Previews: PreviewProvider {
+    static var previews: some View {
+        SignupView(model: .init(uid: aliceUID))
+            .environmentObject(NavigationManager())
+    }
+}

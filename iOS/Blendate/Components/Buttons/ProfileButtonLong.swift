@@ -54,6 +54,7 @@ struct ProfileButtonLong: View {
     }
 }
 
+
 struct ProfileButtonLong_Previews: PreviewProvider {
     static var previews: some View {
         ProfileButtonLong(title: "Membership") {}

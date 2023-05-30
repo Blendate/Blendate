@@ -35,6 +35,13 @@ struct FiltersView: View {
 }
 
 extension FiltersView {
+    
+    func header(_ title: String, systemImage: String) -> some View {
+        Label(title, systemImage: systemImage)
+            .foregroundColor(.DarkBlue)
+            .fontWeight(.semibold)
+    }
+    
     @ViewBuilder
     var personal: some View {
         Section {
@@ -42,10 +49,7 @@ extension FiltersView {
             RangeCell(ageRange: $model.user.filters.ageRange, range: AgeRange.range)
             DetailCell($model.user.filters.seeking, isFilter: true)
         } header: {
-            Label("Personal", systemImage: "person.fill")
-                .foregroundColor(.DarkBlue)
-                .fontWeight(.semibold)
-
+            header("Personal", systemImage: "person.fill")
         }
     }
     
@@ -60,9 +64,7 @@ extension FiltersView {
             DetailCell($model.user.filters.mobility, isFilter: true)
 
         } header: {
-            Label("Family", systemImage: "figure.2.and.child.holdinghands")
-                .foregroundColor(.DarkBlue)
-                .fontWeight(.semibold)
+            header("Family", systemImage: "figure.2.and.child.holdinghands")
 
         }
     }
@@ -74,9 +76,7 @@ extension FiltersView {
             DetailCell($model.user.filters.religion, isFilter: true)
             DetailCell($model.user.filters.politics, isFilter: true)
         } header: {
-            Label("Background", systemImage: "house")
-                .foregroundColor(.DarkBlue)
-                .fontWeight(.semibold)
+            header("Background", systemImage: "house")
 
         }
     }
@@ -93,9 +93,7 @@ extension FiltersView {
 
             }
         } header: {
-            Label("Premium", systemImage: "lock")
-                .foregroundColor(.Purple)
-                .fontWeight(.semibold)
+            header("Premium", systemImage: "lock")
 
         }
     }

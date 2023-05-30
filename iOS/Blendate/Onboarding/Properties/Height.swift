@@ -18,6 +18,7 @@ struct Height: Property, ExpressibleByIntegerLiteral {
         self.rawValue = value
     }
     static let systemImage = "figure.stand"
+    static let svgImage: String = ""
 
 }
 

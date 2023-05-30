@@ -9,8 +9,8 @@ import SwiftUI
 import FirebaseAuth
 import Firebase
 
-@MainActor
 class NavigationManager: ObservableObject {
+    
     static let shared = NavigationManager()
     enum State { case loading, noUser, onboarding(String), user(String, User) }
     
@@ -36,6 +36,7 @@ class NavigationManager: ObservableObject {
     func signOut() {
         do {
             try auth.signOut()
+            state = .noUser
         } catch {
             print(error.localizedDescription)
         }
@@ -44,7 +45,11 @@ class NavigationManager: ObservableObject {
     @MainActor
     func delete() {
         auth.currentUser?.delete { error in
-            self.signOut()
+            if let error {
+                print(error)
+            } else {
+                self.signOut()
+            }
         }
     }
     
@@ -53,7 +58,6 @@ class NavigationManager: ObservableObject {
 
 // MARK: AuthState Listener
 extension NavigationManager {
-    
 
     private func addAuthStateListener() {
         auth.addStateDidChangeListener { auth, user in
@@ -70,7 +74,7 @@ extension NavigationManager {
     func fetch(_ uid: String) {
         Task {@MainActor in
             do {
-                let user = try await FireStore.instance.fetch(uid: uid)
+                let user = try await FireStore.shared.fetch(uid: uid)
                 print("Fetched \(uid)")
                 withAnimation {
                     self.state = .user(uid, user)
@@ -84,4 +88,25 @@ extension NavigationManager {
         }
     }
 
+}
+
+enum Tab: String, CaseIterable, Identifiable {
+    var id: String {self.rawValue }
+    case match, likes, messages, community, profile
+
+    var image: Image {
+        switch self {
+
+        case .match:
+            return Image("icon-2")
+        case .likes:
+            return Image(systemName: "star")
+        case .messages:
+            return Image("chat")
+        case .community:
+            return Image(systemName: "person.3")
+        case .profile:
+            return Image("profile")
+        }
+    }
 }

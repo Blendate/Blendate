@@ -34,7 +34,6 @@ struct EntryView: View {
 
 struct LaunchView<Background:View>: View {
     let background: Background
-    init(background: Background = Color.Blue) { self.background = background }
     var body: some View {
         ZStack {
             background
@@ -42,5 +41,7 @@ struct LaunchView<Background:View>: View {
         }
         .ignoresSafeArea()
     }
+    
+    init(background: Background = Color.Blue) { self.background = background }
 }
 

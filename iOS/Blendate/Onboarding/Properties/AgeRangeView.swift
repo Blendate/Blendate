@@ -21,7 +21,8 @@ struct AgeRangeView: View {
     
     var offset: Binding<CGFloat> {
         .init {
-            CGFloat(value) * spacing
+            let _value = value < 0 ? 0 : value
+            return CGFloat(_value) * spacing
         } set: {
             value = 1 + Int($0 / spacing)
         }

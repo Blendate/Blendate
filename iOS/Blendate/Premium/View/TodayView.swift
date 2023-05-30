@@ -18,7 +18,6 @@ struct TodayView: View {
     
     @State var message: String = ""
     @State var showProfile = false
-    @State var showFilters = false
     
     var body: some View {
         if let todayUser {
@@ -62,15 +61,8 @@ struct TodayView: View {
             }
 
         } else {
-            EmptyLineupView(loading: .constant(false)) {
-                ProfileButtonLong(title: "Filters", systemImage: "slider.horizontal.3" ) { showFilters = true }
-                    .padding(.horizontal, 32)
-            } button2: {
+            EmptyContentView(text: String.NoProfileFilters) {
                 ProfileButtonLong(title: "View Likes", systemImage: "star.fill", color: .Purple) { showLikes = true }
-                    .padding(.horizontal, 32)
-            }
-            .fullScreenCover(isPresented: $showFilters) {
-                FiltersView()
             }
         }
     }
@@ -81,7 +73,7 @@ struct TodayView: View {
             let message = ChatMessage(author: session.uid, text: message)
             Task {
                 do {
-                    let _ = try await FireStore.instance.swipe(.message, on: id, from: session.uid, message: message)
+                    let _ = try await FireStore.shared.swipe(.message, on: id, from: session.uid, message: message)
                     self.showLikes = true
                 } catch {
                     print(error.localizedDescription)

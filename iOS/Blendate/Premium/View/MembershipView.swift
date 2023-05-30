@@ -11,6 +11,8 @@ struct MembershipView: View {
     @EnvironmentObject var purchaseManager: StoreManager
     @Environment(\.dismiss) private var dismiss
         
+    var showDismiss: Bool = true
+    
     let TapSubscribe = "By tapping Subscribe, your payment will be charged to your Apple App Store account, and your subscription will automatically renew for the same package length at the same price until you cancel in settings in the Apple App Store. By tapping Subscribe you agree to our Terms"
     
     var body: some View {
@@ -25,8 +27,10 @@ struct MembershipView: View {
                 //                    premium.active.toggle()
                 //                }
                 HStack {
-                    Button { dismiss() } label: {
-                        Image(systemName: "xmark")
+                    if showDismiss {
+                        Button { dismiss() } label: {
+                            Image(systemName: "xmark")
+                        }
                     }
                     Spacer()
                     AsyncButton("Restore"){

@@ -8,10 +8,11 @@
 import Foundation
 
 class SignupViewModel: ObservableObject {
+    
     @Published var firstname: String = ""
     @Published var lastname: String = ""
     @Published var name = Name(first: "", last: "")
-    @Published var birthday = Date.now
+    @Published var birthday = Birthday(date: Date.youngestBirthday)
     @Published var gender: Gender = .none
     @Published var seeking: Gender = .none
     @Published var isParent: Parent = true
@@ -21,6 +22,7 @@ class SignupViewModel: ObservableObject {
     @Published var maxDistance: Int = 50
     @Published var about: Bio = ""
     @Published var photos: [Int:Photo] = [:]
+    
     let uid: String
     
     init(uid: String) {
@@ -56,7 +58,7 @@ enum Onboarding: String, CaseIterable {
         case .seeking:
             return "Interested"
         case .isParent, .children, .childrenRange:
-            return Parent.systemImage
+            return Parent.svgImage
         default: return nil
         }
     }

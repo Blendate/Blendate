@@ -10,8 +10,6 @@ import SwiftUI
 struct PropertyView<Content:View>: View {
     let title: String?
     let svg: String?
-    var signup: Bool = false
-    var isFilter: Bool = false
     @ViewBuilder var content: Content
 
     var body: some View {
@@ -37,14 +35,20 @@ struct PropertyView<Content:View>: View {
 //        self.content = content()
 //    }
     
-    init(title: String?, svg: String?, signup: Bool = false, isFilter: Bool = false, @ViewBuilder content: () -> Content) {
+    init(title: String?, svg: String?, @ViewBuilder content: () -> Content) {
         self.title = title
         self.svg = svg
-        self.signup = signup
-        self.isFilter = isFilter
         self.content = content()
     }
+    
+    init<P:Property>(_ type: P.Type, view: P.PropertyView) where Content == P.PropertyView {
+        self.title = type.title
+        self.svg = type.svgImage
+        self.content = view
+    }
 }
+
+
 
 struct PropertyView_Previews: PreviewProvider {
     static var previews: some View {

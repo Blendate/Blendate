@@ -8,7 +8,7 @@
 import SwiftUI
 import FirebaseFirestoreSwift
 
-struct PremiumView: TabItemView {
+struct PremiumView: View {
     @EnvironmentObject var session: UserViewModel
     @EnvironmentObject var navigation: NavigationManager
     @EnvironmentObject var purchaseManager: StoreManager
@@ -23,18 +23,23 @@ struct PremiumView: TabItemView {
     
     var body: some View {
         Group {
-            if showLikes {
-                LikesView(likedYou: likedYou, superLikedYou: superLikedYou, showLikes: $showLikes)
+            if purchaseManager.hasMembership {
+                if showLikes {
+                    LikesView(likedYou: likedYou, superLikedYou: superLikedYou, showLikes: $showLikes)
+                } else {
+                    TodayView(todayUser: today, likedYou: likedYou, showLikes: $showLikes)
+                }
             } else {
-                TodayView(todayUser: today, likedYou: likedYou, showLikes: $showLikes)
+                VStack {
+                    MembershipView(showDismiss: false)
+                    Spacer(minLength: 1)
+                }
             }
         }
         .onAppear {
             $likedYou.path = CollectionPath.Path(swipeYou: .like, uid: session.uid)
             $superLikedYou.path = CollectionPath.Path(swipeYou: .superLike, uid: session.uid)
         }
-        .tag( Self.TabItem )
-        .tabItem{ Self.TabItem.image.environment(\.symbolVariants, .none) }
     }
 }
 
@@ -42,9 +47,15 @@ struct PremiumView: TabItemView {
 
 struct PremiumView_Previews: PreviewProvider {
     static var previews: some View {
-        PremiumView()
-            .environmentObject(session)
-            .environmentObject(StoreManager())
-            .environmentObject(NavigationManager())
+        TabView {
+            PremiumView()
+                .environmentObject(session)
+                .environmentObject(StoreManager())
+                .environmentObject(NavigationManager())
+                .tabItem {
+                    Label("Item", systemImage: "circle")
+                }
+        }
+
     }
 }

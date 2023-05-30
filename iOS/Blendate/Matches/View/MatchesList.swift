@@ -30,7 +30,7 @@ struct MatchesList: View {
                 HStack(alignment: .center) {
                     LikeYou(likedYou: likedYou)
                     Text("Match with profiles to Blend with others")
-                        .font(.title3.weight(.semibold), .DarkBlue)
+                        .font(.body.weight(.semibold), .DarkBlue)
                     Spacer()
                 }
                 .padding(.leading)
@@ -48,7 +48,6 @@ extension MatchesList {
         var likedYou: [Swipe]
         
         @State var firstUser: User?
-        @State private var showMembership = false
         
         var hasPremium: Bool { entitlement.hasMembership }
         
@@ -58,7 +57,7 @@ extension MatchesList {
                 if hasPremium {
                     navigation.selectedTab = .likes
                 } else {
-                   showMembership = true
+                    navigation.showPurchaseMembership = true
                 }
             } label: {
                 ZStack {
@@ -81,10 +80,7 @@ extension MatchesList {
             }
             .task {
                 guard firstUser == nil, let uid = likedYou.first?.id else {return}
-                self.firstUser = try? await FireStore.instance.fetch(uid: uid)
-            }
-            .fullScreenCover(isPresented: $showMembership) {
-                MembershipView()
+                self.firstUser = try? await FireStore.shared.fetch(uid: uid)
             }
         }
     }
@@ -105,6 +101,8 @@ struct MatchesList_Previews: PreviewProvider {
 
         }
         .previewLayout(.sizeThatFits)
+        .environmentObject(StoreManager())
+        .environmentObject(session)
 //        .environmentObject(session)
     }
 }

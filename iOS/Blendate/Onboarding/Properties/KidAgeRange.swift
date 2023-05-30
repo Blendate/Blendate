@@ -49,3 +49,14 @@ extension KidAgeRange {
             }        }
     }
 }
+
+struct KidAgeRange_Previews: PreviewProvider {
+    @State static var range: KidAgeRange = KidAgeRange.defaultValue
+    static var view: KidAgeRange.PropertyView { .init(value: $range) }
+    
+    static var previews: some View {
+        view
+        PropertyView(KidAgeRange.self, view: view)
+            .previewDisplayName("Property")
+    }
+}

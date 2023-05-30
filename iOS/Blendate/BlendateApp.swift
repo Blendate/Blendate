@@ -7,12 +7,12 @@
 
 import SwiftUI
 import Firebase
-import FacebookCore
+//import FacebookCore
 import Foundation
 
 @main
 struct BlendateApp: App {
-    @StateObject var purchaseManager = StoreManager()
+    @StateObject var storeManager = StoreManager()
     @StateObject var navigation = NavigationManager.shared
 
     init(){
@@ -23,50 +23,14 @@ struct BlendateApp: App {
         WindowGroup {
             EntryView()
             .environmentObject(navigation)
-            .environmentObject(purchaseManager)
+            .environmentObject(storeManager)
             .onAppear {
-                FBSDKCoreKit.ApplicationDelegate.shared.application(UIApplication.shared, didFinishLaunchingWithOptions: nil)
+//                FBSDKCoreKit.ApplicationDelegate.shared.application(UIApplication.shared, didFinishLaunchingWithOptions: nil)
                 UIApplication.shared.addTapGestureRecognizer()
             }
         }
     }
 }
-
-
-
-//import FirebaseAuth
-//import FirebaseStorage
-//extension BlendateApp {
-//    func firebaseConfig(){
-//        FirebaseConfiguration.shared.setLoggerLevel(.min)
-////        Analytics.setAnalyticsCollectionEnabled(false)
-//#if EMULATORS
-//        print(
-//        """
-//        *********************
-//        Testing on Emulator
-//        *********************
-//        """
-//        )
-//        Auth.auth().useEmulator(withHost: "localhost", port: 4000)
-//        Storage.storage().useEmulator(withHost: "localhost", port: 4000)
-//        let settings = Firestore.firestore().settings
-//        settings.host = "localhost:4000"
-//        settings.isPersistenceEnabled = false
-//        settings.isSSLEnabled = false
-//        Firestore.firestore().settings = settings
-//#elseif DEBUG
-//        print(
-//        """
-//        *********************
-//        Testing on Live
-//        *********************
-//        """
-//        )
-//#endif
-//    }
-//}
-
 
 
 //// MARK: - AppDelegate

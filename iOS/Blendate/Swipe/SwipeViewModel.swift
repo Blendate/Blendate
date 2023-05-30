@@ -20,7 +20,6 @@ class SwipeViewModel: ObservableObject {
     
     /// session uid
     private let uid: String
-    private let firestore = FireStore.instance
     
     init(_ uid: String, presenting: User? = nil){
         self.uid = uid
@@ -40,7 +39,7 @@ class SwipeViewModel: ObservableObject {
             if swipe == .superLike, superLikes < 1 { throw Swipe.SuperLike() }
             
             Task { @MainActor in
-                if let match = try await firestore.swipe(swipe, on: fid, from: uid) {
+                if let match = try await FireStore.shared.swipe(swipe, on: fid, from: uid) {
                     print(match.id ?? "No ID")
                     self.match = match
                 } else {
@@ -83,12 +82,13 @@ extension SwipeViewModel {
         let seeking = session.filters.seeking
         let gender = session.gender
         
-        let swipedUIDs: [String] = try await FireStore.instance.getHistory(for: uid)
+        let swipedUIDs: [String] = try await FireStore.shared.getHistory(for: uid)
         let path = CollectionPath.Users
-        let collection = FireStore.instance.firestore.collection(path)
+        let collection = FireStore.shared.firestore.collection(path)
 
         let snapshot = try await collection.getDocuments().documents
         print("Got \(snapshot.count) Documents")
+        
         let lineup: [User] = snapshot
             .filter { document in
                 let fid = document.documentID
@@ -101,10 +101,8 @@ extension SwipeViewModel {
             .filter { user in
                 print("Check Gender: \(user.gender)")
                 print("Check Seeking: \(user.filters.seeking)")
-                if seeking.rawValue == "none" && user.filters.seeking.rawValue == "none" { return true}
-                
                 if seeking.rawValue == "none" {
-                    return user.filters.seeking == gender
+                    return true
                 } else {
                     return user.gender == seeking && user.filters.seeking == gender
                 }

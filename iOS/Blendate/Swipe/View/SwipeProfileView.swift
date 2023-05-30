@@ -6,69 +6,78 @@
 //
 
 import SwiftUI
-import FirebaseFirestoreSwift
 
-struct SwipeProfileView: TabItemView {
+struct SwipeProfileView: View {
+    @AppStorage("firstLaunch") var firstLaunch: Bool = true
+
     @EnvironmentObject var session: UserViewModel
     @EnvironmentObject var navigation: NavigationManager
-    @StateObject var model: SwipeViewModel
-    @State var error: (any ErrorAlert)?
-
-    var superLiked: Bool {
-        false
-    }
     
-    ///  user when passed specifically
-    var user: User? = nil
+    @StateObject var model: SwipeViewModel
+    
+    @State private var error: (any ErrorAlert)?
+    
+    public var user: User? = nil
 
-    ///  the first User in the fetched lineup
     private var showing: User? { user ?? model.presenting }
-    @State private var showFilters = false
+    private var superLiked: Bool { false }
     
     var body: some View {
         Group {
-            if let showing = model.presenting {
-                ViewProfileView (
-                    user: showing,
-                    superLikedYou: superLiked,
-                    reported: model.nextLineup,
-                    buttons: MatchButtons(swiped: swiped)
-                )
-                .sheet(item: $model.match, onDismiss: model.nextLineup) {
-                    MatchedView(with: showing, match: $0)
-                }
-                .errorAlert(error: $error) { error in
-                    if error is Swipe.SuperLike {
-                        Button("Purchase") {
-                            navigation.showPurchaseLikes = true
-                        }
-                    } else if error is Swipe.Error {
-                        Button("Try again") {
-                            session.save()
-                        }
+            if firstLaunch {
+                aliceView
+                    .task {
+                        await model.fetchLineup(for: session.user)
                     }
-                    Button("Cancel", role: .cancel){}
-
-                }
+            } else if let _ = showing {
+                swipeView
             } else if model.loading {
                 LaunchView()
-
+                    .task {
+                        await model.fetchLineup(for: session.user)
+                    }
             } else {
-                EmptyLineupView(
-                    loading: $model.loading,
-                    button: ProfileButtonLong(title: "Filters", systemImage: "slider.horizontal.3" ) { showFilters = true }
-                        .padding(.horizontal, 32)
-                )
+                EmptyContentView(text: String.NoProfileFilters)
             }
         }
-        .task {
-            await model.fetchLineup(for: session.user)
+
+    }
+    
+    var aliceView: some View {
+        ViewProfileView(user: User.Alice) {
+            MatchButtons { swipe in
+                withAnimation {
+                    firstLaunch = false
+                }
+            }
         }
-        .sheet(isPresented: $showFilters) {
-            FiltersView()
+    }
+    
+    @ViewBuilder
+    var swipeView: some View {
+        if let showing {
+            ViewProfileView (
+                user: showing,
+                superLikedYou: superLiked,
+                reported: model.nextLineup,
+                buttons: MatchButtons(swiped: swiped)
+            )
+            .sheet(item: $model.match, onDismiss: model.nextLineup) {
+                MatchedView(with: showing, match: $0)
+            }
+            .errorAlert(error: $error) { error in
+                if error is Swipe.SuperLike {
+                    Button("Purchase") {
+                        navigation.showPurchaseLikes = true
+                    }
+                } else if error is Swipe.Error {
+                    Button("Try again") {
+                        session.save()
+                    }
+                }
+                Button("Cancel", role: .cancel){}
+            }
         }
-        .tag(Self.TabItem)
-        .tabItem{Self.TabItem.image}
     }
     
 
@@ -91,12 +100,13 @@ struct SwipeProfileView: TabItemView {
 
 struct SwipeProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        SwipeProfileView(model: swipeModel)
+        Group {
+            SwipeProfileView(model: .init(bobUID))
+                .previewDisplayName("Empty")
+            SwipeProfileView(model: .init(bobUID, presenting: alice))
+                .previewDisplayName("Presenting")
+        }
             .environmentObject(session)
             .environmentObject(NavigationManager())
-
     }
 }
-//    match.superLikeYou.contains(details.id ?? "")
-
-

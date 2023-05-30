@@ -14,3 +14,13 @@ enum Gender: String, Property, CaseIterable {
     static let svgImage = "Gender"
 
 }
+
+struct Gender_Previews: PreviewProvider {
+    @State static var gender: Gender = .male
+    static var view: Gender.PropertyView { .init(value: $gender) }
+    
+    static var previews: some View {
+        view
+        PropertyView(Gender.self, view: view)
+    }
+}

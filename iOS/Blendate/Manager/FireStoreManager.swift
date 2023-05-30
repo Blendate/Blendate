@@ -14,10 +14,10 @@ import FirebaseFirestoreSwift
 class FireStore: NSObject {
     let firestore: Firestore
     
-    static let instance = FireStore()
+    static let shared = FireStore()
     
     private override init(){
-        self.firestore = Firestore.firestore()
+        self.firestore = FirebaseFirestore.Firestore.firestore()
         super.init()
     }
 }
