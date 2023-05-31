@@ -9,9 +9,11 @@ import SwiftUI
 
 #warning("Clean up UI")
 struct TagCloudView: View {
-    var interests: [String]?
+    var interests: [Interests] = []
     
-    var tags: [String] { interests ?? []}
+    var tags: [String] {
+        interests.map{$0.rawValue}
+    }
 
     @State private var totalHeight
           = CGFloat.zero       // << variant for ScrollView/List
@@ -51,7 +53,7 @@ struct TagCloudView: View {
                         }
                         return result
                     })
-                    .alignmentGuide(.top, computeValue: {d in
+                    .alignmentGuide(.top, computeValue: { _ in
                         let result = height
                         if tag == self.tags.last! {
                             height = 0 // last item
@@ -85,8 +87,8 @@ struct TagCloudView: View {
     }
 }
 
-//struct TagCloudView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        TagCloudView(interests: Vices.allCases.map({$0.rawValue}))
-//    }
-//}
+struct TagCloudView_Previews: PreviewProvider {
+    static var previews: some View {
+        TagCloudView(interests: Interests.allCases)
+    }
+}

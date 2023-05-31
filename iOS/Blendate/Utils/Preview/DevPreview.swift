@@ -14,7 +14,7 @@ extension PreviewProvider {
     static var bobUID: String { "sjZMzfqjrkgP3MAFcutG5Fc9aqI3" }
     static var charlieUID: String { "8ndZMzfqjr3282380MAFcuc9aqf94" }
     
-    static var session: UserViewModel { UserViewModel(uid: aliceUID, user: alice) }
+    static var session: UserViewModel { UserViewModel(uid: aliceUID, user: alice, settings: .init() ) }
 
     static var likedUser: [Swipe] { [Swipe(.like)] }
     static var userLikes: [Swipe] { [Swipe(.like)] }

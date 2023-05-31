@@ -9,7 +9,7 @@ import Foundation
 
 struct Filters: Codable {
     var seeking: Gender = .none
-    var isParent: Parent = true
+    var isParent: ParentFilter = .none
     var maxChildrenn: Children = 10
     var childrenRange: KidAgeRange = KidAgeRange.defaultValue
     var minHeight: Height = 48

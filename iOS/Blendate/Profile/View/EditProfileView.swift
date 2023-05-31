@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct EditProfileView: View {
+    @EnvironmentObject var storeManager: StoreManager
     @EnvironmentObject var model: UserViewModel
     @Environment(\.dismiss) private var dismiss
 
@@ -96,11 +97,11 @@ struct EditProfileView: View {
         Section {
             DetailCell($model.user.height)
             
-            DetailCell("Vices", systemImage: Vices.systemImage, value: nil) {
-                
+            DetailCell("Vices", systemImage: Vices.systemImage, value: model.user.vices.map{$0.rawValue}.stringArrayValue() ) {
+                VicesView(vices: $model.user.vices)
             }
-            DetailCell("Interests", systemImage: Vices.systemImage, value: nil) {
-
+            DetailCell("Interests", systemImage: Interests.systemImage, value: model.user.interests.map{$0.rawValue}.stringArrayValue()) {
+                InterestsView(interests: $model.user.interests)
             }
         } header: {
             Label("Premium", systemImage: "lock")
@@ -108,12 +109,13 @@ struct EditProfileView: View {
                 .fontWeight(.semibold)
 
         }
+        .disabled(!storeManager.hasMembership)
     }
 }
 
 struct EditProfileView_Previews: PreviewProvider {
     static var previews: some View {
         EditProfileView()
-            .environmentObject(UserViewModel(uid: aliceUID, user: alice))
+            .environmentObject(session)
     }
 }

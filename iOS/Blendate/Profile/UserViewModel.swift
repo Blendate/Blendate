@@ -11,15 +11,16 @@ import FirebaseFirestoreSwift
 class UserViewModel: ObservableObject {
     
     @Published var user: User
-    @Published var settings = User.Settings()
+    @Published var settings: User.Settings
     @Published var fetching = true
     @Published var error: (any ErrorAlert)?
     
     let uid: String
     
-    init(uid: String, user: User){
+    init(uid: String, user: User, settings: User.Settings){
         self.uid = uid
         self.user = user
+        self.settings = settings
     }
     
     func save()  {
@@ -35,6 +36,7 @@ class UserViewModel: ObservableObject {
     
     private func saveSettings() throws {
         let collection = FireStore.shared.firestore.collection(CollectionPath.Settings)
+        print("Super Likes: \(settings.premium.superLikes)")
         try collection.document(uid).setData(from: settings)
     }
     

@@ -31,15 +31,15 @@ struct PurchaseLikesView: View {
                 .font(.footnote.weight(.semibold))
                 .foregroundColor(.white)
             Spacer()
-            Text("Coming Soon")
-                .foregroundColor(.white)
-                .font(.largeTitle.weight(.semibold))
-//            ForEach(purchaseManager.products.sorted(by: {$0.price < $1.price})) { product in
-//                if product.isLike {
-//                    Cell(settings: $settings, product: product)
-//                }
-//            }
-//            .padding(.horizontal, 32)
+//            Text("Coming Soon")
+//                .foregroundColor(.white)
+//                .font(.largeTitle.weight(.semibold))
+            ForEach(purchaseManager.products.sorted(by: {$0.price < $1.price})) { product in
+                if product.isLike {
+                    Cell(settings: $settings, product: product)
+                }
+            }
+            .padding(.horizontal, 32)
             Spacer()
         }
         .padding(.horizontal)
@@ -51,6 +51,8 @@ struct PurchaseLikesView: View {
 import StoreKit
 extension PurchaseLikesView {
     struct Cell: View {
+        @Environment(\.dismiss) private var dismiss
+
         @EnvironmentObject var purchaseManager: StoreManager
         @EnvironmentObject var session: UserViewModel
         
@@ -91,7 +93,8 @@ extension PurchaseLikesView {
                 try await purchaseManager.purchase(product)
                 if let likes = product.likeCount {
                     settings.premium.superLikes += likes
-                    try session.save()
+                    session.save()
+                    dismiss()
                 } else {
                     self.error = StoreManager.Error(message: "There was an error saving your purchase on the server, please contact support with ID \n \(session.uid)")
                 }

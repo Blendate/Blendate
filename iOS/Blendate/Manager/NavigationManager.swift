@@ -12,7 +12,7 @@ import Firebase
 class NavigationManager: ObservableObject {
     
     static let shared = NavigationManager()
-    enum State { case loading, noUser, onboarding(String), user(String, User) }
+    enum State { case loading, noUser, onboarding(String), user(String, User, User.Settings) }
     
     @Published var selectedTab: Tab = .match
     @Published var state: State = .loading
@@ -43,7 +43,9 @@ class NavigationManager: ObservableObject {
     }
     
     @MainActor
-    func delete() {
+    func delete(uid: String) {
+        FireStore.shared.firestore.collection(CollectionPath.Users).document(uid).delete()
+
         auth.currentUser?.delete { error in
             if let error {
                 print(error)
@@ -75,9 +77,10 @@ extension NavigationManager {
         Task {@MainActor in
             do {
                 let user = try await FireStore.shared.fetch(uid: uid)
+                let settings = try await FireStore.shared.fetchSettings(uid: uid)
                 print("Fetched \(uid)")
                 withAnimation {
-                    self.state = .user(uid, user)
+                    self.state = .user(uid, user, settings)
                 }
             } catch {
                 print(error.localizedDescription)

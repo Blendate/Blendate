@@ -11,7 +11,6 @@ struct ProfileView: View {
     @EnvironmentObject var navigation: NavigationManager
     @EnvironmentObject var model: UserViewModel
 
-    @State var settings: User.Settings = .init()
     @State private var tapped: ButtonType?
 
     var body: some View {
@@ -25,7 +24,7 @@ struct ProfileView: View {
                 ProfileButtonLong(title: "Membership") {
                     navigation.showPurchaseMembership = true
                 }.padding(.horizontal)
-                ProfileButtonLong(title: "Super Likes", subtitle: "\(settings.premium.superLikes)", systemImage: "star.fill",color: .Purple) {
+                ProfileButtonLong(title: "Super Likes", subtitle: "\(model.settings.premium.superLikes)", systemImage: "star.fill",color: .Purple) {
                     navigation.showPurchaseLikes = true
                 }.padding(.horizontal)
                 Spacer()
@@ -36,7 +35,7 @@ struct ProfileView: View {
                 switch type {
                 case .edit: EditProfileView()
                 case .filters: FiltersView()
-                case .settings: SettingsView(settings: $settings)
+                case .settings: SettingsView(settings: $model.settings)
                 }
             }
             .errorAlert(error: $model.error) { alert in

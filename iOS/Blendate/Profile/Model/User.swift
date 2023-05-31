@@ -24,8 +24,8 @@ struct User: Identifiable, Codable {
     
     var workTitle: Work = ""
     var schoolTitle: Education = ""
-    var vices: [String] = []
-    var interests: [String] = []
+    var vices: [Vices] = []
+    var interests: [Interests] = []
     
     var filters: Filters
     

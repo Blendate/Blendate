@@ -21,8 +21,8 @@ struct EntryView: View {
                 WelcomeView()
             case .onboarding(let uid):
                 SignupView(model: .init(uid: uid))
-            case .user(let uid, let user):
-                SessionView(model: .init(uid: uid, user: user))
+            case .user(let uid, let user, let settings):
+                SessionView(model: .init(uid: uid, user: user, settings: settings))
             }
         }
         .task {

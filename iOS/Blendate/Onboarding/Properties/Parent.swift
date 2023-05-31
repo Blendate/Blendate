@@ -20,15 +20,12 @@ struct Parent: Property, RawRepresentable {
         var isFilter: Bool = false
         
         var body: some View {
-            VStack {
-                HStack(spacing: 20) {
-                    OptionButton(selected: value, property: Parent(rawValue: true))
-                    OptionButton(selected: value, property: Parent(rawValue: false))
-                }
-//                if isFilter {
-//                    OptionButton(selected: value, property: Parent(rawValue: false))
-//                }
+            HStack {
+                OptionButton(selected: value, property: Parent(rawValue: true))
+                Spacer()
+                OptionButton(selected: value, property: Parent(rawValue: false))
             }
+            .padding(.horizontal, 64)
 
         }
     }
@@ -39,13 +36,25 @@ extension Parent: ExpressibleByBooleanLiteral {
     }
 }
 
+
+enum ParentFilter: String, Property, CaseIterable {
+    typealias PropertyView = OptionGridView<Self>
+    static var title: String { "Parent" }
+
+    case yes, no, none
+    static let systemImage = "figure.and.child.holdinghands"
+    static let svgImage = "Family"
+
+}
+
 struct Parent_Previews: PreviewProvider {
     @State static var parent: Parent = true
-    
+    @State static var parentFilter: ParentFilter = .no
+
     static var previews: some View {
         Parent.PropertyView(value: $parent)
         PropertyView(Parent.self, view: .init(value: $parent))
-        PropertyView(Parent.self, view: .init(value: $parent, isFilter: true))
+        PropertyView(ParentFilter.self, view: .init(value: $parentFilter))
             .previewDisplayName("Filter")
     }
 }

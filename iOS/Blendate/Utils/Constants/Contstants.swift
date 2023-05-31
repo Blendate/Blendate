@@ -57,7 +57,7 @@ extension User {
         }()
         
         var filters = Filters(seeking: .male)
-        filters.isParent = true
+        filters.isParent = .yes
         filters.maxChildrenn = 5
         filters.childrenRange = .init(min: 1, max: 8)
         filters.minHeight = 56
@@ -66,7 +66,6 @@ extension User {
         filters.politics = .liberal
         
         var user = User(
-            id: "999",
             firstname: "Alice",
             lastname: "Lovelace",
             birthday: Calendar.current.date(byAdding: .year, value: -10, to: Date.youngestBirthday)!,
@@ -81,7 +80,7 @@ extension User {
         )
         user.workTitle = "Teacher"
         user.schoolTitle = "Bachelor in Education"
-        user.vices = [Vices.snacker.rawValue, Vices.chocolate.rawValue, Vices.coffee.rawValue]
+        user.vices = [Vices.snacker, Vices.chocolate, Vices.coffee]
         user.height = 52
         user.relationship = .separated
         user.familyPlans = .wantMore

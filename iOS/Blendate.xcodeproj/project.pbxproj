@@ -48,10 +48,8 @@
 		4C2D17702926D3F800C56063 /* FirebaseGoogleAuthUI in Frameworks */ = {isa = PBXBuildFile; productRef = 4C2D176F2926D3F800C56063 /* FirebaseGoogleAuthUI */; };
 		4C2D17722926D3F800C56063 /* FirebaseOAuthUI in Frameworks */ = {isa = PBXBuildFile; productRef = 4C2D17712926D3F800C56063 /* FirebaseOAuthUI */; };
 		4C2D17742926D3F800C56063 /* FirebasePhoneAuthUI in Frameworks */ = {isa = PBXBuildFile; productRef = 4C2D17732926D3F800C56063 /* FirebasePhoneAuthUI */; };
-		4C2D8AF02A09A44600D8E8E6 /* Relationship.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2D8AEF2A09A44600D8E8E6 /* Relationship.swift */; };
+		4C2D8AF02A09A44600D8E8E6 /* Options.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2D8AEF2A09A44600D8E8E6 /* Options.swift */; };
 		4C2D8AF22A09A83100D8E8E6 /* Height.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2D8AF12A09A83100D8E8E6 /* Height.swift */; };
-		4C2D8AF42A09AB9C00D8E8E6 /* FamilyPlans.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2D8AF32A09AB9C00D8E8E6 /* FamilyPlans.swift */; };
-		4C2D8AF62A09AE2B00D8E8E6 /* Religion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2D8AF52A09AE2B00D8E8E6 /* Religion.swift */; };
 		4C2D8AF82A09BB8C00D8E8E6 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2D8AF72A09BB8C00D8E8E6 /* Location.swift */; };
 		4C2D8AFA2A09BEBA00D8E8E6 /* IntRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2D8AF92A09BEBA00D8E8E6 /* IntRange.swift */; };
 		4C2D8AFC2A09C46D00D8E8E6 /* PropertyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2D8AFB2A09C46D00D8E8E6 /* PropertyView.swift */; };
@@ -78,6 +76,10 @@
 		4C48DC9B292C860C009A57D4 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C48DC9A292C860C009A57D4 /* Date.swift */; };
 		4C4C1F252820749D001D7802 /* Sliders in Frameworks */ = {isa = PBXBuildFile; productRef = 4C4C1F242820749D001D7802 /* Sliders */; };
 		4C521A4E27BDA9AE00674C62 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4C521A4D27BDA9AE00674C62 /* GoogleService-Info.plist */; };
+		4C52B0712A27C0AE00885F4D /* AppleSignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C52B0702A27C0AE00885F4D /* AppleSignIn.swift */; };
+		4C52B0732A27D27400885F4D /* Vices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C52B0722A27D27400885F4D /* Vices.swift */; };
+		4C52B0752A27D28F00885F4D /* Interests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C52B0742A27D28F00885F4D /* Interests.swift */; };
+		4C52B0772A27DDB600885F4D /* VicesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C52B0762A27DDB600885F4D /* VicesView.swift */; };
 		4C54880B299DAE7600D96605 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C54880A299DAE7600D96605 /* Settings.swift */; };
 		4C548810299DD13000D96605 /* ViewProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C54880F299DD13000D96605 /* ViewProfileView.swift */; };
 		4C548814299DD93200D96605 /* Badge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C548813299DD93200D96605 /* Badge.swift */; };
@@ -202,10 +204,8 @@
 		4C2CE33428E8C21700BF669D /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		4C2CE33828E8C26700BF669D /* MessageBubble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageBubble.swift; sourceTree = "<group>"; };
 		4C2D17572926C50200C56063 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
-		4C2D8AEF2A09A44600D8E8E6 /* Relationship.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Relationship.swift; sourceTree = "<group>"; };
+		4C2D8AEF2A09A44600D8E8E6 /* Options.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Options.swift; sourceTree = "<group>"; };
 		4C2D8AF12A09A83100D8E8E6 /* Height.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Height.swift; sourceTree = "<group>"; };
-		4C2D8AF32A09AB9C00D8E8E6 /* FamilyPlans.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyPlans.swift; sourceTree = "<group>"; };
-		4C2D8AF52A09AE2B00D8E8E6 /* Religion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Religion.swift; sourceTree = "<group>"; };
 		4C2D8AF72A09BB8C00D8E8E6 /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		4C2D8AF92A09BEBA00D8E8E6 /* IntRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntRange.swift; sourceTree = "<group>"; };
 		4C2D8AFB2A09C46D00D8E8E6 /* PropertyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyView.swift; sourceTree = "<group>"; };
@@ -231,6 +231,10 @@
 		4C48DC98292C4C38009A57D4 /* Contstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Contstants.swift; sourceTree = "<group>"; };
 		4C48DC9A292C860C009A57D4 /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
 		4C521A4D27BDA9AE00674C62 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		4C52B0702A27C0AE00885F4D /* AppleSignIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleSignIn.swift; sourceTree = "<group>"; };
+		4C52B0722A27D27400885F4D /* Vices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vices.swift; sourceTree = "<group>"; };
+		4C52B0742A27D28F00885F4D /* Interests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interests.swift; sourceTree = "<group>"; };
+		4C52B0762A27DDB600885F4D /* VicesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VicesView.swift; sourceTree = "<group>"; };
 		4C54880A299DAE7600D96605 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		4C54880F299DD13000D96605 /* ViewProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewProfileView.swift; sourceTree = "<group>"; };
 		4C548813299DD93200D96605 /* Badge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Badge.swift; sourceTree = "<group>"; };
@@ -439,24 +443,19 @@
 				4C2D8AFB2A09C46D00D8E8E6 /* PropertyView.swift */,
 				4C2D8AFD2A09C67A00D8E8E6 /* Name.swift */,
 				4C3210C62A03832300EFE0F5 /* Gender.swift */,
-				4C3210CB2A038A6F00EFE0F5 /* Parent.swift */,
 				4CBEFD922A2654BA0009FF56 /* Birthday.swift */,
-				4C2D8B042A09EE4C00D8E8E6 /* KidAgeRange.swift */,
+				4C3210CB2A038A6F00EFE0F5 /* Parent.swift */,
 				4C78CEEC2A0AD03900ECABFD /* Children.swift */,
+				4C2D8B042A09EE4C00D8E8E6 /* KidAgeRange.swift */,
 				4C2D8AF72A09BB8C00D8E8E6 /* Location.swift */,
 				4C2D8B072A0A03D100D8E8E6 /* Bio.swift */,
+				4C9E52E9299EFB3E00CF0BE2 /* Photo.swift */,
 				4C78CEEA2A0ACEA400ECABFD /* WorkTitle.swift */,
 				4C2D8AF12A09A83100D8E8E6 /* Height.swift */,
-				4C80025E2762A00900F9410A /* HeightView.swift */,
-				4C2D8AEF2A09A44600D8E8E6 /* Relationship.swift */,
-				4C2D8AF52A09AE2B00D8E8E6 /* Religion.swift */,
-				4C9E52E9299EFB3E00CF0BE2 /* Photo.swift */,
-				4C2D8AF32A09AB9C00D8E8E6 /* FamilyPlans.swift */,
+				4C2D8AEF2A09A44600D8E8E6 /* Options.swift */,
+				4C52B0722A27D27400885F4D /* Vices.swift */,
+				4C52B0742A27D28F00885F4D /* Interests.swift */,
 				4C2D8AF92A09BEBA00D8E8E6 /* IntRange.swift */,
-				4C9182282817626F00D5CF62 /* AgeRangeView.swift */,
-				4C62F096298F509E00645399 /* OptionGridView.swift */,
-				4C805A642760569300D85D14 /* AddPhotosView.swift */,
-				4C805A822760626900D85D14 /* InterestsView.swift */,
 			);
 			path = Properties;
 			sourceTree = "<group>";
@@ -681,6 +680,13 @@
 			children = (
 				4C32109F2A030E3000EFE0F5 /* Properties */,
 				4C2D17572926C50200C56063 /* WelcomeView.swift */,
+				4C9182282817626F00D5CF62 /* AgeRangeView.swift */,
+				4C80025E2762A00900F9410A /* HeightView.swift */,
+				4C62F096298F509E00645399 /* OptionGridView.swift */,
+				4C805A642760569300D85D14 /* AddPhotosView.swift */,
+				4C805A822760626900D85D14 /* InterestsView.swift */,
+				4C52B0762A27DDB600885F4D /* VicesView.swift */,
+				4C52B0702A27C0AE00885F4D /* AppleSignIn.swift */,
 				4C3210A02A030E4300EFE0F5 /* SignupView.swift */,
 				4C2D8B092A0A060500D8E8E6 /* SignupViewModel.swift */,
 			);
@@ -884,6 +890,7 @@
 				4C57F593281CE9A20059299B /* PhotoView.swift in Sources */,
 				4C09C3A929A033DA00A26F10 /* ProfileButton.swift in Sources */,
 				4C2D8B032A09ED8300D8E8E6 /* Filters.swift in Sources */,
+				4C52B0772A27DDB600885F4D /* VicesView.swift in Sources */,
 				4C0A58232818DBFC0068CCCE /* View.swift in Sources */,
 				4CCFAC15280364AE0063FCA6 /* SettingCellView.swift in Sources */,
 				4C80024F27609E7E00F9410A /* ProfileView.swift in Sources */,
@@ -891,6 +898,7 @@
 				4C47045027F41B9A007517D9 /* SettingsView.swift in Sources */,
 				4C8059D627603AF600D85D14 /* SessionView.swift in Sources */,
 				4C0E53BE2990842300FC14C3 /* CommunityViewModel.swift in Sources */,
+				4C52B0712A27C0AE00885F4D /* AppleSignIn.swift in Sources */,
 				4C60B8F329353BEC00F94FA0 /* RevenueCatService.swift in Sources */,
 				4C788473281890E600B643C2 /* Array.swift in Sources */,
 				4C2D8B052A09EE4C00D8E8E6 /* KidAgeRange.swift in Sources */,
@@ -917,7 +925,9 @@
 				4CA3F49F2990EF7000F6D2BD /* PhotoViewModel.swift in Sources */,
 				4C805A7027605D3F00D85D14 /* ProfileCoverView.swift in Sources */,
 				4CB4E45B27F8F38300E775D1 /* Icebreakers.swift in Sources */,
+				4C52B0732A27D27400885F4D /* Vices.swift in Sources */,
 				4C10728427F504DB004E525E /* SwipeProfileView.swift in Sources */,
+				4C52B0752A27D28F00885F4D /* Interests.swift in Sources */,
 				4C3210C72A03832300EFE0F5 /* Gender.swift in Sources */,
 				4CD9AE2F29B319CD006BA698 /* NotificationManager.swift in Sources */,
 				4CBEFD932A2654BA0009FF56 /* Birthday.swift in Sources */,
@@ -927,7 +937,7 @@
 				4C2D8AFE2A09C67A00D8E8E6 /* Name.swift in Sources */,
 				4CD3FF8E27838920004D2E5A /* EntryView.swift in Sources */,
 				4CCF8777299830FE00D66B98 /* MessagesList.swift in Sources */,
-				4C2D8AF02A09A44600D8E8E6 /* Relationship.swift in Sources */,
+				4C2D8AF02A09A44600D8E8E6 /* Options.swift in Sources */,
 				4CD25509299D53A000534BAE /* ChatMessage.swift in Sources */,
 				4CC2F9512817922100A1D105 /* EmptyLineupView.swift in Sources */,
 				4C0E9480278BF11F00740252 /* User_OLD.swift in Sources */,
@@ -952,7 +962,6 @@
 				4CC23DBB281FB0180058E457 /* UIApplication.swift in Sources */,
 				4C2D8AF22A09A83100D8E8E6 /* Height.swift in Sources */,
 				4C8059DC27603B5000D85D14 /* TodayView.swift in Sources */,
-				4C2D8AF42A09AB9C00D8E8E6 /* FamilyPlans.swift in Sources */,
 				4C788477281895AD00B643C2 /* CapsuleButton.swift in Sources */,
 				4C48DC99292C4C38009A57D4 /* Contstants.swift in Sources */,
 				4C197C512819220E002DD266 /* Binding.swift in Sources */,
@@ -997,7 +1006,6 @@
 				4C80025927609E9800F9410A /* HelpCenterView.swift in Sources */,
 				4C9E52E6299EF7A600CF0BE2 /* Premium.swift in Sources */,
 				4C2D8B002A09E21A00D8E8E6 /* FiltersView.swift in Sources */,
-				4C2D8AF62A09AE2B00D8E8E6 /* Religion.swift in Sources */,
 				4C43661528A0CB110098BE03 /* CommunityView.swift in Sources */,
 				4C8002622762B48700F9410A /* MatchesView.swift in Sources */,
 				4C2D8AF82A09BB8C00D8E8E6 /* Location.swift in Sources */,
@@ -1078,7 +1086,7 @@
 				CODE_SIGN_ENTITLEMENTS = Blendate/Blendate.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 44;
+				CURRENT_PROJECT_VERSION = 45;
 				DEVELOPMENT_TEAM = QLFXX64RR2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1233,7 +1241,7 @@
 				CODE_SIGN_ENTITLEMENTS = Blendate/Blendate.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 44;
+				CURRENT_PROJECT_VERSION = 45;
 				DEVELOPMENT_TEAM = QLFXX64RR2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1272,7 +1280,7 @@
 				CODE_SIGN_ENTITLEMENTS = Blendate/Blendate.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 44;
+				CURRENT_PROJECT_VERSION = 45;
 				DEVELOPMENT_TEAM = QLFXX64RR2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;

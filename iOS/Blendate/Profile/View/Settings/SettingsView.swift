@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var userModel: UserViewModel
     @EnvironmentObject var navigation: NavigationManager
     @EnvironmentObject var entitlement: StoreManager
     
@@ -18,6 +19,8 @@ struct SettingsView: View {
     
     @State var alert: ErrorAlert?
     @State private var showSuperLikes = false
+    @State private var showMembership = false
+
 
     var body: some View {
         NavigationStack {
@@ -35,6 +38,9 @@ struct SettingsView: View {
             .navigationBarTitle("Settings")
             .sheet(isPresented: $showSuperLikes) {
                 PurchaseLikesView(settings: $settings)
+            }
+            .fullScreenCover(isPresented: $showMembership) {
+                MembershipView()
             }
             .errorAlert(error: $alert) { error in
                 if error.title == "Logout" {
@@ -65,7 +71,7 @@ struct SettingsView: View {
                     .disabled(!hasMembership)
                     .onTapGesture {
                         if !hasMembership {
-                            navigation.showPurchaseMembership = true
+                            showMembership = true
                         }
                     }
             }
@@ -79,7 +85,7 @@ struct SettingsView: View {
     var accountSection: some View {
         Section {
             Button {
-                navigation.showPurchaseMembership = true
+                showMembership = true
             } label: {
                 HStack {
                     Image("icon-2")
@@ -215,11 +221,9 @@ extension SettingsView {
             }
         }
     }
-    
-
-    
+        
     private func delete(){
-        navigation.delete()
+        navigation.delete(uid: userModel.uid)
         dismiss()
 
     }

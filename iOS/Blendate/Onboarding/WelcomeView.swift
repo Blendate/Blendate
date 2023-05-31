@@ -6,8 +6,10 @@
 //
 
 import SwiftUI
+import AuthenticationServices
 
 struct WelcomeView: View {
+    @StateObject var model = AppleSignIn()
     @State var signin = false
     private func signinTapped() { withAnimation { signin = true } }
 
@@ -41,9 +43,17 @@ struct WelcomeView: View {
     @ViewBuilder
     var SigninButtons: some View {
         VStack {
-            SocialSigninButtons()
-                .frame(height:240)
-                .noPreview(220, 240, "Social Button")
+            SignInWithAppleButton { request in
+                model.nonce(request: request)
+            } onCompletion: { result in
+                do {
+                    try model.handleResult(result: result)
+                } catch {
+                    print(error)
+                }
+            }
+            .frame(height: 40)
+            .padding(.vertical, 32)
             Button {
                 withAnimation {
                     signin = false
@@ -54,6 +64,7 @@ struct WelcomeView: View {
                     .foregroundColor(.white)
             }
         }
+        .padding(.bottom)
     }
     
     
@@ -79,7 +90,6 @@ struct WelcomeView: View {
         .font(.caption2)
         .foregroundColor(.white)
         .accentColor(.white)
-        .padding(.bottom)
     }
 }
 

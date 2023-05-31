@@ -17,7 +17,7 @@ struct SignupView: View {
     var body: some View {
         NavigationStack(path: $path) {
             PropertyView(title: nil, svg: Name.svgImage) {
-                Name.PropertyView(value: $model.name)
+                Birthday.PropertyView(value: $model.birthday)
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -26,7 +26,7 @@ struct SignupView: View {
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    NextButton(current: .name)
+                    NextButton(current: .birthday)
                         .environmentObject(model)
                 }
             }
@@ -51,8 +51,6 @@ struct SignupView: View {
     @ViewBuilder
     func view(for onboard: Onboarding) -> some View {
         switch onboard {
-        case .name:
-            Name.PropertyView(value: $model.name)
         case .birthday:
             Birthday.PropertyView(value: $model.birthday)
         case .gender:
@@ -81,6 +79,9 @@ extension SignupView {
         @EnvironmentObject var model: SignupViewModel
 
         let current: Onboarding
+        var disabled: Bool {
+            !model.valid(for: current)
+        }
 
         @State private var error: ErrorAlert?
 
@@ -91,6 +92,7 @@ extension SignupView {
                         .fontWeight(.bold)
                         .tint(.Blue)
                 }
+                .disabled(disabled)
                 .errorAlert(error: $error) { err in
                     Button("Try Again", action: createDoc)
                     Button("Cancel", role: .cancel) {}
@@ -105,7 +107,6 @@ extension SignupView {
             }
         }
         
-        var disabled: Bool { false }
 
         var next: Onboarding {
             if current == .isParent, !model.isParent.rawValue {
@@ -119,26 +120,17 @@ extension SignupView {
 
         private func createDoc() {
             do {
-                let collection = FireStore.shared.firestore.collection(CollectionPath.Users)
-                let user = User (
-                    firstname: model.name.first,
-                    lastname: model.name.last,
-                    birthday: model.birthday.date,
-                    gender: model.gender,
-                    isParent: model.isParent,
-                    children: model.children,
-                    childrenRange: model.childrenRange,
-                    bio: model.about,
-                    location: model.location,
-                    photos: model.photos,
-                    filters: Filters(seeking: model.seeking)
-                )
-                try collection.document(model.uid).setData(from: user)
-                navigation.state = .user(model.uid, user)
+                let (uid, user, settings) = try model.createDoc()
+                navigation.state = .user(uid, user, settings)
             } catch {
-                print(error.localizedDescription)
+                self.error = SignupView.Error()
             }
+
         }
+    }
+    struct Error: ErrorAlert {
+        var title: String = "Server Error"
+        var message: String = "There was an error creating your account, if the problem persists contact support"
     }
 }
 

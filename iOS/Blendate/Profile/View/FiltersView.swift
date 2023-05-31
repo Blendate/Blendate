@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct FiltersView: View {
+    @EnvironmentObject var storeManager: StoreManager
     @EnvironmentObject var model: UserViewModel
     @Environment(\.dismiss) private var pop
     
@@ -57,7 +58,7 @@ extension FiltersView {
     var family: some View {
         Section {
             DetailCell($model.user.filters.isParent, isFilter: true)
-            if model.user.filters.isParent.rawValue {
+            if model.user.filters.isParent == .yes {
                 DetailCell($model.user.filters.maxChildrenn, isFilter: true)
             }
             DetailCell($model.user.filters.familyPlans, isFilter: true)
@@ -96,6 +97,7 @@ extension FiltersView {
             header("Premium", systemImage: "lock")
 
         }
+        .disabled(!storeManager.hasMembership)
     }
 }
 

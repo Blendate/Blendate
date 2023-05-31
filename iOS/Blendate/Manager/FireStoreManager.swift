@@ -29,6 +29,13 @@ extension FireStore {
         let user = try document.data(as: User.self)
         return user
     }
+    
+    func fetchSettings(uid: String) async throws -> User.Settings {
+        let collection = firestore.collection(CollectionPath.Settings)
+        let document = try await collection.document(uid).getDocument()
+        let user = try document.data(as: User.Settings.self)
+        return user
+    }
 }
 
 extension FireStore {

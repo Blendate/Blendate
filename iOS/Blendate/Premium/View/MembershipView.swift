@@ -60,6 +60,7 @@ import StoreKit
 extension MembershipView {
     
     struct Cell: View {
+        @Environment(\.dismiss) private var dismiss
         @EnvironmentObject var purchase: StoreManager
         @State var error: ErrorAlert?
         let product: Product
@@ -92,29 +93,24 @@ extension MembershipView {
 
             }
             .errorAlert(error: $error) { error in
-//                AsyncButton("Try Again", action: purchase)
-                Button("Ok"){}
+                AsyncButton("Try Again", action: purchase)
+//                Button("Ok"){}
             }
         }
         
         private func purchase() async {
-            self.error = ComingSoon()
-
-//            do {
-//                try await purchase.purchase(product)
-//            } catch {
-//                self.error = PurchaseManager.Error()
-//            }
-
+            do {
+                try await purchase.purchase(product)
+                dismiss()
+            } catch {
+                self.error = StoreManager.Error()
+            }
         }
     }
     
     struct ComingSoon: ErrorAlert {
         var title: String = "Premium"
-        
         var message: String = "Premium Membership will be active soon"
-        
-        
     }
 
     
